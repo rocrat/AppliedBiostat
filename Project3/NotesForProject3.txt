@@ -1,0 +1,4 @@
+ECOG < 2
+sensitivity: does the effect of time on QOL change over time or is it constant?
+Use all non-varying variables in imputation and if we do an adjusted model we have to be careful about the variables we use because some of them were aggregated over the study period
+How do we eeal with death????

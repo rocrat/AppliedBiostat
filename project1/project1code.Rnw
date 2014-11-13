@@ -1,0 +1,43 @@
+\documentclass{article}
+
+\begin{document}
+
+<<readin,echo=FALSE>>=
+dat<-read.csv("C:/Classes/AppliedBiostat/project1/support_data.csv")
+dat<-dat[dat$totcst!=0 ,]
+dat<-subset(dat,select=c("totcst","age","scoma","meanbp","hrt","temp","pafi","alb","sex","race","dzgroup","num.co"))
+dat<-na.omit(dat)
+dat$ltotcst<-log(dat$totcst)
+dat$age_mn<-with(dat,age-mean(age))
+dat$scoma_mn<-with(dat,scoma-mean(scoma))
+dat$meanbp_mn<-with(dat,meanbp-mean(meanbp))
+dat$hrt_mn<-with(dat,hrt-mean(hrt))
+dat$temp_mn<-with(dat, temp-mean(temp))
+dat$pafi_mn<-with(dat, pafi-mean(pafi,na.rm=T))
+dat$alb_mn<-with(dat, alb-mean(alb,na.rm=T))
+@
+
+<<models,echo=FALSE>>=
+qmod<-lm(ltotcst~age_mn+I(age_mn^2) + scoma_mn+I(scoma_mn^2) + meanbp_mn+I(meanbp_mn^2) + hrt_mn+I(hrt_mn^2) + temp_mn+I(temp_mn^2) + pafi_mn+I(pafi_mn^2) + alb_mn+I(alb_mn^2) + sex + race + dzgroup + factor(num.co),data=dat)
+dat$qfitted<-qmod$fitted.values
+
+library(rms)
+rcsmod<-lm(ltotcst~rcspline.eval(age_mn)+rcspline.eval(scoma_mn)+rcspline.eval(meanbp_mn)+rcspline.eval(hrt_mn)+rcspline.eval(temp_mn)+rcspline.eval(pafi_mn)+rcspline.eval(alb_mn)+sex+race+dzgroup+factor(num.co),data=dat)
+dat$rcfitted<-rcsmod$fitted.values
+
+dat$qmse<-(dat$ltotcst-dat$qfitted)^2
+dat$rcmse<-(dat$ltotcst-dat$rcfitted)^2
+mqmse<-sqrt(mean(dat$qmse))
+mrcmse<-sqrt(mean(dat$rcmse))
+@
+
+<<plots,echo=FALSE>>=
+par(mfrow=c(1,2))
+plot(ltotcst~qfitted,dat,xlim=c(7,13),ylim=c(7,13))
+abline(0,1)
+plot(ltotcst~rcfitted,dat,xlim=c(7,13),ylim=c(7,13))
+abline(0,1)
+par(mfrow=c(1,1))
+@
+
+\end{document}

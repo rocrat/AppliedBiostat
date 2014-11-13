@@ -1,0 +1,11 @@
+Are you interested in model selection?
+If we should pick risk factors based predictive efficacy?
+What are the goals of the model? Prediction vs hypothesis testing?
+Variance components for logistic model?
+make plots for obs and predicted relationships
+write methods and send sweaved doc.
+
+add rcpline plots to the appendix
+make tables for presentation
+look at the leverage of each observation (cooks distance)  
+sex by age interaction plot

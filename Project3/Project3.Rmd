@@ -1,0 +1,198 @@
+---
+title: "Lung Cancer Treatment and Quality of Life"
+author: "Dominic LaRoche, Elinora Price"
+date: "Tuesday, October 28, 2014"
+output: word_document
+---
+
+
+
+```{r readin, echo=FALSE,message=FALSE}
+library(BDSS)
+library(lme4)
+library(reshape2)
+library(pander)
+library(car)
+dat<-read.csv("C:/Classes/AppliedBiostat/Project3/Lung_txt.csv")
+dat$PatID<-as.factor(dat$PatID)
+#plot(dat[,10:14])
+```
+
+```{r mixedModel,echo=FALSE}
+m1<-lmer(FACT_T2~SEX+ECOGPS+WT_LOSS+SX_PRI+SX_MET+SX_SYS+SX_CD+CTC_HEM+(1|PatID),data=dat)
+```
+
+```{r makeWideData, echo=FALSE}
+#mdat<-melt(dat,id.vars=c(1:22),measure.vars=c(23:32))
+#wide<-dcast(mdat,as.formula(paste0(paste(names(dat)[1:21],collapse="+"),"~",paste(names(dat)[23:32]),"+FUNO")))
+wide<-stats::reshape(dat,timevar="FUNO",direction="wide",idvar=c(names(dat)[1:21]))
+```
+
+```{r ClasifyMissing,echo=FALSE,results='asis'}
+# sum(is.na(wide$FUNC_WB2.2))
+# sum(is.na(wide$PHYS_WB2.2))
+# sum(is.na(wide$SOCL_WB2.2))
+# sum(is.na(wide$ADD_CRN2.2))
+# sum(is.na(wide$EMOT_WB2.2))
+# sum(is.na(wide$FACT_T2.2))
+# 
+# length(which(is.na(wide$FUNC_WB2.2)&is.na(wide$PHYS_WB2.2)))
+# which(!is.na(wide$FUNC_WB2.2)&is.na(wide$PHYS_WB2.2))
+# which(is.na(wide$FUNC_WB2.2)&!is.na(wide$PHYS_WB2.2))
+# 
+# sum(is.na(wide$FUNC_WB2.3))
+# sum(is.na(wide$PHYS_WB2.3))
+# sum(is.na(wide$SOCL_WB2.3))
+# sum(is.na(wide$ADD_CRN2.3))
+# sum(is.na(wide$EMOT_WB2.3))
+# sum(is.na(wide$FACT_T2.3))
+# 
+# sum(is.na(wide$FUNC_WB2.4))
+# sum(is.na(wide$PHYS_WB2.4))
+# sum(is.na(wide$SOCL_WB2.4))
+# sum(is.na(wide$ADD_CRN2.4))
+# sum(is.na(wide$EMOT_WB2.4))
+# sum(is.na(wide$FACT_T2.4))
+
+classMiss<-function(x){
+  #function to classify missing patterns
+  out<-vector()
+  for(i in 1:length(x)){
+    if(is.na(x[i])){
+      out<-paste(out,i)
+    }
+  }
+  if(is.logical(out)){
+    out<-"None Missing"
+  }
+  return(out)
+}
+#find patterns of missingness within each period
+for(i in 1:dim(wide)[1]){
+  wide$missInpat1[i]<-classMiss(wide[i,26:31])
+  wide$missInpat2[i]<-classMiss(wide[i,36:41])
+  wide$missInpat3[i]<-classMiss(wide[i,46:51])
+  wide$missInpat4[i]<-classMiss(wide[i,56:61])
+}
+classMiss2<-function(x){
+  #function to classify missing patterns
+  out<-vector()
+  for(i in 1:length(x)){
+    if(x[i]!="None Missing"){
+      out<-paste(out,i)
+    }
+  }
+  if(is.logical(out)){
+    out<-"None Missing"
+  }
+  return(out)
+}
+#find patterns of missingness among periods
+for(i in 1:dim(wide)[1]){
+  wide$missPat[i]<-classMiss2(wide[i,62:65])
+}
+
+missAmong<-matrix(summary(factor(wide$missPat)))
+rownames(missAmong)<-names(summary(factor(wide$missPat)))
+
+missWithin1<-matrix(summary(factor(wide$missInpat1)))
+rownames(missWithin1)<-names(summary(factor(wide$missInpat1)))
+
+missWithin2<-matrix(summary(factor(wide$missInpat2)))
+rownames(missWithin2)<-names(summary(factor(wide$missInpat2)))
+
+missWithin3<-matrix(summary(factor(wide$missInpat3)))
+rownames(missWithin3)<-names(summary(factor(wide$missInpat3)))
+
+missWithin4<-matrix(summary(factor(wide$missInpat4)))
+rownames(missWithin4)<-names(summary(factor(wide$missInpat4)))
+
+colnames(missAmong)<-colnames(missWithin1)<-colnames(missWithin2)<-colnames(missWithin3)<-colnames(missWithin4)<-"N"
+
+pandoc.table(missAmong,style="rmarkdown",caption="Among period missingness patterns")
+pandoc.table(missWithin1,style="rmarkdown",caption="Within period 1 missingness patterns")
+pandoc.table(missWithin2,style="rmarkdown",caption="Within period 2 missingness patterns")
+pandoc.table(missWithin3,style="rmarkdown",caption="Within period 3 missingness patterns")
+pandoc.table(missWithin4,style="rmarkdown",caption="Within period 4 missingness patterns")
+```
+
+```{r UnAdjustedModel,echo=FALSE,results='asis',message=FALSE,warning=FALSE}
+library(contrast)
+library(multcomp)
+dat$ExpTx<-as.factor(dat$ExpTx)
+dat$FUNO<-as.factor(dat$FUNO)
+m0<-lm(FACT_T2~ExpTx*FUNO,data=dat)
+
+m1<-lmer(FACT_T2~ExpTx*FUNO+(1|PatID),data=dat,REML=TRUE)
+pandoc.table(summary(m1)$coeff,style="rmarkdown",caption="Estimated parameters from unadjusted mixed model")
+
+
+```
+
+
+```{r contrasts,warning=FALSE,message=FALSE}
+cct1t<-contrast::contrast(m0,a=list(ExpTx="1",FUNO="1"),b=list(ExpTx="0",FUNO="1"))
+cct2t<-contrast::contrast(m0,a=list(ExpTx="1",FUNO="2"),b=list(ExpTx="0",FUNO="2"))
+cct3t<-contrast::contrast(m0,a=list(ExpTx="1",FUNO="3"),b=list(ExpTx="0",FUNO="3"))
+cct4t<-contrast::contrast(m0,a=list(ExpTx="1",FUNO="4"),b=list(ExpTx="0",FUNO="4"))
+
+#Test difference at time 1
+dt1<-summary(glht(m1,linfct=cct1t$X))$test
+#Test difference at time 2
+dt2<-summary(glht(m1,linfct=cct2t$X))$test
+#Test difference at time 3
+dt3<-summary(glht(m1,linfct=cct3t$X))$test
+#Test difference at time 4
+dt4<-summary(glht(m1,linfct=cct4t$X))$test
+
+```
+
+```{r ExPlot,echo=FALSE}
+dat2<-reshape(wide)
+dat2$missPat<-as.factor(dat2$missPat)
+dat2$Arm<-factor(ifelse(dat2$ExpTx==1,"Treatment","Control"))
+ggplot(dat2,aes(x=factor(FUNO),y=FACT_T2.1))+geom_boxplot(aes(lty=Arm,fill=missPat))
+# 
+# datdiff<-data.frame(Period=factor(c("Baseline","6 Weeks","12 Weeks","26 Weeks"),levels=c("Baseline","6 Weeks","12 Weeks","26 Weeks")),diff=c(dt1$coef,dt2$coef,dt3$coef,dt4$coef),se=c(dt1$sigma,dt2$sigma,dt3$sigma,dt4$sigma))
+# datdiff$UpCI<-datdiff$diff+(datdiff$se*1.96)
+# datdiff$LCI<-datdiff$diff-(datdiff$se*1.96)
+datdiff<-read.csv("C:\\Classes\\AppliedBiostat\\Project3\\DiffEst.csv")
+names(datdiff)[1]<-"Time"
+pd<-position_dodge(width=.1,height=0)
+datdiff$time<-factor(datdiff$Time,levels=c('Baseline','6 Weeks','12 Weeks','26 Weeks'))
+#Estimated difference in QoL between treatment and control
+ggplot(datdiff,aes(x=time,y=Est.,color=EstType))+geom_point(size=3,aes(shape=EstType),position=pd)+geom_line(aes(group=EstType),position=pd)+geom_errorbar(aes(ymin=Lower,ymax=Upper),width=.2,position=pd)+ylim(c(-10,10))+geom_hline(y=0,lty=2)+ylab("Difference in Estimated Quality of Life (95% CI)")+theme_bw()+scale_color_manual("Estimate Type",values=c("Red","Blue"))+scale_shape_manual("Estimate Type",values=1:2) + scale_linetype_manual("Estimate Type",values=1:2)+xlab("Time Period")+theme(legend.position='bottom')
+
+```
+
+```{r SummTable,echo=FALSE,results='asis'}
+wide$Arm<-factor(ifelse(wide$ExpTx==1,"Treatment","Control"))
+SummaryTable(data=wide,rowvars=c("ECOGPS","SX_SYS","PD_LT6"), colvar="Arm",cont.vars=c("CYCLES","SURV_DUR"),output="rmarkdown")
+```
+
+```{r changePlot,echo=FALSE}
+change<-read.csv("C:\\Classes\\AppliedBiostat\\Project3\\compToBaseline.csv")
+change$Arm<-factor(ifelse(change$trt==1,"Treatment","Control"))
+change$time<-factor(Recode(change$Label,"26='26 Weeks';12='12 Weeks';6='6 Weeks';0='Baseline'"),levels=c('Baseline','6 Weeks','12 Weeks','26 Weeks'))
+pd2<-position_dodge(width=.4,height=0)
+ggplot(data=change[change$Model=="GLMM",],aes(x=time,y=Estimate,color=Arm))+
+  geom_point(aes(shape=Arm),position=pd,size=3)+
+  geom_line(aes(group=Arm),position=pd)+
+  geom_errorbar(aes(ymin=Lower,ymax=Upper),width=.2,position=pd)+
+  geom_point(data=change[change$Model=="MI",],aes(shape=Arm),position=pd2,size=3)+
+  geom_errorbar(data=change[change$Model=="MI",],aes(ymin=Lower,ymax=Upper),width=.2,position=pd2,lty=2)+
+  geom_line(data=change[change$Model=="MI",],aes(group=Arm),position=pd2,lty=2)+
+  theme_bw()+scale_color_manual(values=c("Red","Blue"))+xlab("Time Period")+ylab("Estimated Quality of Life (95% CI)")+scale_shape_manual(values=1:2)
+
+pd2<-position_dodge(width=.4,height=0)
+ggplot(data=change,aes(x=time,y=Estimate,color=Arm))+
+  geom_point(aes(shape=Arm),position=pd,size=3)+
+  geom_line(aes(group=Arm),position=pd)+
+  geom_errorbar(aes(ymin=Lower,ymax=Upper),width=.2,position=pd)+
+  facet_wrap(~Model)+
+  theme_bw()+scale_color_manual(values=c("Red","Blue"))+xlab("Time Period")+ylab("Estimated Quality of Life (95% CI)")+scale_shape_manual(values=1:2)+theme(legend.position="bottom")
+
+```
+
+
+

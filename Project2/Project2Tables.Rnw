@@ -1,0 +1,216 @@
+\documentclass{article}
+\usepackage{fullpage}
+\begin{document}
+
+%Summary table produced by the SummaryTable function on: Mon Oct 06 17:51:36 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{llllllll}
+& & \multicolumn{2}{c}{CVD}& \multicolumn{2}{c}{No CVD}& \multicolumn{2}{c}{Total}\\
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+  \hline
+Variable & Categories & N & \% & N & \% & N & \% \\ 
+   \hline
+BP Meds & 0 & 117 & 79.6\% & 3257 & 89.3\% & 3374 & 88.9\% \\ 
+   & 1 & 22 & 15\% & 322 & 8.8\% & 344 & 9.1\% \\ 
+   & Missing & 8 & 5.4\% & 70 & 1.9\% & 78 & 2.1\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Diabetes & 0 & 137 & 93.2\% & 3524 & 96.6\% & 3661 & 96.4\% \\ 
+   & 1 & 10 & 6.8\% & 125 & 3.4\% & 135 & 3.6\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Smoking Status & 0 & 84 & 57.1\% & 2028 & 55.6\% & 2112 & 55.6\% \\ 
+   & 1 & 63 & 42.9\% & 1621 & 44.4\% & 1684 & 44.4\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Sex & F & 56 & 38.1\% & 2128 & 58.3\% & 2184 & 57.5\% \\ 
+   & M & 91 & 61.9\% & 1521 & 41.7\% & 1612 & 42.5\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  
+Total Cholesterol &  & \multicolumn{2}{c}{262.4 (50.4)} & \multicolumn{2}{c}{249.2 (45.4)} & \multicolumn{2}{c}{249.7 (45.7)}\\
+ &  &  &  &  &  &  & \\
+Age &  & \multicolumn{2}{c}{59.8 (7.9)} & \multicolumn{2}{c}{55 (8.4)} & \multicolumn{2}{c}{55.2 (8.5)}\\
+ &  &  &  &  &  &  & \\
+Cigarettes/day &  & \multicolumn{2}{c}{7.7 (11.6)} & \multicolumn{2}{c}{8.8 (12.9)} & \multicolumn{2}{c}{8.8 (12.9)}\\
+ &  &  &  &  &  &  & \\
+BMI&  & \multicolumn{2}{c}{26.8 (4.1)} & \multicolumn{2}{c}{25.8 (4.1)} & \multicolumn{2}{c}{25.9 (4.1)}\\
+ &  &  &  &  &  &  & \\
+systolic BP &  & \multicolumn{2}{c}{147.6 (24.7)} & \multicolumn{2}{c}{136.1 (22.1)} & \multicolumn{2}{c}{136.6 (22.3)}\\
+ &  &  &  &  &  &  & \\
+Heart rate &  & \multicolumn{2}{c}{76.7 (12.6)} & \multicolumn{2}{c}{77.3 (12.5)} & \multicolumn{2}{c}{77.3 (12.5)}\\
+ &  &  &  &  &  &  & \\
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+  \hline
+Total &  & 147 & 3.9\% & 3649 & 96.1\% & 3796 &  \\ 
+   \hline
+
+\end{tabular}
+\end{table}
+
+
+%Table for objective 2
+%Summary table produced by the SummaryTable function on: Mon Oct 06 18:10:03 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{llllllll}
+& & \multicolumn{2}{c}{CVD}& \multicolumn{2}{c}{No CVD}& \multicolumn{2}{c}{Total}\\
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+  \hline
+Variable & Categories & N & \% & N & \% & N & \% \\ 
+   \hline
+BP Meds & 0 & 97 & 76.4\% & 1967 & 86\% & 2064 & 85.5\% \\ 
+   & 1 & 30 & 23.6\% & 319 & 14\% & 349 & 14.5\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Diabetes & 0 & 103 & 81.1\% & 2135 & 93.4\% & 2238 & 92.7\% \\ 
+   & 1 & 24 & 18.9\% & 151 & 6.6\% & 175 & 7.3\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Smoking Status & 0 & 96 & 75.6\% & 1481 & 64.8\% & 1577 & 65.4\% \\ 
+   & 1 & 31 & 24.4\% & 805 & 35.2\% & 836 & 34.6\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Quit Smoking & 0 & 119 & 93.7\% & 2118 & 92.7\% & 2237 & 92.7\% \\ 
+   & 1 & 8 & 6.3\% & 168 & 7.3\% & 176 & 7.3\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  Sex & F & 57 & 44.9\% & 1342 & 58.7\% & 1399 & 58\% \\ 
+   & M & 70 & 55.1\% & 944 & 41.3\% & 1014 & 42\% \\ 
+   &  &  &  &  &  &  &  \\ 
+  
+Total Cholesterol &  & \multicolumn{2}{c}{238.5 (47.3)} & \multicolumn{2}{c}{236.9 (43.7)} & \multicolumn{2}{c}{236.9 (43.9)}\\
+ &  &  &  &  &  &  & \\
+Age &  & \multicolumn{2}{c}{64 (8)} & \multicolumn{2}{c}{59.9 (8.2)} & \multicolumn{2}{c}{60.1 (8.3)}\\
+ &  &  &  &  &  &  & \\
+Cigarettes/day &  & \multicolumn{2}{c}{4.8 (10.4)} & \multicolumn{2}{c}{7 (11.7)} & \multicolumn{2}{c}{6.9 (11.7)}\\
+ &  &  &  &  &  &  & \\
+BMI &  & \multicolumn{2}{c}{25.7 (4)} & \multicolumn{2}{c}{25.8 (4)} & \multicolumn{2}{c}{25.8 (4)}\\
+ &  &  &  &  &  &  & \\
+Sysstolic BP &  & \multicolumn{2}{c}{146.5 (23.4)} & \multicolumn{2}{c}{138.6 (22.3)} & \multicolumn{2}{c}{139 (22.5)}\\
+ &  &  &  &  &  &  & \\
+Heart rate &  & \multicolumn{2}{c}{78.1 (12.7)} & \multicolumn{2}{c}{77.6 (12.2)} & \multicolumn{2}{c}{77.6 (12.2)}\\
+ &  &  &  &  &  &  & \\
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+  \hline
+Total &  & 127 & 5.3\% & 2286 & 94.7\% & 2413 &  \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Sat Oct 04 14:29:26 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & OR & Lower CI & Upper CI & p-value \\ 
+  \hline
+(Intercept) & 0.00 & 0.00 & 0.00 & $<$0.00 \\ 
+  Total Cholesterol & 1.01 & 1.00 & 1.01 & $<$0.00 \\ 
+  Males & 43.22 & 2.31 & 809.51 & 0.01 \\ 
+  Age & 1.08 & 1.04 & 1.13 & $<$0.00 \\ 
+  Cig./day & 1.00 & 0.99 & 1.02 & 0.98 \\ 
+  BMI & 1.01 & 0.96 & 1.05 & 0.76 \\ 
+  BP Medicine & 3.07 & 0.14 & 68.13 & 0.48 \\ 
+  Systolic BP & 1.01 & 1.00 & 1.02 & 0.02 \\ 
+  spline(Heart rate)1 & 0.70 & 0.51 & 0.96 & 0.03 \\ 
+  spline(Heart rate)2 & 11.89 & 1.34 & 105.34 & 0.03 \\ 
+  spline(Heart rate)3 & 0.05 & 0.00 & 0.73 & 0.03 \\ 
+  Diabetes & 1.43 & 0.69 & 2.94 & 0.34 \\ 
+  Males*Age & 0.96 & 0.91 & 1.00 & 0.07 \\ 
+  BP meds*Systolic BP & 0.99 & 0.98 & 1.01 & 0.59 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Sat Oct 04 13:26:37 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & OR & Lower CI & Upper CI & p-value \\ 
+  \hline
+(Intercept & 0.00 & 0.00 & 0.00 & $<$0.001 \\ 
+  Total Cholesterol & 1.01 & 1.00 & 1.01 & $<$0.001 \\ 
+  Males & 44.07 & 2.62 & 742.49 & 0.01 \\ 
+  Age & 1.09 & 1.05 & 1.14 & $<$0.001 \\ 
+  Systolic BP & 1.01 & 1.00 & 1.02 & $<$0.001 \\ 
+  Smoking Cessation & 2.25 & 1.40 & 3.60 & $<$0.001 \\ 
+  Males*Age & 0.96 & 0.91 & 1.00 & 0.06 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Sat Oct 04 15:04:13 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr|rrr}
+  \hline
+  & \multicolumn{3}{c}{Final Model Est.} & \multicolumn{3}{c}{Model Avgerage Est.}\\
+
+ & OR & Lower CI & Upper CI & Estimate & Lower CI & Upper CI \\ 
+  \hline
+(Intercept) & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\ 
+  Total Cholesterol & 1.01 & 1.00 & 1.01 & 1.08 & 1.03 & 1.13 \\ 
+  Males & 43.22 & 2.31 & 809.51 & 18.69 & 0.61 & 573.76 \\ 
+  Age & 1.08 & 1.04 & 1.13 & 1.01 & 1.00 & 1.02 \\ 
+  Cig./day & 1.00 & 0.99 & 1.02 & 1.01 & 1.00 & 1.01 \\ 
+  BMI & 1.01 & 0.96 & 1.05 & 0.96 & 0.91 & 1.00 \\ 
+  BP Medicine & 3.07 & 0.14 & 68.13 & 0.70 & 0.51 & 0.96 \\ 
+  Systolic BP & 1.01 & 1.00 & 1.02 & 11.81 & 1.33 & 104.40 \\ 
+  spline(Heart rate)1 & 0.70 & 0.51 & 0.96 & 0.05 & 0.00 & 0.73 \\ 
+  spline(Heart rate)2 & 11.89 & 1.34 & 105.34 & 1.67 & 0.28 & 9.93 \\ 
+  spline(Heart rate)3 & 0.05 & 0.00 & 0.73 & 1.42 & 0.69 & 2.93 \\ 
+  Diabetes & 1.43 & 0.69 & 2.94 & 1.01 & 0.97 & 1.06 \\ 
+  Males*Age & 0.96 & 0.91 & 1.00 & 1.00 & 0.98 & 1.01 \\ 
+  BP meds*Systolic BP & 0.99 & 0.98 & 1.01 & 1.00 & 0.98 & 1.01 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+%Model 2r
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Mon Oct 06 17:07:14 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & OR & Lower CI & Upper CI & p-value \\ 
+  \hline
+(Intercept) & 0.00 & 0.00 & 0.00 & $<$0.001 \\ 
+  Total Cholesterol & 1.00 & 1.00 & 1.01 & 0.466 \\ 
+  Males & 2.15 & 1.46 & 3.17 & $<$0.001 \\ 
+  Age & 1.05 & 1.03 & 1.08 & $<$0.001 \\ 
+  Systolic BP & 1.01 & 1.00 & 1.02 & 0.028 \\ 
+  spline(Heart rate)1 & 1.39 & 1.03 & 1.88 & 0.031 \\ 
+  spline(Heart rate)2 & 0.12 & 0.02 & 0.77 & 0.025 \\ 
+  spline(Heart rate)3 & 19.56 & 1.42 & 269.39 & 0.026 \\ 
+  Smoking Cessation & 0.70 & 0.33 & 1.50 & 0.365 \\ 
+  Cig./ day & 0.99 & 0.97 & 1.01 & 0.165 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+%Model 2r opt for sensitivity analysis
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Mon Oct 06 16:57:27 2014
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & OR & Lower CI & Upper CI & p-value \\ 
+  \hline
+(Intercept) & 0.00 & 0.00 & 0.00 & $<$0.001 \\ 
+  Total Cholesterol & 1.00 & 1.00 & 1.01 & 0.486 \\ 
+  Males & 2.13 & 1.45 & 3.13 & $<$0.001 \\ 
+  Age & 1.05 & 1.03 & 1.08 & $<$0.001 \\ 
+  Systolic BP & 1.01 & 1.00 & 1.02 & 0.034 \\ 
+  spline(Heart rate)1 & 1.39 & 1.03 & 1.87 & 0.033 \\ 
+  spline(Heart rate)2 & 0.13 & 0.02 & 0.79 & 0.027 \\ 
+  spline(Heart rate)3 & 18.86 & 1.37 & 259.44 & 0.028 \\ 
+  Smoking Cessation & 0.70 & 0.33 & 1.50 & 0.362 \\ 
+  Current Smoker & 0.71 & 0.46 & 1.11 & 0.132 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+\end{document}

@@ -1,0 +1,215 @@
+---
+title: "Project 1"
+author: "Dominic LaRoche, Karen Gonzalez, Zach Peterson"
+date: "Wednesday, September 17, 2014"
+output: word_document
+---
+
+```{r,echo=FALSE,message=FALSE}
+#ensure clean workspace
+rm(list=ls())
+#load libraries used for fitting models and making plots
+library(rms)
+library(ggplot2)
+library(GGally)
+#read in data from csv file
+dat<-read.csv("C:/Classes/AppliedBiostat/project1/support_data.csv")
+dat<-dat[dat$totcst!=0 ,]
+dat<-subset(dat,select=c("totcst","age","scoma","meanbp","hrt","temp","pafi","alb","sex","race","dzgroup","num.co"))
+dat<-na.omit(dat)#remove cases with missing variables
+dat$ltotcst<-log(dat$totcst)#transform total cost
+#center all continuous variables to reduce problems of induced colinearity
+dat$age_mn<-with(dat,age-mean(age))
+dat$scoma_mn<-with(dat,scoma-mean(scoma))
+dat$meanbp_mn<-with(dat,meanbp-mean(meanbp))
+dat$hrt_mn<-with(dat,hrt-mean(hrt))
+dat$temp_mn<-with(dat, temp-mean(temp))
+dat$pafi_mn<-with(dat, pafi-mean(pafi))
+dat$alb_mn<-with(dat, alb-mean(alb))
+```
+
+# Introduction
+
+The SUPPORT (Study to Understand Prognoses Preferences Outcomes and Risks of Treatment) was conducted to measure survival estimates of severely ill hospitalized adults. The purpose of this model is to identify the correlation of specified predictive values on total RCC cost. The specified variables are defined as: age, sex, race, mean blood pressure, dzgroup , number of comorbidities, support coma score, partial pressure of oxygen in arterial blood, and the heart rate, temperature, and albumin serum level taken on day 3 of hospitalization. 
+
+# Methods
+
+We used a linear regression to model the relationship between total cost and the set of predictors listed above.  We log-transformed total cost to correct for a strong right skew in the raw data (Figure 1). The log-transformation appeared to be adequate in addressing the excessive variance in raw total cost and will help linearize the relationship to the predictors. Since we had very little a priori information on the relationship between each continuous variable and log(total cost), we centered each continuous predictor at zero to alleviate problems of colinearity between the main effect and non-linear effect of the same variable. 
+
+## Screening Predictors
+We screened the continuous predictive variables (age, sex, dzgroup, num.co, scoma, race, meanbp, hrt, temp, pafi, and alb) to determine if any strong relationships existed among them that may lead to problems with parameter estimation (Figure 2). We used a simple scatter plot matrix in which each variable is plotted against each other variable. We also included log(total cost) in the scatterplot matrix to assess the shape of possible non-linear relationships between each predictor and log(total cost).  We treated num.co as a factor since only 7 unique values were present in the data.
+
+```{r logTransplot,dev='win.metafile',echo=FALSE}
+par(mfrow=c(1,2))#change plotting parameters for side by side
+hist(dat$totcst,main="", xlab="Total Cost")#histograms before and after
+hist(dat$ltotcst,main="", xlab="ln(Total Cost)")
+par(mfrow=c(1,1))
+```
+Figure 1. Distribution of Total cost before and after log transformation.
+
+```{r sgmatrix,echo=FALSE,dev='win.metafile',fig.height=8,fig.width=9}
+#create scatterplot with correlations
+p<-ggpairs(dat[,c("age","scoma","meanbp","hrt","temp","pafi","alb","ltotcst")])
+p
+```
+Figure 2. Relationship among predictors and between each predictor and log(total cost) (bottom row).
+
+```{r,echo=FALSE, message=FALSE}
+#Fit quadratic model
+qmod<-lm(ltotcst~age_mn+I(age_mn^2) + scoma_mn+I(scoma_mn^2) + meanbp_mn+I(meanbp_mn^2) + hrt_mn+I(hrt_mn^2) + temp_mn+I(temp_mn^2) + pafi_mn+I(pafi_mn^2) + alb_mn+I(alb_mn^2) + sex + race + dzgroup + factor(num.co),data=dat)
+dat$qfitted<-qmod$fitted.values
+#fit reduced quadratic model
+rqmod<-lm(ltotcst~age_mn + scoma_mn+I(scoma_mn^2) + meanbp_mn+I(meanbp_mn^2) + hrt_mn+I(hrt_mn^2) + temp_mn + pafi_mn+I(pafi_mn^2) + alb_mn + sex + race + dzgroup + factor(num.co),data=dat)
+dat$rqfitted<-rqmod$fitted.values
+#use package rms for the restricted cubic splines
+library(rms)
+#fit rcs model with 5 splines on each var
+rcsmod5<-lm(ltotcst~age_mn+rcspline.eval(age_mn)+scoma_mn+rcspline.eval(scoma_mn,knots=c(0,50,75))+meanbp_mn+rcspline.eval(meanbp_mn)+hrt_mn+rcspline.eval(hrt_mn)+temp_mn+rcspline.eval(temp_mn)+pafi_mn+rcspline.eval(pafi_mn)+alb_mn+rcspline.eval(alb_mn)+sex+race+dzgroup+factor(num.co),data=dat)
+dat$rc5fitted<-rcsmod5$fitted.values
+#fit reduced 5 spline rcs model
+rcsmod5r<-lm(ltotcst~age_mn+scoma_mn+rcspline.eval(scoma_mn,knots=c(0,50,75))+meanbp_mn+rcspline.eval(meanbp_mn)+hrt_mn+rcspline.eval(hrt_mn)+temp_mn+pafi_mn+rcspline.eval(pafi_mn)+alb_mn+sex+race+dzgroup+factor(num.co),data=dat)
+dat$rc5rfitted<-rcsmod5r$fitted.values
+
+#fit reduced 4 spline model
+rcsmod4<-lm(ltotcst~age_mn+scoma_mn+rcspline.eval(scoma_mn,knots=c(0,50,75))+meanbp_mn+rcspline.eval(meanbp_mn, nk=4)+hrt_mn+rcspline.eval(hrt_mn, nk=4)+temp_mn+pafi_mn+rcspline.eval(pafi_mn, nk=4)+alb_mn+sex+race+dzgroup+factor(num.co),data=dat)
+dat$rc4fitted<-rcsmod4$fitted.values
+#fit reduced 3 spline model
+rcsmod3<-lm(ltotcst~age_mn+scoma_mn+rcspline.eval(scoma_mn,knots=c(0,50,75))+meanbp_mn+rcspline.eval(meanbp_mn, nk=3)+hrt_mn+rcspline.eval(hrt_mn, nk=3)+temp_mn+pafi_mn+rcspline.eval(pafi_mn, nk=3)+alb_mn+sex+race+dzgroup+factor(num.co),data=dat)
+dat$rc3fitted<-rcsmod3$fitted.values
+#calculate the squared difference of predicted and observed costs
+#for each model
+dat$qmse<-(dat$ltotcst-dat$qfitted)^2
+dat$rqmse<-(dat$ltotcst-dat$rqfitted)^2
+dat$rc5mse<-(dat$ltotcst-dat$rc5fitted)^2
+dat$rc5rmse<-(dat$ltotcst-dat$rc5rfitted)^2
+dat$rc4mse<-(dat$ltotcst-dat$rc4fitted)^2
+dat$rc3mse<-(dat$ltotcst-dat$rc3fitted)^2
+#calculate the mean of the squared error for each model
+mqmse<-sqrt(mean(dat$qmse))
+mrqmse<-sqrt(mean(dat$rqmse))
+mrc5mse<-sqrt(mean(dat$rc5mse))
+mrc5rmse<-sqrt(mean(dat$rc5rmse))
+mrc4mse<-sqrt(mean(dat$rc4mse))
+mrc3mse<-sqrt(mean(dat$rc3mse))
+
+```
+
+## Model Fitting
+We initially modeled all continuous predictors with quadratic terms to capture possible non-linear relationships between the predictors and total cost.  We then removed non-significant quadratic terms (p<0.10) from the model while keeping all main effects in a single step.  We used diagnostic plots to assess the fit and assumptions of the final model and we used adjusted $R^2$ to asses whether removal of non-significant interactions reduced model fit.
+
+Since the approximation of non-linear relationships by quadratic terms can be poor for extreme values of the independent variable we also fit a model with restricted cubic spline (RCS) functions for each continuous variable.  RCS functions can alleviate tail problems associated with quadratic terms by inserting knots between splines which can accomodate linear relationships near the extreme observations of the independent variable.  We evaluated the bivariate relationship between between each predictor and log (total cost) for both quadratic and spline functions (with 5 knots) on the preddictors (fig. 3).
+
+```{r evalSplines,echo=FALSE,dev='win.metafile',fig.height=8}
+#create a RCS function which can be used to generate curve plots from 
+#model fits for evaluation of individual bivariate relationships
+rcsfun<-function(X,beta,knots=NULL){
+  y<-rep(0,length(X))
+  for(j in 1:length(X)){
+  x<-X[j]  
+  #function that computes the RCS function with corresponds to the model fit
+  if(is.null(knots)){
+      k<-attributes(rcspline.eval(dat$age_mn, nk=length(beta)))$knots
+    }else{
+      k<-attributes(rcspline.eval(dat$age_mn, knots=knots))$knots
+    }
+  t<-length(k)
+  term<-rep(0,t-2)
+  knot1 <- k[1]
+  knotnk <- k[t]
+  knotnk1 <- k[t - 1]
+  kd<-(knotnk - knot1)^(2/3)
+  for(i in 1:(t-2)){#the RCS expansion for t knots
+    xx<-pmax((x - k[i])/kd,0)^3 + ((knotnk1 - k[i]) * pmax((x - knotnk)/kd, 0)^3 - (knotnk - k[i]) * (pmax((x - knotnk1)/kd, 0)^3))/(knotnk - knotnk1)
+    term[i]<-beta[i+2]*xx
+  }
+  #sum the intercept, main effect and expansions
+  y[j]<-beta[1]+beta[2]*x+sum(term)
+  }
+  return(y)
+}
+#function for visualizing qudratic fits (wow that was a lot easier)
+qfun<-function(x,beta){
+  beta[1]+beta[2]*x+beta[3]*x^2
+}
+#make a plot for each bivariate relationship and place them into a matrix
+par(mfrow=c(3,3))
+plot(ltotcst~age_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[1:3]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[1:5])-1,add=T,col="red",lwd=2)
+
+plot(ltotcst~scoma_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[c(1,4,5)]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[c(1,6,7)],knots=c(0,50,75))-1,add=T,col="red",lwd=2)
+
+plot(ltotcst~meanbp_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[c(1,6,7)]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[c(1,8:11)]),add=T,col="red",lwd=2)
+
+plot(ltotcst~hrt_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[c(1,8,9)]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[c(1,12:15)]),add=T,col="red",lwd=2)
+
+plot(ltotcst~temp_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[c(1,10,11)]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[c(1,16:19)])+2,add=T,col="red",lwd=2)
+
+plot(ltotcst~pafi_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[c(1,12,13)]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[c(1,20:23)]),add=T,col="red",lwd=2)
+
+plot(ltotcst~alb_mn,data=dat)
+curve(qfun(x,beta=qmod$coef[c(1,14,15)]),add=T,col="blue",lwd=2)
+curve(rcsfun(x,beta=rcsmod5$coef[c(1,24:27)])-4,add=T,col="red",lwd=2)
+
+par(mfrow=c(1,1))
+```
+Figure 3.  Functional relationships between each continuous predictor and log total cost using both quadratic (blue) and RCS (red) functions.
+
+
+All R code used to perform these analyses is included in the appendix. 
+
+
+
+
+# Results
+
+As shown in figure 1, the total cost of hospitalization was not normally distributed. After doing a log transformation on total cost, the data was distributed more normally.   After analyzing the scatter plot for each predictive variable, we did not detect any strong relationships among the predictors so we did not feel there was any problematic redundancy (fig. 2).  Our evaluation of the relationship between each predictor and total cost suggested that several non-linear relationships may exist (fig. 3).  In particular, we observed a strong non-linear relationship between meanbp and total cost, which appeared u-shaped,  as well as scoma and total cost which appeared to increase until scoma approached `r 45+mean(dat$scoma)` and then decrease. The RCS model with 5 knots had the lowest mean-squared-prediction error (MSPE) (table 1).  However, an examination of the spline functions in figure 3 suggest that this model may be over fit and less generalizable to the population than the quadratic model which only had a moderate increase in MSPE.  The adjusted $R^2$ gives a measure of variance explained while incorporating a penalty for the number parameters included in the model (adjusted $R^2$ is asymptotically equal to $R^2$) and gives roughly equivalent values for all 5 models (table 1).
+
+
+Model | $Mean(prediction error)^2$ | Model Degrees of Freedom | Adjusted $R^2$
+----- | ------------------------------------ |------------------------- | --------------
+Full Quad. | `r mqmse` | `r length(qmod$coef)` | 0.4358
+Reduces Quad. | `r mrqmse` | `r length(rqmod$coef)` | 0.4388
+RCS 5 knots | `r mrc5mse` | `r length(rcsmod5$coef)` | 0.4457
+Red. RCS 5 knots | `r mrc5rmse` | `r length(rcsmod5r$coef)` | 0.4515
+Red. RCS 4 knots | `r mrc4mse` | `r length(rcsmod4$coef)` | 0.4482
+Red. RCS 3 knots | `r mrc3mse` | `r length(rcsmod3$coef)` | 0.4346
+
+Table 1. Summary of model fit statistics
+
+
+We removed quadratic effects for age, temp, and alb after evaluating the coefficients and figure 3. Removing non-significant quadratic terms form the qudradic model improved the adjusted $R^2$ and produced only a ver small increase in prediction error.  Likewise, reducing the number of knots in the RCS models only resulted in marginal increases in prediction error and only a small difference in adjusted $R^2$.  
+
+As we show in figure 4 the final model met all modeling assumptions, including homoscedasticity and normality of the residuals. We identified some higher leverage points but could not justify removing them based on the available information.  Also, a careful examination of the predicted vs observed values shows some bias in the predictions at both high and low values, eg. low values are predicted high and high values are predicted low (fig. 3).  This indicates that the model may be improved further with the addition of missing relevant predictors or with an alternative non-linear modeling strategy. 
+
+```{r plotmodel,fig.keep='all',echo=FALSE,warning=FALSE,fig.height=8, fig.width=6, dev='win.metafile'}
+#plot model fit diagnostics
+par(mfrow=c(2,2))
+plot(rcsmod5r)
+par(mfrow=c(1,1))
+```
+
+Figure 4. Residual plots for the final model.
+
+```{r,echo=FALSE, dev='win.metafile', fig.height=4}
+#plot predicted vs observed for quadratic and rcs models
+par(mfrow=c(1,2))
+plot(ltotcst~qfitted,dat,xlim=c(7,13),ylim=c(7,13), xlab="Full Quadratic Fitted")
+abline(0,1)
+plot(ltotcst~rc5fitted,dat,xlim=c(7,13),ylim=c(7,13), xlab="5 Knot RCS")
+abline(0,1)
+par(mfrow=c(1,1))
+```
+Figure 4. Comparison of predicted versus observed values for the quadratic model and the RCS model.
+
+# Discussion
