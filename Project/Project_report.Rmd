@@ -221,14 +221,9 @@ Table 3:  Parameter estimates and 95% confidence intervals from sensitivity anal
 Figure 1: Map of high site showing risk level and treatment type for each household.  
 Figure 2: Map of low site shwoing risk level and treatment type for each household.  
 
-##Shells for Tables
-
-Tables 1-3 will all follow the same format.
-
-| Effect     |   N  | Estimate | 95% CI |
-|:----------:|:----:|:--------:|:------:|
-| High Net   | 3379 |          |        |
-| High Spray | 3379 |          |        |
-| Low Net    | 605  |          |        |
-| Low Spray  | 605  |          |        |
-
+```{r getDEM,echo=FALSE,message=FALSE}
+library(raster)
+demlow<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
+#plot(dem)
+demhigh<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.965,lat=.2)
+```
