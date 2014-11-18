@@ -226,4 +226,21 @@ library(raster)
 demlow<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
 #plot(dem)
 demhigh<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.965,lat=.2)
+lowel<-readGDAL("srtm_43_13.tif")
+highel<-readGDAL("srtm_43_12.tif")
+#shrink area
+lowext<-extent(34.950000,35.00042,-0.110000,-0.050000)
+lowel<-crop(demlow,lowext,"LowSiteData",overwrite=TRUE)
+image(lowel)
+highext<-extent(34.900000,35.000417,0.150000,0.250000)
+highel<-crop(demhigh,highext,"HighSiteData",overwrite=TRUE)
+
+lowsite<-sumdat[sumdat$site=="Low",]
+lowp<-data.frame(rasterToPoints(lowel))
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,],alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
+
+highsite<-sumdat[sumdat$site=="High",]
+highp<-data.frame(rasterToPoints(highel))
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
 ```
+
