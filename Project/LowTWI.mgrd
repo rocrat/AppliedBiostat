@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAGA_METADATA>
+  <HISTORY saga-version="2.1.4">
+    <MODULE library="terrain_analysis" id="twi" name="Topographic Wetness Index (One Step)">
+      <OPTION type="grid_system" id="GRID_SYSTEM" name="Grid System">
+        <CELLSIZE>0.0008333333332778</CELLSIZE>
+        <XMIN>34.950833332669937</XMIN>
+        <XMAX>35.0008333326666</XMAX>
+        <YMIN>-0.1108327529925849</YMIN>
+        <YMAX>-0.0508327529965839</YMAX>
+      </OPTION>
+      <OPTION type="choice" id="FLOW_METHOD" name="Flow Distribution" index="4">Multiple Flow Direction</OPTION>
+      <INPUT type="grid" id="DEM" name="Elevation" system="GRID_SYSTEM">
+        <MODULE library="io_gdal" id="0" name="GDAL: Import Raster">
+          <OPTION type="file" id="FILES" name="Files">"C:\Classes\AppliedBiostat\Project\LowDEM.tif"</OPTION>
+          <OPTION type="boolean" id="SELECT" name="Select from Multiple Bands">TRUE</OPTION>
+          <OPTION type="boolean" id="TRANSFORM" name="Transformation">TRUE</OPTION>
+          <OPTION type="choice" id="INTERPOL" name="Interpolation" index="4">B-Spline Interpolation</OPTION>
+          <OUTPUT type="grid_list" id="GRIDS" name="Grids">LowDEM</OUTPUT>
+        </MODULE>
+      </INPUT>
+      <OUTPUT type="grid" id="TWI" name="Topographic Wetness Index">Topographic Wetness Index</OUTPUT>
+    </MODULE>
+  </HISTORY>
+  <SOURCE>
+    <FILE>C:\Classes\AppliedBiostat\Project\LowTWI.sgrd</FILE>
+    <DATABASE></DATABASE>
+    <PROJECTION>
+      <OGC_WKT>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</OGC_WKT>
+      <PROJ4>+proj=longlat +datum=WGS84 +no_defs </PROJ4>
+      <EPSG>4326</EPSG>
+    </PROJECTION>
+  </SOURCE>
+  <DESCRIPTION></DESCRIPTION>
+</SAGA_METADATA>

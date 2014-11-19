@@ -235,6 +235,9 @@ image(lowel)
 highext<-extent(34.900000,35.000417,0.150000,0.250000)
 highel<-crop(demhigh,highext,"HighSiteData",overwrite=TRUE)
 
+writeGDAL(as(lowel,"SpatialPixelsDataFrame"),fname="LowDEM.tif")
+writeGDAL(as(highel,"SpatialPixelsDataFrame"),fname="HighDEM.tif")
+
 lowsite<-sumdat[sumdat$site=="Low",]
 lowp<-data.frame(rasterToPoints(lowel))
 ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,],alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
@@ -244,3 +247,21 @@ highp<-data.frame(rasterToPoints(highel))
 ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
 ```
 
+
+
+```{r computeSAGA,echo=FALSE}
+library(RSAGA)
+rsgenv<-rsaga.env(path="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32",check.libpath=FALSE,check.SAGA=FALSE,check.os.default=FALSE,modules="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
+rsaga.import.gdal("LowSiteData.grd",env=rsgenv)
+
+lowTWI<-readGDAL("LowTWI.tif")
+image(lowTWI)
+highTWI<-readGDAL("HighTWI.tif")
+image(highTWI)
+
+lowt<-data.frame(lowTWI)
+ggplot(data=lowt,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,])+scale_colour_manual("Spray",values=c("green","blue"))
+
+hight<-data.frame(highTWI)
+ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite)+scale_colour_manual("Spray",values=c("red","blue"))
+```

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PARAMETERS name="Topographic Wetness Index (One Step)">
+  <OPTION type="grid_system" id="GRID_SYSTEM" name="Grid System">
+    <CELLSIZE>0.0008333333332775</CELLSIZE>
+    <XMIN>34.90083333267334</XMIN>
+    <XMAX>35.00083333266664</XMAX>
+    <YMIN>0.1499999756566411</YMIN>
+    <YMAX>0.2499999756499421</YMAX>
+  </OPTION>
+  <DATA type="grid" id="DEM" name="Elevation">NOT SET</DATA>
+  <DATA type="grid" id="TWI" name="Topographic Wetness Index">CREATE</DATA>
+  <OPTION type="choice" id="FLOW_METHOD" name="Flow Distribution" index="4">Multiple Flow Direction</OPTION>
+</PARAMETERS>

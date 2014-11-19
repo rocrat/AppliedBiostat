@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PARAMETERS name="GDAL: Import Raster">
+  <DATA_LIST type="grid_list" id="GRIDS" name="Grids"/>
+  <OPTION type="file" id="FILES" name="Files">"C:\Classes\AppliedBiostat\Project\srtm_43_12.tif"</OPTION>
+  <OPTION type="boolean" id="SELECT" name="Select from Multiple Bands">TRUE</OPTION>
+  <OPTION type="boolean" id="TRANSFORM" name="Transformation">TRUE</OPTION>
+  <OPTION type="choice" id="INTERPOL" name="Interpolation" index="4">B-Spline Interpolation</OPTION>
+</PARAMETERS>

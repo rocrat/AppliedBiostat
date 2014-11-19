@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PARAMETERS name="Topographic Wetness Index (TWI)">
+  <OPTION type="grid_system" id="PARAMETERS_GRID_SYSTEM" name="Grid system">
+    <CELLSIZE>0.0008333333333333</CELLSIZE>
+    <XMIN>29.9999999999899</XMIN>
+    <XMAX>34.9999999999899</XMAX>
+    <YMIN>-0.0000000242244766</YMIN>
+    <YMAX>4.999999975775523</YMAX>
+  </OPTION>
+  <DATA type="grid" id="SLOPE" name="Slope">C:\Classes\AppliedBiostat\Project\srtm_43_12.sgrd</DATA>
+  <DATA type="grid" id="AREA" name="Catchment Area">C:\Classes\AppliedBiostat\Project\srtm_43_12.sgrd</DATA>
+  <DATA type="grid" id="TRANS" name="Transmissivity">C:\Classes\AppliedBiostat\Project\srtm_43_12.sgrd</DATA>
+  <DATA type="grid" id="TWI" name="Topographic Wetness Index">C:\Classes\AppliedBiostat\Project\srtm_43_12.sgrd</DATA>
+  <OPTION type="choice" id="CONV" name="Area Conversion" index="0">no conversion (areas already given as specific catchment area)</OPTION>
+  <OPTION type="choice" id="METHOD" name="Method (TWI)" index="0">Standard</OPTION>
+</PARAMETERS>
