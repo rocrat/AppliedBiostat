@@ -270,7 +270,11 @@ ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient
 ```{r smoothTWI,echo=FALSE}
 #use focal to create moving window with gaussian weights for assiging household risk
 #create filter for focal window
-r<-raster(ncols=...)
-fmat<-focalWeight(r,...)
-mriskLow<-focal(lowTWI,...)
+r<-raster(ncols=36,nrows=36,xmn=0)
+#convert TWI to raster
+lowtr<-raster(lowTWI,layer="band1")
+hightr<-raster(highTWI,layer="band1")
+fmat<-focalWeight(r,d=10,type='Gauss')
+mriskLow<-focal(lowtr,fmat,filename='smoothLowTWI',pad=T,padValue=median(lowt$band1),overwrite=T)
+mriskHigh<-focal(hightr,fmat,filename='smoothHighTWI',pad=T,padValue=median(hight$band1),overwrite=T)
 ```
