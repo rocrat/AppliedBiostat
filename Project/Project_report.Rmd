@@ -223,6 +223,7 @@ Figure 2: Map of low site shwoing risk level and treatment type for each househo
 
 ```{r getDEM,echo=FALSE,message=FALSE}
 library(raster)
+library(ggplot2)
 demlow<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
 #plot(dem)
 demhigh<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.965,lat=.2)
@@ -249,7 +250,7 @@ ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient
 
 
 
-```{r computeSAGA,echo=FALSE}
+```{r computeSWI,echo=FALSE}
 library(RSAGA)
 rsgenv<-rsaga.env(path="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32",check.libpath=FALSE,check.SAGA=FALSE,check.os.default=FALSE,modules="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
 rsaga.import.gdal("LowSiteData.grd",env=rsgenv)
@@ -264,4 +265,12 @@ ggplot(data=lowt,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2
 
 hight<-data.frame(highTWI)
 ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite)+scale_colour_manual("Spray",values=c("red","blue"))
+```
+
+```{r smoothTWI,echo=FALSE}
+#use focal to create moving window with gaussian weights for assiging household risk
+#create filter for focal window
+r<-raster(ncols=...)
+fmat<-focalWeight(r,...)
+mriskLow<-focal(lowTWI,...)
 ```
