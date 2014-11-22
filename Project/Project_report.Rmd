@@ -278,3 +278,7 @@ fmat<-focalWeight(r,d=10,type='Gauss')
 mriskLow<-focal(lowtr,fmat,filename='smoothLowTWI',pad=T,padValue=median(lowt$band1),overwrite=T)
 mriskHigh<-focal(hightr,fmat,filename='smoothHighTWI',pad=T,padValue=median(hight$band1),overwrite=T)
 ```
+
+
+```{r assignRisktoHouse,echo=FALSE}
+lowsite$mrisk<-extract(mriskLow,y=cbind(lowsite$lon,lowsite$lat))
