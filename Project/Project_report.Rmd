@@ -225,22 +225,27 @@ Figure 2: Map of low site shwoing risk level and treatment type for each househo
 library(raster)
 library(ggplot2)
 demlow<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
+demlow2<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=35.98,lat=-.08)
 #plot(dem)
 demhigh<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.965,lat=.2)
 lowel<-readGDAL("srtm_43_13.tif")
+lowel2<-readGDAL("srtm_44_13.tif")
 highel<-readGDAL("srtm_43_12.tif")
 #shrink area
 lowext<-extent(34.950000,35.00042,-0.110000,-0.050000)
 lowel<-crop(demlow,lowext,"LowSiteData",overwrite=TRUE)
-image(lowel)
+lowext2<-extent(35.000000,35.020000,-0.110000,-0.050000)
+lowel2<-crop(demlow2,lowext2,"LowSiteData2",overwrite=TRUE)
+# image(lowel)
 highext<-extent(34.900000,35.000417,0.150000,0.250000)
 highel<-crop(demhigh,highext,"HighSiteData",overwrite=TRUE)
 
-writeGDAL(as(lowel,"SpatialPixelsDataFrame"),fname="LowDEM.tif")
+lowelcomp<-merge(lowel,lowel2)
+writeGDAL(as(lowelcomp,"SpatialPixelsDataFrame"),fname="LowDEM.tif")
 writeGDAL(as(highel,"SpatialPixelsDataFrame"),fname="HighDEM.tif")
 
 lowsite<-sumdat[sumdat$site=="Low",]
-lowp<-data.frame(rasterToPoints(lowel))
+lowp<-data.frame(rasterToPoints(lowelcomp))
 ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,],alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
 
 highsite<-sumdat[sumdat$site=="High",]
@@ -282,3 +287,18 @@ mriskHigh<-focal(hightr,fmat,filename='smoothHighTWI',pad=T,padValue=median(high
 
 ```{r assignRisktoHouse,echo=FALSE}
 lowsite$mrisk<-extract(mriskLow,y=cbind(lowsite$lon,lowsite$lat))
+highsite$mrisk<-extract(mriskHigh,y=cbind(highsite$lon,highsite$lat))
+#Standardize the risk scores
+lowsite$mriskstd<-(lowsite$mrisk-mean(lowsite$mrisk,na.rm=T))/sd(lowsite$mrisk,na.rm=T)
+highsite$mriskstd<-(highsite$mrisk-mean(highsite$mrisk,na.rm=T))/sd(highsite$mrisk,na.rm=T)
+```
+
+```{r plotMrisk,echo=FALSE}
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mriskstd),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
+
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mriskstd),data=highsite,alpha=0.8)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
+```
+
+```{r CalcAgeRisk,echo=FALSE}
+
+```
