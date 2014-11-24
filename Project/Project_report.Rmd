@@ -133,47 +133,6 @@ sumdat$arisk<-with(sumdat,(2*under1)+under5+over65)
 sumdat$ariskstd<-with(sumdat,(arisk-mean(arisk))/arisk)
 ```
 
-```{r HouseLoc,echo=FALSE,eval=TRUE,fig.cap="Household Locations",fig.height=7,fig.width=7,message=FALSE,warning=FALSE,eval=FALSE}
-#plot the locations to see if there are any issues
-#qplot(Long, Lat, data=dat)
-restricted <- get_googlemap(center=c(35,.075), zoom = 11, maptype="terrain",file="C:/Classes/AppliedBiostat/Project/WholeArea")
-whole_site<-ggmap(restricted)+geom_point(aes(x=lon, y=lat,color=net),data=sumdat,alpha=0.4)+scale_colour_manual("Net",values=c("red","blue"))
-ggsave(filename="Whole_site.png",path="C:/Classes/AppliedBiostat/Project/figure",plot=whole_site)
-```
-![alt text](figure/Whole_site.png)
-Figure.1 Locations of households in study.  Blue dots represent households with nets.
-
-
-```{r HighbyNet,echo=FALSE,eval=TRUE,fig.cap="Household Locations",fig.height=7,fig.width=7,message=FALSE,warning=FALSE,eval=FALSE}
-high<- get_googlemap(center=c(34.965,.2), zoom = 13, maptype="terrain",filename="c:/Classes/AppliedBiostat/HighSite")
-ggmap(high)+geom_point(aes(x=lon, y=lat,color=net),data=sumdat,alpha=0.4)+scale_colour_manual("Net",values=c("red","blue"))
-```
-![alt text](figure/High_nets.png)
-Figure 2. Households with and without nets at the high site.
-
-
-```{r LowbyNet,echo=FALSE,eval=TRUE,fig.cap="Household Locations",fig.height=7,fig.width=7,message=FALSE,warning=FALSE,eval=FALSE}
-low<- get_googlemap(center=c(34.98,-.08), zoom = 14, maptype="terrain",filename="c:/Classes/AppliedBiostat/LowSite")
-ggmap(low)+geom_point(aes(x=lon, y=lat,color=net),data=sumdat,alpha=0.4)+scale_colour_manual("Net",values=c("red","blue"))
-```
-
-![alt text](figure/Low_nets.png) 
-Figure 3. Households with and without nets at the low site.
-
-```{r HighbySpray,echo=FALSE,eval=TRUE,fig.cap="Household Locations",fig.height=7,fig.width=7,message=FALSE,warning=FALSE,eval=FALSE}
-ggmap(high)+geom_point(aes(x=lon, y=lat,color=hspray),data=sumdat,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
-```
-![alt text](figure/High_spray.png)
-Figure 4. Households with and without spraying at the high site.
-
-
-```{r LowbySpray,echo=FALSE,eval=TRUE,fig.cap="Household Locations",fig.height=7,fig.width=7,message=FALSE,warning=FALSE,eval=FALSE}
-
-ggmap(low)+geom_point(aes(x=lon, y=lat,color=hspray),data=sumdat,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
-```
-![alt text](figure/Low_spray.png)
-Figure 5. Households with and without spraying at the low site.
-
 ##Geo-Spatial Data
 The Biodiversity Monitoring Transect Analysis in Africa [(BIOTA)](http://www.biota-africa.de/East_GISWeb2_ba.php) has created a high resolution (10m) digital terrain model  the high elevation site in this study.  The Lower resolution data (250m) is available for the low site.  The high resolution model was developed from topographic maps as part of BIOTA subproject E02.  The low resolution data are from the USGS 1-degree DEMs and Army Map Service 1:1,000,000-scale maps.  
 
@@ -264,9 +223,9 @@ ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient
 
 
 ```{r computeSWI,echo=FALSE}
-library(RSAGA)
-rsgenv<-rsaga.env(path="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32",check.libpath=FALSE,check.SAGA=FALSE,check.os.default=FALSE,modules="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
-rsaga.import.gdal("LowSiteData.grd",env=rsgenv)
+# library(RSAGA)
+# rsgenv<-rsaga.env(path="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32",check.libpath=FALSE,check.SAGA=FALSE,check.os.default=FALSE,modules="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
+# rsaga.import.gdal("LowSiteData.grd",env=rsgenv)
 
 lowTWI<-readGDAL("LowTWI.tif")
 image(lowTWI)
@@ -301,13 +260,13 @@ lowsite$mriskstd<-(lowsite$mrisk-mean(lowsite$mrisk,na.rm=T))/sd(lowsite$mrisk,n
 highsite$mriskstd<-(highsite$mrisk-mean(highsite$mrisk,na.rm=T))/sd(highsite$mrisk,na.rm=T)
 ```
 
-```{r plotMrisk,echo=FALSE}
+```{r plotMrisk,echo=FALSE,eval=FALSE}
 ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mriskstd),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
 
 ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mriskstd),data=highsite,alpha=0.8)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
 ```
 
-```{r plotArisk,echo=FALSE}
+```{r plotArisk,echo=FALSE,eval=FALSE}
 ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=arisk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Age Risk",low="blue",high="red")
 
 ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=arisk),data=highsite,alpha=0.8)+scale_colour_gradient("Age Risk",low="blue",high="red")
@@ -318,13 +277,18 @@ lowsite$comrsk<-lowsite$mriskstd+lowsite$arisk
 highsite$comrsk<-highsite$mriskstd+highsite$arisk
 ```
 
-```{r plotCombrisk,echo=FALSE}
+```{r plotCombrisk,echo=FALSE,fig.height=5,fig.width=5}
 ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")
 
 ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")
 ```
 
-```{r checkLinearityAssumption,echo=FALSE,results='hold'}
+```{r checkLinearityAssumption,echo=FALSE,results='hide'}
+lowsite$hspray<-ifelse(lowsite$hspray=="No",0,1)
+lowsite$net<-ifelse(lowsite$net=="No",0,1)
+highsite$hspray<-ifelse(highsite$hspray=="No",0,1)
+highsite$net<-ifelse(highsite$net=="No",0,1)
+
 rcspline.plot(lowsite$comrsk[-565],lowsite[-565,]$net,model="logistic",xlab="Combined Risk",ylab="Log Odds Net Use")#evidence of non-linearity (u-shape)
 rcspline.plot(highsite$comrsk,highsite$net,model="logistic",xlab="Combined Risk")#evidence of non-linearity (increasing then leveling off)
 rcspline.plot(lowsite$comrsk[-565],lowsite[-565,]$hspray,model="logistic")
@@ -342,11 +306,6 @@ rcspline.plot(highsite$mrisk,highsite$hspray,model="logistic",xlab="Mosquito Ris
 ```
 
 ```{r model1,echo=FALSE}
-# lowsite$hspray<-ifelse(lowsite$hspray=="No",0,1)
-# lowsite$net<-ifelse(lowsite$net=="No",0,1)
-# highsite$hspray<-ifelse(highsite$hspray=="No",0,1)
-# highsite$net<-ifelse(highsite$net=="No",0,1)
-
 m1ls<-glm(hspray~comrsk,data=lowsite[-565,],family="binomial")
 m1ls.est<-c(exp(summary(m1ls)$coef[2,1]),exp(summary(m1ls)$coef[2,1]-1.96*summary(m1ls)$coef[2,2]),exp(summary(m1ls)$coef[2,1]+1.96*summary(m1ls)$coef[2,2]))
 m1ln<-glm(net~comrsk,data=lowsite[-565,],family="binomial")
@@ -354,7 +313,7 @@ m1ln.est<-c(exp(summary(m1ln)$coef[2,1]),exp(summary(m1ln)$coef[2,1]-1.96*summar
 
 m1hs<-glm(hspray~comrsk,data=highsite,family="binomial")
 m1hs.est<-c(exp(summary(m1hs)$coef[2,1]),exp(summary(m1hs)$coef[2,1]-1.96*summary(m1hs)$coef[2,2]),exp(summary(m1hs)$coef[2,1]+1.96*summary(m1hs)$coef[2,2]))
-m1mln<-glm(net~comrsk,data=highsite,family="binomial")
+m1hn<-glm(net~comrsk,data=highsite,family="binomial")
 m1hn.est<-c(exp(summary(m1hn)$coef[2,1]),exp(summary(m1hn)$coef[2,1]-1.96*summary(m1hn)$coef[2,2]),exp(summary(m1hn)$coef[2,1]+1.96*summary(m1hn)$coef[2,2]))
 
 Treatment<-rep(c("Net","Spray"),2)
