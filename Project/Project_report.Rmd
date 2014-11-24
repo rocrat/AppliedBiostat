@@ -24,7 +24,7 @@ library(ggplot2)
 library(ggmap)
 library(MASS)
 longdat<-read.csv("C:/Classes/AppliedBiostat/Project/Domconv_918.csv")[1:17823,]
-longdat$site<-recode(longdat$site,"c('High','HIGH')='High'")
+longdat$site<-Recode(longdat$site,"c('High','HIGH')='High'")
 longdat$Villcodef<-as.factor(longdat$Villcode)
 longdat$Housef<-as.factor(longdat$House)
 #create a variable which combines subcode, villcode, and house
@@ -59,7 +59,7 @@ rm(subdat)
 
 ```{r summarizeHouseHolds, echo=FALSE, eval=FALSE}
 #This chunk is to create a new data set which is based on the household 
-numocc<-numFem<-numMale<-oldest<-youngest<-headsex<-headage<-net<-under5<-under1<-under18<-periph<-lat<-lon<-hspray<-site<-elev<-lang<-rep(0,length=N)
+numocc<-numFem<-numMale<-oldest<-youngest<-headsex<-headage<-net<-under5<-under1<-under18<-over65<-periph<-lat<-lon<-hspray<-site<-elev<-lang<-rep(0,length=N)
 #loop through each unique household and calculate summary variables
 for (i in 1:N){
   numocc[i]<-length(which(datunique$household==houses[i]))
@@ -75,9 +75,10 @@ for (i in 1:N){
   }else{headage[i]<-NA}
   netans<-as.character(datunique[datunique$household==houses[i],]$NetHH)
   net[i]<-sum(netans=="Y",na.rm=T)
-  under5[i]<-sum(datunique[datunique$household==houses[i],]$Age<=5,na.rm=T)
+  under5[i]<-sum(datunique[datunique$household==houses[i],]$Age>1 & datunique[datunique$household==houses[i],]$Age<=5,na.rm=T)#children >1 and less than 5
   under1[i]<-sum(datunique[datunique$household==houses[i],]$Age<=1,na.rm=T)
   under18[i]<-sum(datunique[datunique$household==houses[i],]$Age<18,na.rm=T)
+  over65[i]<-sum(datunique[datunique$household==houses[i],]$Age>=65,na.rm=T)
   family<-datunique[datunique$household==houses[i],]$Relate
   periph[i]<-any(family>9)#classify any one more distant than grandchild as periphery
   lat[i]<-datunique[datunique$household==houses[i],]$Lat[1]
@@ -90,7 +91,7 @@ for (i in 1:N){
   
 }
 #create data frame from new data vectors
-hdat<-data.frame(houses,numocc,numFem,numMale,oldest,youngest,headsex,headage,net,under5,under1,under18,periph,lat,lon,hspray,site,elev,lang)
+hdat<-data.frame(houses,numocc,numFem,numMale,oldest,youngest,headsex,headage,net,under5,under1,under18,over65,periph,lat,lon,hspray,site,elev,lang)
 #save new data to csv file so I don't have to run this costly loop again
 write.csv(hdat,"C:/Classes/AppliedBiostat/Project/housedata.csv")
 ```
@@ -108,22 +109,29 @@ The data are composed of 3,984 households at two sites in Kenya.  These two site
 ```{r importNewData,echo=FALSE,message=FALSE,results='asis'}
 rm(list=ls())
 library(BDSS)
+library(pander)
 hdat<-read.csv("C:/Classes/AppliedBiostat/Project/housedata.csv")
 sumdat<-hdat
 sumdat$net<-factor(ifelse(is.na(sumdat$net),NA,ifelse(sumdat$net==0,"No","Yes")))
-sumdat$under5<-factor(ifelse(is.na(sumdat$under5),NA,ifelse(sumdat$under5==1,"Yes","No")))
-sumdat$under1<-factor(ifelse(is.na(sumdat$under1),NA,ifelse(sumdat$under1==1,"Yes","No")))
-sumdat$under18<-factor(ifelse(is.na(sumdat$under18),NA,ifelse(sumdat$under18==1,"Yes","No")))
+sumdat$under5f<-factor(ifelse(is.na(sumdat$under5),NA,ifelse(sumdat$under5>=1,"Yes","No")))
+sumdat$under1f<-factor(ifelse(is.na(sumdat$under1),NA,ifelse(sumdat$under1>=1,"Yes","No")))
+sumdat$under18f<-factor(ifelse(is.na(sumdat$under18),NA,ifelse(sumdat$under18>=1,"Yes","No")))
+sumdat$over65f<-factor(ifelse(is.na(sumdat$under18),NA,ifelse(sumdat$over65>=1,"Yes","No")))
 sumdat$periph<-factor(ifelse(is.na(sumdat$periph),NA,ifelse(sumdat$periph==1,"Yes","No")))
 sumdat$hspray<-factor(ifelse(is.na(sumdat$hspray),NA,ifelse(sumdat$hspray==0,"No","Yes")))
 sumdat$site<-factor(ifelse(is.na(sumdat$site),NA,ifelse(sumdat$site==1,"High","Low")))
 ```
 
 ```{r HouseSummary,echo=FALSE,results='asis'}
-SummaryTable(data=sumdat,rowvars=c("under5","under1","under18","periph","hspray","site","headsex"),row.names=c("Under 5","Under 1","Under 18","Peripheral Family","House Sprayed","Site","House Head Sex"),colvar="net",cont.vars=c("numocc","numFem","numMale","oldest","youngest","headage","elev"),output="rmarkdown")
+SummaryTable(data=sumdat,rowvars=c("under5f","under1f","under18f","over65f","periph","hspray","site","headsex"),row.names=c("Under 5","Under 1","Under 18","Peripheral Family","House Sprayed","Site","House Head Sex"),colvar="net",cont.vars=c("numocc","numFem","numMale","oldest","youngest","headage","elev"),output="rmarkdown")
 ```
 
 Table 1. Summary of household attributes by houses with and without nets.
+
+```{r CalcAgeRisk,echo=FALSE}
+sumdat$arisk<-with(sumdat,(2*under1)+under5+over65)
+sumdat$ariskstd<-with(sumdat,(arisk-mean(arisk))/arisk)
+```
 
 ```{r HouseLoc,echo=FALSE,eval=TRUE,fig.cap="Household Locations",fig.height=7,fig.width=7,message=FALSE,warning=FALSE,eval=FALSE}
 #plot the locations to see if there are any issues
@@ -299,6 +307,99 @@ ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2
 ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mriskstd),data=highsite,alpha=0.8)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
 ```
 
-```{r CalcAgeRisk,echo=FALSE}
+```{r plotArisk,echo=FALSE}
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=arisk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Age Risk",low="blue",high="red")
 
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=arisk),data=highsite,alpha=0.8)+scale_colour_gradient("Age Risk",low="blue",high="red")
 ```
+
+```{r CombinedRisk,echo=FALSE}
+lowsite$comrsk<-lowsite$mriskstd+lowsite$arisk
+highsite$comrsk<-highsite$mriskstd+highsite$arisk
+```
+
+```{r plotCombrisk,echo=FALSE}
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")
+
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")
+```
+
+```{r checkLinearityAssumption,echo=FALSE,results='hold'}
+rcspline.plot(lowsite$comrsk[-565],lowsite[-565,]$net,model="logistic",xlab="Combined Risk",ylab="Log Odds Net Use")#evidence of non-linearity (u-shape)
+rcspline.plot(highsite$comrsk,highsite$net,model="logistic",xlab="Combined Risk")#evidence of non-linearity (increasing then leveling off)
+rcspline.plot(lowsite$comrsk[-565],lowsite[-565,]$hspray,model="logistic")
+rcspline.plot(highsite$comrsk,highsite$hspray,model="logistic")
+
+rcspline.plot(lowsite$arisk[-565],lowsite[-565,]$net,model="logistic")
+rcspline.plot(highsite$arisk,highsite$net,model="logistic")
+rcspline.plot(lowsite$arisk[-565],lowsite[-565,]$hspray,model="logistic")
+rcspline.plot(highsite$arisk,highsite$hspray,model="logistic")
+
+rcspline.plot(lowsite$mrisk[-565],lowsite[-565,]$net,model="logistic")
+rcspline.plot(highsite$mrisk,highsite$net,model="logistic",xlab="Mosquito Risk")#evidence of non-linearity increasing, leveling off then slight decrease
+rcspline.plot(lowsite$mrisk[-565],lowsite[-565,]$hspray,model="logistic")
+rcspline.plot(highsite$mrisk,highsite$hspray,model="logistic",xlab="Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
+```
+
+```{r model1,echo=FALSE}
+# lowsite$hspray<-ifelse(lowsite$hspray=="No",0,1)
+# lowsite$net<-ifelse(lowsite$net=="No",0,1)
+# highsite$hspray<-ifelse(highsite$hspray=="No",0,1)
+# highsite$net<-ifelse(highsite$net=="No",0,1)
+
+m1ls<-glm(hspray~comrsk,data=lowsite[-565,],family="binomial")
+m1ls.est<-c(exp(summary(m1ls)$coef[2,1]),exp(summary(m1ls)$coef[2,1]-1.96*summary(m1ls)$coef[2,2]),exp(summary(m1ls)$coef[2,1]+1.96*summary(m1ls)$coef[2,2]))
+m1ln<-glm(net~comrsk,data=lowsite[-565,],family="binomial")
+m1ln.est<-c(exp(summary(m1ln)$coef[2,1]),exp(summary(m1ln)$coef[2,1]-1.96*summary(m1ln)$coef[2,2]),exp(summary(m1ln)$coef[2,1]+1.96*summary(m1ln)$coef[2,2]))
+
+m1hs<-glm(hspray~comrsk,data=highsite,family="binomial")
+m1hs.est<-c(exp(summary(m1hs)$coef[2,1]),exp(summary(m1hs)$coef[2,1]-1.96*summary(m1hs)$coef[2,2]),exp(summary(m1hs)$coef[2,1]+1.96*summary(m1hs)$coef[2,2]))
+m1mln<-glm(net~comrsk,data=highsite,family="binomial")
+m1hn.est<-c(exp(summary(m1hn)$coef[2,1]),exp(summary(m1hn)$coef[2,1]-1.96*summary(m1hn)$coef[2,2]),exp(summary(m1hn)$coef[2,1]+1.96*summary(m1hn)$coef[2,2]))
+
+Treatment<-rep(c("Net","Spray"),2)
+Site<-c("High","","Low","")
+outmat<-round(matrix(c(m1ln.est,m1ls.est,m1hn.est,m1hs.est),4,3),2)
+colnames(outmat)<-c("OR","Lower 95% CI","Upper 95% CI")
+obj1out<-cbind(Site,Treatment,outmat)
+```
+
+Table 2. Odds of receiving a treatment as a function of combined risk.
+```{r Obj1Table,echo=FALSE,results='asis'}
+pandoc.table(obj1out,type="rmarkdown",split.tables=Inf)
+```
+
+```{r SepModels,echo=FALSE}
+#Separate model for each risk type
+m2als<-glm(hspray~arisk,data=lowsite[-565,],family="binomial")
+m2als.est<-c(exp(summary(m2als)$coef[2,1]),exp(summary(m2als)$coef[2,1]-1.96*summary(m2als)$coef[2,2]),exp(summary(m2als)$coef[2,1]+1.96*summary(m2als)$coef[2,2]))
+m2aln<-glm(net~arisk,data=lowsite[-565,],family="binomial")
+m2aln.est<-c(exp(summary(m2aln)$coef[2,1]),exp(summary(m2aln)$coef[2,1]-1.96*summary(m2aln)$coef[2,2]),exp(summary(m2aln)$coef[2,1]+1.96*summary(m2aln)$coef[2,2]))
+m2mls<-glm(hspray~mrisk,data=lowsite[-565,],family="binomial")
+m2mls.est<-c(exp(summary(m2mls)$coef[2,1]),exp(summary(m2mls)$coef[2,1]-1.96*summary(m2mls)$coef[2,2]),exp(summary(m2mls)$coef[2,1]+1.96*summary(m2mls)$coef[2,2]))
+m2mln<-glm(net~mrisk,data=lowsite[-565,],family="binomial")
+m2mln.est<-c(exp(summary(m2mln)$coef[2,1]),exp(summary(m2mln)$coef[2,1]-1.96*summary(m2mln)$coef[2,2]),exp(summary(m2mln)$coef[2,1]+1.96*summary(m2mln)$coef[2,2]))
+
+m2ahs<-glm(hspray~arisk,data=highsite,family="binomial")
+m2ahs.est<-c(exp(summary(m2ahs)$coef[2,1]),exp(summary(m2ahs)$coef[2,1]-1.96*summary(m2ahs)$coef[2,2]),exp(summary(m2ahs)$coef[2,1]+1.96*summary(m2ahs)$coef[2,2]))
+m2ahn<-glm(net~arisk,data=highsite,family="binomial")
+m2ahn.est<-c(exp(summary(m2ahn)$coef[2,1]),exp(summary(m2ahn)$coef[2,1]-1.96*summary(m2ahn)$coef[2,2]),exp(summary(m2ahn)$coef[2,1]+1.96*summary(m2ahn)$coef[2,2]))
+m2mhs<-glm(hspray~mrisk,data=highsite,family="binomial")
+m2mhs.est<-c(exp(summary(m2mhs)$coef[2,1]),exp(summary(m2mhs)$coef[2,1]-1.96*summary(m2mhs)$coef[2,2]),exp(summary(m2mhs)$coef[2,1]+1.96*summary(m2mhs)$coef[2,2]))
+m2mhn<-glm(net~mrisk,data=highsite,family="binomial")
+m2mhn.est<-c(exp(summary(m2mhn)$coef[2,1]),exp(summary(m2mhn)$coef[2,1]-1.96*summary(m2mhn)$coef[2,2]),exp(summary(m2mhn)$coef[2,1]+1.96*summary(m2mhn)$coef[2,2]))
+
+sepmat<-round(matrix(c(m2aln.est,m2mln.est,m2als.est,m2mls.est,m2ahn.est,m2mhn.est,m2ahs.est,m2mhs.est),4,6,byrow=T),2)
+colnames(sepmat)<-c(rep("Age Risk",3),rep("Mosquito Risk",3))
+est<-c("","",rep(c("OR","Lower 95% CI","Upper 95% CI"),2))
+sepout<-cbind(Site,Treatment,sepmat)
+sepout<-rbind(est,sepout)
+rownames(sepout)<-1:nrow(sepout)
+```
+
+Table 3.  Odds of treatment from risk of either mosquito exposure or malaria risk.
+```{r objective2Table,echo=FALSE,results='asis'}
+pandoc.table(sepout,type="rmarkdown",split.tables=Inf)
+```
+
+
