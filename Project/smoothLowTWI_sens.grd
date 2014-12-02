@@ -1,23 +1,23 @@
 [general] 
 creator=R package 'raster' 
-created= 2014-11-29 22:00:24 
+created= 2014-11-30 10:10:54 
 [georeference] 
 nrows= 72 
-ncols= 60 
+ncols= 83 
 xmin= 34.9504166660033 
 ymin= -0.110416086325946 
-xmax= 35.000416666 
+xmax= 35.0195833326654 
 ymax= -0.050416086329945 
 projection= +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
 [data] 
-datatype= INT2S 
+datatype= FLT8S 
 byteorder= little 
 nbands= 1 
 bandorder= BIL 
 categorical= FALSE 
-minvalue= 1165 
-maxvalue= 1233 
-nodatavalue= -32768 
+minvalue= 0.102610640341454 
+maxvalue= 7.56258525650107 
+nodatavalue= -1.7e+308 
 [legend] 
 legendtype=  
 values=  

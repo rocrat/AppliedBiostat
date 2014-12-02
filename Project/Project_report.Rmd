@@ -130,7 +130,10 @@ Table 1. Summary of household attributes by houses with and without nets.
 
 ```{r CalcAgeRisk,echo=FALSE}
 sumdat$arisk<-with(sumdat,(2*under1)+under5+over65)
-sumdat$ariskstd<-with(sumdat,(arisk-mean(arisk))/arisk)
+sumdat$ariskstd<-scale(log(sumdat$arisk+1),center=F)
+#for sensitivity analysis exclude elderly group
+sumdat$arisks<-with(sumdat,(2*under1)+under5)
+sumdat$ariskstds<-scale(log(sumdat$arisks+1),center=F)
 ```
 
 ##Geo-Spatial Data
@@ -157,18 +160,25 @@ We will assign each household a risk for exposure to mosquitoes by deriving a co
 
 #Statistical Methods
 
-Since the two sites have different rates of spraying and net net usage, we will analyze the high and low sites separately.  We will also analyze the spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols.
+Since the two sites have dramatically different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We will also analyze the spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
 
 ##Primary Analysis
 
-To be at risk for a poor outcome a person must 1) come in contact with a malaria hosting mosquito, and 2) be inherently vulnerable to malaria infection (i.e. very young or very old).  We will combine the standardized household health risk with the standardized household exposure risk.  We will then determine if high risk households are more likely to have received either a bed-net or aerial spraying with a logisitc model;
+To be at risk for a poor outcome a person must 1) come in contact with a malaria hosting mosquito, and 2) be inherently vulnerable to malaria infection (i.e. very young or very old).  We will create two risk scores representing each of these household risks.  The household health risk will be equal to the number of individuals at high risk (i.e. under age 5 or over age 65).  The household exposure risk will be equal to the score of the risk surface at the house location.  Since these risks will be calculated on different scales we will center at 0 and standardize risk scores so that they are scale-independent.
 
-$$log(\frac{p}{1-p})=\beta_0 + \beta_1 \text{Household Risk},$$
+We will add the standardized household health risk with the standardized household exposure risk to create a combined risk.  We will then determine if high risk households are more likely to have received either a bed-net or aerial spraying with a logistic model;
 
-where p = Probability of a house having a treatment.  If $\beta_1$ is positive and statistically significant ($\alpha=0.05$) then high-risk households are more likely to receive treatment.  If $\beta_1$ is negative and statistically significant then high-risk households are less likely to receive treatment.  If $\beta_1$ is not statistically different from 0 then either there is no difference in spraying or bed net usage between high and low risk households or the test did not have enough power to detect a difference (see sensitivity analysis).
+$$log(\frac{p}{1-p})=\beta_0 + \beta_1 \times \text{Combined Household Risk},$$
+
+where p = Probability of a house having a treatment.  If $e^{\beta_1}$ is > 1 and statistically significant ($\alpha=0.05$) then high-risk households are more likely to receive treatment.  If $e^{\beta_1}$ is < 1 and statistically significant then high-risk households are less likely to receive treatment.  If $e^{\beta_1}$ is not statistically different from 1 then either there is no difference in spraying or bed net usage between high and low risk households or the test did not have enough power to detect a difference (see sensitivity analysis).
 
 ##Secondary Analyses
 
+Existing protocols may be adequate at addressing household risk due to either inherent health risk or mosquito exposure risk, but not both.  We will conduct the same primary analysis but separate out these two risk scores as separate predictors:
+
+$$log(\frac{p}{1-p})=\beta_0 + \beta_2 \times \text{Mosquito Exposure Risk} + \beta_3 \times \text{Health Risk},$$
+
+where p = Probability of a house having a treatment.  The interpretation of $\beta_2$ and $\beta_3$ is the same as $\beta_1$ from the primary analysis, but specific to a risk type.
 
 
 ##Sensitivity Analyses
@@ -180,32 +190,30 @@ $H_a:$ High-risk households are not more likely to receive treatment than low-ri
 
 Therefore, it is appropriate to set the null hypothesis to test whether $\beta_1$ lies outside an equivalence margin (a difference which policy makers would consider trivial).  Unfortunately, it is unclear what the size of equivalence margin would be considered appropriate for policy makers.  Therefore, we will test equivalence with 3 different margins: OR=0.95-1.05, 0.90-1.10, and 0.85-1.15.  We will use a two-one-sided test (TOST) procedure to test for equivalence by treating $\beta_1$ as the measured difference between high-risk and low-risk households.
 
-#List of Tables and Figures
 
-Table 1:  Parameter estimates and 95% confidence intervals from tests of primary objectives. 
 Table 2:  Parameter estimates and 95% confidence intervals from tests of secondary objectives.
 Table 3:  Parameter estimates and 95% confidence intervals from sensitivity analyses.  
 Figure 1: Map of high site showing risk level and treatment type for each household.  
 Figure 2: Map of low site shwoing risk level and treatment type for each household.  
 
-```{r getDEM,echo=FALSE,message=FALSE}
-library(raster)
+```{r getDEM,echo=FALSE,message=FALSE,message=FALSE,results='hide'}
+library(raster,quietly=TRUE,warn.conflicts=FALSE)
 library(ggplot2)
-demlow<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
-demlow2<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=35.98,lat=-.08)
+demlow<-getData(name='SRTM',download=FALSE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
+demlow2<-getData(name='SRTM',download=FALSE,path="C:/Classes/AppliedBiostat/Project",lon=35.98,lat=-.08)
 #plot(dem)
-demhigh<-getData(name='SRTM',download=TRUE,path="C:/Classes/AppliedBiostat/Project",lon=34.965,lat=.2)
-lowel<-readGDAL("srtm_43_13.tif")
-lowel2<-readGDAL("srtm_44_13.tif")
-highel<-readGDAL("srtm_43_12.tif")
+demhigh<-getData(name='SRTM',download=FALSE,path="C:/Classes/AppliedBiostat/Project",lon=34.965,lat=.2)
+lowel<-readGDAL("C:/Classes/AppliedBiostat/Project/srtm_43_13.tif")
+lowel2<-readGDAL("C:/Classes/AppliedBiostat/Project/srtm_44_13.tif")
+highel<-readGDAL("C:/Classes/AppliedBiostat/Project/srtm_43_12.tif")
 #shrink area
 lowext<-extent(34.950000,35.00042,-0.110000,-0.050000)
-lowel<-crop(demlow,lowext,"LowSiteData",overwrite=TRUE)
+lowel<-crop(demlow,lowext,"C:/Classes/AppliedBiostat/Project/LowSiteData",overwrite=TRUE)
 lowext2<-extent(35.000000,35.020000,-0.110000,-0.050000)
-lowel2<-crop(demlow2,lowext2,"LowSiteData2",overwrite=TRUE)
+lowel2<-crop(demlow2,lowext2,"C:/Classes/AppliedBiostat/Project/LowSiteData2",overwrite=TRUE)
 # image(lowel)
 highext<-extent(34.900000,35.000417,0.150000,0.250000)
-highel<-crop(demhigh,highext,"HighSiteData",overwrite=TRUE)
+highel<-crop(demhigh,highext,"C:/Classes/AppliedBiostat/Project/HighSiteData",overwrite=TRUE)
 
 lowelcomp<-merge(lowel,lowel2)
 writeGDAL(as(lowelcomp,"SpatialPixelsDataFrame"),fname="LowDEM.tif")
@@ -213,30 +221,106 @@ writeGDAL(as(highel,"SpatialPixelsDataFrame"),fname="HighDEM.tif")
 
 lowsite<-sumdat[sumdat$site=="Low",]
 lowp<-data.frame(rasterToPoints(lowelcomp))
-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,],alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
+# ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,],alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
 
 highsite<-sumdat[sumdat$site=="High",]
 highp<-data.frame(rasterToPoints(highel))
-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
+# ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
 ```
 
 
 
-```{r computeSWI,echo=FALSE}
+```{r computeSWI,echo=FALSE,message=FALSE,warning=FALSE,results='hide'}
 # library(RSAGA)
 # rsgenv<-rsaga.env(path="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32",check.libpath=FALSE,check.SAGA=FALSE,check.os.default=FALSE,modules="C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
 # rsaga.import.gdal("LowSiteData.grd",env=rsgenv)
+library(SDMTools)
+#calculate elevation variance
+#first get diff from mean to deterime if it is a dip or a peak
+#create 3 different windows for calculating dips, this will account for drainage area to some extent
+meanmat3<-matrix(1/9,3,3)
+meanmat7<-matrix(1/49,7,7)
+meanmat11<-matrix(1/121,11,11)
+#find dips at these three different windows
+meanel3<-focal(lowelcomp,w=meanmat3)#,pad=T,pad.value=mean(values(lowelcomp)))
+meandiff3<-lowelcomp-meanel3
+values(meandiff3)<-ifelse(values(meandiff3)<0,values(meandiff3),0)
 
-lowTWI<-readGDAL("LowTWI.tif")
-image(lowTWI)
-highTWI<-readGDAL("HighTWI.tif")
-image(highTWI)
+meanel7<-focal(lowelcomp,w=meanmat7)#,pad=T,pad.value=mean(values(lowelcomp)))
+meandiff7<-lowelcomp-meanel7
+values(meandiff7)<-ifelse(values(meandiff7)<0,values(meandiff7),0)
 
+meanel11<-focal(lowelcomp,w=meanmat11)#,pad=T,pad.value=mean(values(lowelcomp)))
+meandiff11<-lowelcomp-meanel11
+values(meandiff11)<-ifelse(values(meandiff11)<0,values(meandiff11),0)
+
+lowdips<-meandiff3+meandiff7+meandiff11
+
+#calculate aspect of each cell
+lowasp<-aspect(lowelcomp,latlon=TRUE)
+lowaspc<-lowasp
+#categorize into quadrants
+values(lowaspc)<-ifelse(values(lowasp)>45 & values(lowasp) <= 135,1,
+                        ifelse(values(lowasp)>135 & values(lowasp) <= 225,2,
+                               ifelse(values(lowasp)>225 & values(lowasp) <= 315,3,
+                                      ifelse(values(lowasp)>315 & values(lowasp) <=360,4,
+                                             ifelse(values(lowasp)>0 & values(lowasp) <= 45,4,NA)))))
+#Calculate aspect variance
+aspmat3<-matrix(1,3,3)
+aspmat7<-matrix(1,7,7)
+aspmat11<-matrix(1,11,11)
+aspvar3<-focal(lowaspc,aspmat3,fun=var,na.rm=T)
+aspvar7<-focal(lowaspc,aspmat7,fun=var,na.rm=T)
+aspvar11<-focal(lowaspc,aspmat11,fun=var,na.rm=T)
+
+lowaspvar<-aspvar3+aspvar7+aspvar11
+lowtwi<-lowaspvar*lowdips*-1
+
+#repeat for High site
+meanel3<-focal(highel,w=meanmat3)#,pad=T,pad.value=mean(values(highel)))
+meandiff3<-highel-meanel3
+values(meandiff3)<-ifelse(values(meandiff3)<0,values(meandiff3),0)
+
+meanel7<-focal(highel,w=meanmat7)#,pad=T,pad.value=mean(values(highel)))
+meandiff7<-highel-meanel7
+values(meandiff7)<-ifelse(values(meandiff7)<0,values(meandiff7),0)
+
+meanel11<-focal(highel,w=meanmat11)#,pad=T,pad.value=mean(values(highel)))
+meandiff11<-highel-meanel11
+values(meandiff11)<-ifelse(values(meandiff11)<0,values(meandiff11),0)
+
+highdips<-meandiff3+meandiff7+meandiff11
+
+#Repeat for High site
+highasp<-aspect(highel,latlon=TRUE)
+highaspc<-highasp
+#categorize into quadrants
+values(highaspc)<-ifelse(values(highasp)>45 & values(highasp) <= 135,1,
+                        ifelse(values(highasp)>135 & values(highasp) <= 225,2,
+                               ifelse(values(highasp)>225 & values(highasp) <= 315,3,
+                                      ifelse(values(highasp)>315 & values(highasp) <=360,4,
+                                             ifelse(values(highasp)>0 & values(highasp) <= 45,4,NA)))))
+#Calculate aspect variance
+aspmat3<-matrix(1,3,3)
+aspmat7<-matrix(1,7,7)
+aspmat11<-matrix(1,11,11)
+aspvar3<-focal(highaspc,aspmat3,fun=var,na.rm=T)
+aspvar7<-focal(highaspc,aspmat7,fun=var,na.rm=T)
+aspvar11<-focal(highaspc,aspmat11,fun=var,na.rm=T)
+
+highaspvar<-aspvar3+aspvar7+aspvar11
+hightwi<-highaspvar*highdips*-1
+
+
+
+
+lowTWI<-readGDAL("C:/Classes/AppliedBiostat/Project/LowTWI.tif")#TWI calculated by SAGA
+highTWI<-readGDAL("C:/Classes/AppliedBiostat/Project/HighTWI.tif")
 lowt<-data.frame(lowTWI)
-ggplot(data=lowt,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,])+scale_colour_manual("Spray",values=c("green","blue"))
-
+# ggplot(data=lowt,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,])+scale_colour_manual("Spray",values=c("green","blue"))
+# 
 hight<-data.frame(highTWI)
-ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite)+scale_colour_manual("Spray",values=c("red","blue"))
+# ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite)+scale_colour_manual("Spray",values=c("red","blue"))
 ```
 
 ```{r smoothTWI,echo=FALSE}
@@ -247,8 +331,13 @@ r<-raster(ncols=36,nrows=36,xmn=0)
 lowtr<-raster(lowTWI,layer="band1")
 hightr<-raster(highTWI,layer="band1")
 fmat<-focalWeight(r,d=10,type='Gauss')
-mriskLow<-focal(lowtr,fmat,filename='smoothLowTWI',pad=T,padValue=median(lowt$band1),overwrite=T)
-mriskHigh<-focal(hightr,fmat,filename='smoothHighTWI',pad=T,padValue=median(hight$band1),overwrite=T)
+mriskLow<-focal(lowtr,fmat,filename='C:/Classes/AppliedBiostat/Project/smoothLowTWI',pad=T,padValue=median(lowt$band1),overwrite=T)
+mriskHigh<-focal(hightr,fmat,filename='C:/Classes/AppliedBiostat/Project/smoothHighTWI',pad=T,padValue=median(hight$band1),overwrite=T)
+
+# lowtrp<-as.data.frame(mriskLow,xy=T)
+# hightrp<-as.data.frame(mriskHigh,xy=T)
+# ggplot(data=lowtrp[complete.cases(lowtrp),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = -12, space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)
+# ggplot(data=hightrp[complete.cases(hightrp),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrp$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite,alpha=0.8)
 ```
 
 
@@ -256,8 +345,10 @@ mriskHigh<-focal(hightr,fmat,filename='smoothHighTWI',pad=T,padValue=median(high
 lowsite$mrisk<-extract(mriskLow,y=cbind(lowsite$lon,lowsite$lat))
 highsite$mrisk<-extract(mriskHigh,y=cbind(highsite$lon,highsite$lat))
 #Standardize the risk scores
-lowsite$mriskstd<-(lowsite$mrisk-mean(lowsite$mrisk,na.rm=T))/sd(lowsite$mrisk,na.rm=T)
-highsite$mriskstd<-(highsite$mrisk-mean(highsite$mrisk,na.rm=T))/sd(highsite$mrisk,na.rm=T)
+lowsite$mriskpos<-lowsite$mrisk+abs(min(lowsite$mrisk,na.rm=T))
+highsite$mriskpos<-highsite$mrisk+abs(min(highsite$mrisk,na.rm=T))
+lowsite$mriskstd<-scale(log(lowsite$mriskpos+1),center=F)
+highsite$mriskstd<-scale(log(highsite$mriskpos+1),center=F)
 ```
 
 ```{r plotMrisk,echo=FALSE,eval=FALSE}
@@ -277,13 +368,13 @@ lowsite$comrsk<-lowsite$mriskstd+lowsite$arisk
 highsite$comrsk<-highsite$mriskstd+highsite$arisk
 ```
 
-```{r plotCombrisk,echo=FALSE,fig.height=5,fig.width=5}
-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")
+```{r plotCombrisk,echo=FALSE,fig.height=7,fig.width=7}
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
 
-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
 ```
 
-```{r checkLinearityAssumption,echo=FALSE,results='hide'}
+```{r checkLinearityAssumption,echo=FALSE,results='hide',eval=FALSE}
 lowsite$hspray<-ifelse(lowsite$hspray=="No",0,1)
 lowsite$net<-ifelse(lowsite$net=="No",0,1)
 highsite$hspray<-ifelse(highsite$hspray=="No",0,1)
@@ -318,7 +409,7 @@ m1hn.est<-c(exp(summary(m1hn)$coef[2,1]),exp(summary(m1hn)$coef[2,1]-1.96*summar
 
 Treatment<-rep(c("Net","Spray"),2)
 Site<-c("High","","Low","")
-outmat<-round(matrix(c(m1ln.est,m1ls.est,m1hn.est,m1hs.est),4,3),2)
+outmat<-round(matrix(c(m1hn.est,m1hs.est,m1ln.est,m1ls.est),4,3,byrow=T),2)
 colnames(outmat)<-c("OR","Lower 95% CI","Upper 95% CI")
 obj1out<-cbind(Site,Treatment,outmat)
 ```
@@ -348,7 +439,7 @@ m2mhs.est<-c(exp(summary(m2mhs)$coef[2,1]),exp(summary(m2mhs)$coef[2,1]-1.96*sum
 m2mhn<-glm(net~mrisk,data=highsite,family="binomial")
 m2mhn.est<-c(exp(summary(m2mhn)$coef[2,1]),exp(summary(m2mhn)$coef[2,1]-1.96*summary(m2mhn)$coef[2,2]),exp(summary(m2mhn)$coef[2,1]+1.96*summary(m2mhn)$coef[2,2]))
 
-sepmat<-round(matrix(c(m2aln.est,m2mln.est,m2als.est,m2mls.est,m2ahn.est,m2mhn.est,m2ahs.est,m2mhs.est),4,6,byrow=T),2)
+sepmat<-round(matrix(c(m2ahn.est,m2mhn.est,m2ahs.est,m2mhs.est,m2aln.est,m2mln.est,m2als.est,m2mls.est),4,6,byrow=T),2)
 colnames(sepmat)<-c(rep("Age Risk",3),rep("Mosquito Risk",3))
 est<-c("","",rep(c("OR","Lower 95% CI","Upper 95% CI"),2))
 sepout<-cbind(Site,Treatment,sepmat)
@@ -362,3 +453,124 @@ pandoc.table(sepout,type="rmarkdown",split.tables=Inf)
 ```
 
 
+```{r smoothTWI_sens,echo=FALSE}
+#use focal to create moving window with gaussian weights for assiging household risk
+#create filter for focal window
+r<-raster(ncols=36,nrows=36,xmn=0)
+#convert TWI to raster
+lowtr_s<-lowtwi
+hightr_s<-hightwi
+fmat<-focalWeight(r,d=10,type='Gauss')
+mriskLows<-focal(lowtr_s,fmat,filename='smoothLowTWI_sens',pad=T,padValue=median(lowt$band1),overwrite=T)
+mriskHighs<-focal(hightr_s,fmat,filename='smoothHighTWI_sens',pad=T,padValue=median(hight$band1),overwrite=T)
+
+lowtrps<-as.data.frame(mriskLows,xy=T)
+hightrps<-as.data.frame(mriskHighs,xy=T)
+ggplot(data=lowtrps[complete.cases(lowtrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(lowtrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)
+ggplot(data=hightrps[complete.cases(hightrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrp$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite[-2537,],alpha=0.8)
+```
+
+
+```{r assignRisktoHouse_sens,echo=FALSE}
+lowsite$mrisks<-extract(mriskLows,y=cbind(lowsite$lon,lowsite$lat))
+highsite$mrisks<-extract(mriskHighs,y=cbind(highsite$lon,highsite$lat))
+#Standardize the risk scores
+lowsite$mriskstds<-scale(log(lowsite$mrisks+1),center=F)
+highsite$mriskstds<-scale(log(highsite$mrisks+1),center=F)
+```
+
+```{r plotMrisk_sens,echo=FALSE,eval=FALSE}
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mrisks),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
+
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mrisks),data=highsite,alpha=0.8)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
+```
+
+
+```{r CombinedRisk_sens,echo=FALSE}
+lowsite$comrsks<-scale(log(lowsite$mrisks+1),center=F)+scale(log(lowsite$arisk+1),center=F)
+highsite$comrsks<-scale(log(highsite$mrisks+1),center=F)+scale(log(highsite$arisk+1),center=F)
+```
+
+```{r plotCombrisk_sens,echo=FALSE,fig.height=7,fig.width=7}
+ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsks),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
+
+ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsks),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
+```
+
+```{r checkLinearityAssumption_sens,echo=FALSE,results='hide',eval=FALSE}
+lowsite$hspray<-ifelse(lowsite$hspray=="No",0,1)
+lowsite$net<-ifelse(lowsite$net=="No",0,1)
+highsite$hspray<-ifelse(highsite$hspray=="No",0,1)
+highsite$net<-ifelse(highsite$net=="No",0,1)
+
+rcspline.plot(lowsite$comrsks[-565],lowsite[-565,]$net,model="logistic",xlab="Combined Risk",ylab="Log Odds Net Use")#evidence of non-linearity (u-shape)
+rcspline.plot(highsite$comrsks,highsite$net,model="logistic",xlab="Combined Risk")
+rcspline.plot(lowsite$comrsks[-565],lowsite[-565,]$hspray,model="logistic")
+rcspline.plot(highsite$comrsks,highsite$hspray,model="logistic")
+
+rcspline.plot(lowsite$arisk[-565],lowsite[-565,]$net,model="logistic")
+rcspline.plot(highsite$arisk,highsite$net,model="logistic")
+rcspline.plot(lowsite$arisk[-565],lowsite[-565,]$hspray,model="logistic")
+rcspline.plot(highsite$arisk,highsite$hspray,model="logistic")
+
+rcspline.plot(lowsite$mrisks[-565],lowsite[-565,]$net,model="logistic")
+rcspline.plot(highsite$mrisks,highsite$net,model="logistic",xlab="Mosquito Risk")#evidence of non-linearity increasing, leveling off then slight decrease
+rcspline.plot(lowsite$mrisks[-565],lowsite[-565,]$hspray,model="logistic")
+rcspline.plot(highsite$mrisks,highsite$hspray,model="logistic",xlab="Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
+```
+
+```{r model1_sens,echo=FALSE}
+m1ls<-glm(hspray~comrsks,data=lowsite[-565,],family="binomial")
+m1ls.est<-c(exp(summary(m1ls)$coef[2,1]),exp(summary(m1ls)$coef[2,1]-1.96*summary(m1ls)$coef[2,2]),exp(summary(m1ls)$coef[2,1]+1.96*summary(m1ls)$coef[2,2]))
+m1ln<-glm(net~comrsks,data=lowsite[-565,],family="binomial")
+m1ln.est<-c(exp(summary(m1ln)$coef[2,1]),exp(summary(m1ln)$coef[2,1]-1.96*summary(m1ln)$coef[2,2]),exp(summary(m1ln)$coef[2,1]+1.96*summary(m1ln)$coef[2,2]))
+
+m1hs<-glm(hspray~comrsks,data=highsite,family="binomial")
+m1hs.est<-c(exp(summary(m1hs)$coef[2,1]),exp(summary(m1hs)$coef[2,1]-1.96*summary(m1hs)$coef[2,2]),exp(summary(m1hs)$coef[2,1]+1.96*summary(m1hs)$coef[2,2]))
+m1hn<-glm(net~comrsks,data=highsite,family="binomial")
+m1hn.est<-c(exp(summary(m1hn)$coef[2,1]),exp(summary(m1hn)$coef[2,1]-1.96*summary(m1hn)$coef[2,2]),exp(summary(m1hn)$coef[2,1]+1.96*summary(m1hn)$coef[2,2]))
+
+Treatment<-rep(c("Net","Spray"),2)
+Site<-c("High","","Low","")
+outmats<-round(matrix(c(m1hn.est,m1hs.est,m1ln.est,m1ls.est),4,3,byrow=T),2)
+colnames(outmats)<-c("OR","Lower 95% CI","Upper 95% CI")
+obj1outs<-cbind(Site,Treatment,outmat,outmats)
+```
+
+Table 4. Comparison of restricted TWI results with general TWI results.
+```{r Obj1Table_sens,echo=FALSE,results='asis'}
+pandoc.table(obj1outs,type="rmarkdown",split.tables=Inf)
+```
+
+```{r SepModels_sens,echo=FALSE}
+#Separate model for each risk type
+m2als<-glm(hspray~arisk,data=lowsite[-565,],family="binomial")
+m2als.est<-c(exp(summary(m2als)$coef[2,1]),exp(summary(m2als)$coef[2,1]-1.96*summary(m2als)$coef[2,2]),exp(summary(m2als)$coef[2,1]+1.96*summary(m2als)$coef[2,2]))
+m2aln<-glm(net~arisk,data=lowsite[-565,],family="binomial")
+m2aln.est<-c(exp(summary(m2aln)$coef[2,1]),exp(summary(m2aln)$coef[2,1]-1.96*summary(m2aln)$coef[2,2]),exp(summary(m2aln)$coef[2,1]+1.96*summary(m2aln)$coef[2,2]))
+m2mls<-glm(hspray~arisks,data=lowsite[-565,],family="binomial")
+m2mls.est<-c(exp(summary(m2mls)$coef[2,1]),exp(summary(m2mls)$coef[2,1]-1.96*summary(m2mls)$coef[2,2]),exp(summary(m2mls)$coef[2,1]+1.96*summary(m2mls)$coef[2,2]))
+m2mln<-glm(net~arisks,data=lowsite[-565,],family="binomial")
+m2mln.est<-c(exp(summary(m2mln)$coef[2,1]),exp(summary(m2mln)$coef[2,1]-1.96*summary(m2mln)$coef[2,2]),exp(summary(m2mln)$coef[2,1]+1.96*summary(m2mln)$coef[2,2]))
+
+m2ahs<-glm(hspray~arisk,data=highsite,family="binomial")
+m2ahs.est<-c(exp(summary(m2ahs)$coef[2,1]),exp(summary(m2ahs)$coef[2,1]-1.96*summary(m2ahs)$coef[2,2]),exp(summary(m2ahs)$coef[2,1]+1.96*summary(m2ahs)$coef[2,2]))
+m2ahn<-glm(net~arisk,data=highsite,family="binomial")
+m2ahn.est<-c(exp(summary(m2ahn)$coef[2,1]),exp(summary(m2ahn)$coef[2,1]-1.96*summary(m2ahn)$coef[2,2]),exp(summary(m2ahn)$coef[2,1]+1.96*summary(m2ahn)$coef[2,2]))
+m2mhs<-glm(hspray~arisks,data=highsite,family="binomial")
+m2mhs.est<-c(exp(summary(m2mhs)$coef[2,1]),exp(summary(m2mhs)$coef[2,1]-1.96*summary(m2mhs)$coef[2,2]),exp(summary(m2mhs)$coef[2,1]+1.96*summary(m2mhs)$coef[2,2]))
+m2mhn<-glm(net~arisks,data=highsite,family="binomial")
+m2mhn.est<-c(exp(summary(m2mhn)$coef[2,1]),exp(summary(m2mhn)$coef[2,1]-1.96*summary(m2mhn)$coef[2,2]),exp(summary(m2mhn)$coef[2,1]+1.96*summary(m2mhn)$coef[2,2]))
+
+sepmats<-round(matrix(c(m2ahn.est,m2mhn.est,m2ahs.est,m2mhs.est,m2aln.est,m2mln.est,m2als.est,m2mls.est),4,6,byrow=T),2)
+colnames(sepmats)<-c(rep("Age Risk (<5 or >65)",3),rep("Age Risk (<5)",3))
+est<-c("","",rep(c("OR","Lower 95% CI","Upper 95% CI"),2))
+sepouts<-cbind(Site,Treatment,sepmats)
+sepouts<-rbind(est,sepouts)
+rownames(sepouts)<-1:nrow(sepouts)
+```
+
+Table 5.  Comparison of the odds of receiving a treatment based on health risk due to age with and without the inclusion of elderly household members. 
+```{r objective2Table_sens,echo=FALSE,results='asis'}
+pandoc.table(sepouts,type="rmarkdown",split.tables=Inf)
+```
