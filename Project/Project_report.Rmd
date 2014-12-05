@@ -1,19 +1,9 @@
 ---
-title: "Applied Biostat Project"
-author: "DominicLaRoche"
-date: "Monday, September 08, 2014"
+title: "Malaria Prevention: Are high-risk households receiving treatments?"
+author: "Dominic D. LaRoche and Dr. Kacey Ernst"
+date: "Friday, December 05, 2014"
 output: word_document
 ---
-
-__Project:__ Are people at high risk for for poor outcomes from malaria infection being targeted for profalactic measures in Kenya?
-
-__PI:__ Dr. Kacey Earnst
-
-__Statistician__ Dominic D. LaRoche
-
-__Date:__ 05 November, 2014
-
-__Version:__ 1
 
 
 ```{r ReadIn,echo=FALSE,message=FALSE,warning=FALSE}
@@ -100,11 +90,11 @@ write.csv(hdat,"C:/Classes/AppliedBiostat/Project/housedata.csv")
 
 Mosquitoes are a problematic transmission vector for a number of infectious diseases in tropical and sub-tropical regions throughout the globe.  These diseases, such as malaria, can be particularly deadly for vulnerable populations with restricted access to healthcare.  Several promising methods for mitigating the risk of infection from mosquitoes have been deployed in recent years in high risk areas.  One popular mitigation tool is the use of bed nets which reduce the number of encounters with mosquitoes and the diseases they harbor.  Another method for reducing the risk of mosquito born illnesses is the use of aerial pesticides to reduce the local mosquito population. Both of these methods have been employed in Kenya in recent years.  
 
-Both bed nets and aerial spraying take time and money to deploy.  Therefore, it is critical that treatments are first applied to populations at the highest risk of poor outcome from exposure to mosquitoes and only later applied to populations with low risk of poor outcome from exposure.  Some measures have been taken to ensure at risk populaitons receive priority when admisitering treatment such as distributing bed nets to pregnant women or spraying households at high risk for mosquitoe encounters.  However, it is unclear whether these measures are adequate in prioritizing mitigation for at risk populations.  The purpose of this study is to determine whether individuals with the highest risk of poor outcome from exposure are more likely to receive a mitigating treatment.
+Both bed nets and aerial spraying take time and money to deploy.  Therefore, it is critical that treatments are first applied to populations at the highest risk of exposure to malaria and only later applied to populations with low risk of exposure.  Some measures have been taken to ensure at risk populaitons receive priority when admisitering treatment such as distributing bed nets to pregnant women or spraying households at high risk for mosquito encounters.  However, it is unclear whether these measures are adequate in prioritizing mitigation for at risk populations.  The purpose of this study is to determine whether individuals with the highest risk of both exposure and poor outcome from malaria infection are more likely to receive a mitigating treatment.
 
 #Data Description
 ##House Hold Data
-The data are composed of 3,984 households at two sites in Kenya.  These two sites represent high elevation and low elevation populations.  Both sites have had partial treatment with both bed nets and aerial spraying.  The high site has more prevalent bed net usage whereas the low site has more prevalent aerial spraying (figs. 2-5).  Each occupant of the 3,984 households was interviewed about bed-net usage and household spraying for a total of 17,823 interviews.  Additional information for each participant was also collected such as age, sex, and relation to the head of the household.
+We use individual survey data of 17,823 members of 3,924 households at two sites in Kenya.  These two sites represent high elevation and low elevation populations.  Both sites have had partial treatment with both bed nets and aerial spraying.  The high site has more prevalent bed net usage whereas the low site has more prevalent aerial spraying.  Each occupant of the 3,924 households was interviewed about bed-net usage and household spraying.  Additional information for each participant was also collected such as age, sex, and relation to the head of the household.
 
 ```{r importNewData,echo=FALSE,message=FALSE,results='asis'}
 rm(list=ls())
@@ -137,13 +127,13 @@ sumdat$ariskstds<-scale(log(sumdat$arisks+1),center=F)
 ```
 
 ##Geo-Spatial Data
-The Biodiversity Monitoring Transect Analysis in Africa [(BIOTA)](http://www.biota-africa.de/East_GISWeb2_ba.php) has created a high resolution (10m) digital terrain model  the high elevation site in this study.  The Lower resolution data (250m) is available for the low site.  The high resolution model was developed from topographic maps as part of BIOTA subproject E02.  The low resolution data are from the USGS 1-degree DEMs and Army Map Service 1:1,000,000-scale maps.  
+We utilized 90 meter resolution elevation data from the National Aeronatuocs and Space Administration (NASA) Shuttle Radar Topography Mission (SRTM).  The high elevation site was sufficiently covered by tile number 43-12 but we utilized two adjacent tiles (43-13 and 44-13) in order to eliminate possible edge effects for eastern households at the low site.
 
 #Study Objectives
 
 ##Primary Objective
 
-The primary objective of this research is to determine whether populations which are both at high combined risk for a poor outcome from malaria,  and encountering a mosquito hosting malaria, are receiving mitigating treatments at a higher rate than those with a low combined risk. Specifically we will test the following alternative hypotheses:
+Our primary objective was to determine whether populations at high combined risk for both exposure to, and a poor outcome from, malaria are receiving mitigating treatments at a higher rate than those with a low combined risk. Specifically we will test the following alternative hypotheses:
 
 $H_0:$ High-risk households are not more likely to receive treatment than low-risk households.  
 $H_a:$ High-risk households are more likely to receive treatment than low-risk households.
@@ -152,15 +142,19 @@ $H_a:$ High-risk households are more likely to receive treatment than low-risk h
 
 As a secondary objective, we will determine if populations which are only at risk for a poor health outcome from malaria are preferentially receiving mitigating treatments.  By combining measures from the primary and secondary outcomes we will determine if there would be a benefit from modifying treatment administration protocols to incorporate information on the risk of mosquito exposure in addition to the current strategy.  We will also determine if individuals at risk due to old age are more likely to be missed by current protocols.
 
-#Study Variables and Covariates
-
-The survey data are composed of 17,823 interviews at 3,984 households.  The unit of study for this analysis is the household.  Therefore, I will summarize the information from the surveys into household attributes.  Each household will vary with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We will assign a health risk to each household by adding the number of children in the household under age 5 and the number of adults in the household over age 65.  
-
-We will assign each household a risk for exposure to mosquitoes by deriving a continuous risk surface over the study area.  This risk will result from a Topographical Wetness Index (TWI) derived from the DEM data.  The TWI combines the total basin area (the area from which water will flow to a particular point) with the slope at that point to determine the amount of water likely to accumulate and provide breeding habitat for mosquitoes.   
-
 #Statistical Methods
 
-Since the two sites have dramatically different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We will also analyze the spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
+The unit of study for this analysis is the household since both bed nets and aerial spraying are administered at the household level.  Therefore, we summarized the information from the individual surveys into household attributes. We identified unique households by the unique combination of sublocation, village, and house number.  We found and eliminated duplicate individual surveys by identifying entries with identical house identification and age attributes.  This potentially removed non-duplicate individuals (such as twins in the same houshold) but we felt the introduced bias would be negligable.  For each unique house we calculated the number of individuals under 1, the number of individuals over 1 and under 5, and the number of individuals over 65.  We also determined if each house had received a bed net or aerial spraying.  Since responses among household members was not consistent we assigned a treatment to the house if any member of the house responded affirmatively.
+
+Since the two sites have substantially different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We also analyzed spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
+
+Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We assigned an age-based health risk score (age-based risk hereafter) to each household with the following formula:
+$$\text{Risk Score} = (2 \times \text{Children} \leq 1)+ (1 < \text{Children} \leq 5) + (\text{Adults} > 65)$$
+
+We assigned twice the weight to children under 1 since they have the highest risk of the categories (Gupta et al. 1999 and Snow et al. 1999).  We did not have information on pregnancy so we could not include this in the current risk assessment although there is a known risk for premature birth (Menendex et al. 2000).
+
+We assigned each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area.  We used a Topographical Wetness Index (TWI) derived from the DEM data to determine areas likely to provide breeding habitat for mosquitoes.  The TWI combines the total basin area (the area from which water will flow to a particular point) with the slope at that point to determine the amount of water likely to accumulate and provide breeding habitat for mosquitoes.  We used the TWI algorithm provided by the open source System for Automated Geoscientific Analyses (SAGA) to locate areas of high wetness.  We assumed the mosquito exposure risk of a household was inversely related to the distance to one or more of these high-wetness areas.  Therefore, we applied a Gaussian filter with $\sigma=10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assigned each house the risk score of the cell it was in.
+
 
 ##Primary Analysis
 
@@ -183,18 +177,11 @@ where p = Probability of a house having a treatment.  The interpretation of $\be
 
 ##Sensitivity Analyses
 
-It is important to note that the result of a type II error from the test of $H_0$ using logistic regression could result in an unnecessary change in protocol because we fail to find a preferential administration of treatments to the high risk households when there really is one.  This failure to find a difference could be due solely to poor power in the test.  In the logistic regression the null hypothesis, $H_0$, is no difference in the administration of treatments.  Under this null the probability of finding a difference when there really is none is controlled at $\alpha=0.05$.  However, since protocols are in place to provide bed nets and spraying to at risk households, we feel it is also important to directly test whether high risk households are equally likely to receive a treatment as low risk households. We will test this hypothesis by modifying the null and alternative hypotheses:
+Bed nets are currently targeted at pregnant women so we expect that bed net usage will be higher in households with young children.  However, our age-based risk score also incorporates elderly household members.  Therefore, in order to determine if current protocols are effective in targeting pregnant women and young children, we will re-define the age based risk to only include the two young child age categories. We will repeat the above analysis with the restricted age-based risk score for both bed nets and aerial spraying.
 
-$H_0:$ High-risk households are more likely to receive treatment than low-risk households.  
-$H_a:$ High-risk households are not more likely to receive treatment than low-risk households.
+There are currently many ways to calculate TWI in practice and it is unclear what effect a different TWI algorithm  would have on our results.  In order to determine the sensitivity of our results to choice of TWI algorithm we calculated a second mosquito risk surface with tighter restrictions on water out-flow.  We did this in two steps. We first identifiedlocal depressions by determining, for each cell in the study region, if the cell had a lower elevation than the mean of its neighboring cells.  This will effectively identify valleys but not necessarily pools, i.e. where water outflow is likely to be low.  Therefore, we also calculated the aspect variance of the neighboring cells.  Areas with high aspect variance are likely to form pools or peaks.  Combining the two measures will identify only depressions with low water outflow. 
 
-Therefore, it is appropriate to set the null hypothesis to test whether $\beta_1$ lies outside an equivalence margin (a difference which policy makers would consider trivial).  Unfortunately, it is unclear what the size of equivalence margin would be considered appropriate for policy makers.  Therefore, we will test equivalence with 3 different margins: OR=0.95-1.05, 0.90-1.10, and 0.85-1.15.  We will use a two-one-sided test (TOST) procedure to test for equivalence by treating $\beta_1$ as the measured difference between high-risk and low-risk households.
-
-
-Table 2:  Parameter estimates and 95% confidence intervals from tests of secondary objectives.
-Table 3:  Parameter estimates and 95% confidence intervals from sensitivity analyses.  
-Figure 1: Map of high site showing risk level and treatment type for each household.  
-Figure 2: Map of low site shwoing risk level and treatment type for each household.  
+ 
 
 ```{r getDEM,echo=FALSE,message=FALSE,message=FALSE,results='hide'}
 library(raster,quietly=TRUE,warn.conflicts=FALSE)
@@ -310,17 +297,21 @@ aspvar11<-focal(highaspc,aspmat11,fun=var,na.rm=T)
 
 highaspvar<-aspvar3+aspvar7+aspvar11
 hightwi<-highaspvar*highdips*-1
-
-
+#plot restricted TWI
+htwi<-as.data.frame(hightwi,xy=TRUE)
+ltwi<-as.data.frame(lowtwi,xy=TRUE)
+# ggplot(data=ltwi[complete.cases(ltwi),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =15, space = "rgb", na.value = "grey50", guide = "colourbar")
+# # 
+# ggplot(data=htwi[complete.cases(htwi),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =max(htwi$layer,na.rm=TRUE)/2, space = "rgb", na.value = "grey50", guide = "colourbar")
 
 
 lowTWI<-readGDAL("C:/Classes/AppliedBiostat/Project/LowTWI.tif")#TWI calculated by SAGA
 highTWI<-readGDAL("C:/Classes/AppliedBiostat/Project/HighTWI.tif")
 lowt<-data.frame(lowTWI)
-# ggplot(data=lowt,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,])+scale_colour_manual("Spray",values=c("green","blue"))
+# ggplot(data=lowt,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =-8, space = "rgb", na.value = "grey50", guide = "colourbar")#+ geom_point(aes(x=lon, y=lat,color=hspray),data=lowsite[-565,])+scale_colour_manual("Spray",values=c("green","blue"))
 # 
 hight<-data.frame(highTWI)
-# ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =median(lowt$band1), space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite)+scale_colour_manual("Spray",values=c("red","blue"))
+# ggplot(data=hight,aes(x=x,y=y))+geom_raster(aes(fill=band1))+scale_fill_gradient2("Wetness",low = "green", mid = "yellow", high = "red",  midpoint =-5, space = "rgb", na.value = "grey50", guide = "colourbar")#+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite)+scale_colour_manual("Spray",values=c("red","blue"))
 ```
 
 ```{r smoothTWI,echo=FALSE}
@@ -414,6 +405,10 @@ colnames(outmat)<-c("OR","Lower 95% CI","Upper 95% CI")
 obj1out<-cbind(Site,Treatment,outmat)
 ```
 
+##Results
+The odds of receiving either a bed net or aerial spraying are higher for households with higher combined risk, but only at the high site (table 1).  For each 1 standard deviation increase in combined risk at the high site the probability of receiving a bed net increases 27% (OR: 1.27, 95% CI: 1.18, 1.35) and the probability of aerial spraying increases 15% (OR: 1.15, 95% CI: 1.03, 1.29).  At the low site, we found no preferential administration of either treatment to high combined risk households.  
+
+
 Table 2. Odds of receiving a treatment as a function of combined risk.
 ```{r Obj1Table,echo=FALSE,results='asis'}
 pandoc.table(obj1out,type="rmarkdown",split.tables=Inf)
@@ -466,8 +461,8 @@ mriskHighs<-focal(hightr_s,fmat,filename='smoothHighTWI_sens',pad=T,padValue=med
 
 lowtrps<-as.data.frame(mriskLows,xy=T)
 hightrps<-as.data.frame(mriskHighs,xy=T)
-ggplot(data=lowtrps[complete.cases(lowtrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(lowtrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)
-ggplot(data=hightrps[complete.cases(hightrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrp$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite[-2537,],alpha=0.8)
+# ggplot(data=lowtrps[complete.cases(lowtrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(lowtrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)
+# ggplot(data=hightrps[complete.cases(hightrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite[-2537,],alpha=0.8)
 ```
 
 
@@ -574,3 +569,12 @@ Table 5.  Comparison of the odds of receiving a treatment based on health risk d
 ```{r objective2Table_sens,echo=FALSE,results='asis'}
 pandoc.table(sepouts,type="rmarkdown",split.tables=Inf)
 ```
+
+
+#Literature Cited
+
+Gupta, S., R.W. Snow, C.A. Donnelly, K. Marsh, and C. Newbold.  1999.  Immunity to non-cerebral severe malaria is acquired after one or two infections.  Nature Medicine 5: 340-343.
+
+Menendez, C., J. Ordi, M.R. Ismail, P.J. Ventura, J.J. Aponte, E Kahigwa, F. Font, and P.L. Alonso.  2000.  The Impact of Placental Malaria on Gestational Age and Birth Weight.  J Infectious Dis. 181 (5): 1740-1745.
+
+Snow, R.W., M. Craig, U. Deichmann, and K. Marsh.  1999.  Estimating mortality, morbidity and disability due to malaria among Africa's non-pregnant population. Bull. World Health Organ.  77(8): 624-640.
