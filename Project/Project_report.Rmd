@@ -184,6 +184,7 @@ There are currently many ways to calculate TWI in practice and it is unclear wha
 ```{r getDEM,echo=FALSE,message=FALSE,message=FALSE,results='hide'}
 library(raster,quietly=TRUE,warn.conflicts=FALSE)
 library(ggplot2)
+library(rgdal)
 demlow<-getData(name='SRTM',download=FALSE,path="C:/Classes/AppliedBiostat/Project",lon=34.98,lat=-.08)
 demlow2<-getData(name='SRTM',download=FALSE,path="C:/Classes/AppliedBiostat/Project",lon=35.98,lat=-.08)
 #plot(dem)
