@@ -321,11 +321,15 @@ hightr<-raster(highTWI,layer="band1")
 fmat<-focalWeight(r,d=10,type='Gauss')
 mriskLow<-focal(lowtr,fmat,filename='C:/Classes/AppliedBiostat/Project/smoothLowTWI',pad=T,padValue=median(lowt$band1),overwrite=T)
 mriskHigh<-focal(hightr,fmat,filename='C:/Classes/AppliedBiostat/Project/smoothHighTWI',pad=T,padValue=median(hight$band1),overwrite=T)
+```
+```{r PlotTWI,echo=FALSE,eval=FALSE}
+lowtrp<-as.data.frame(mriskLow,xy=T)
+hightrp<-as.data.frame(mriskHigh,xy=T)
+infectLow<-ggplot(data=lowtrp[complete.cases(lowtrp),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Infection Risk",low = "green", mid = "yellow", high = "red",  midpoint = -12, space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)+xlab("Longitute")+ylab("Latitude")
+infectHigh<-ggplot(data=hightrp[complete.cases(hightrp),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Infection Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrp$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite,alpha=0.8)+xlab("Longitute")+ylab("Latitude")
 
-# lowtrp<-as.data.frame(mriskLow,xy=T)
-# hightrp<-as.data.frame(mriskHigh,xy=T)
-# ggplot(data=lowtrp[complete.cases(lowtrp),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = -12, space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)
-# ggplot(data=hightrp[complete.cases(hightrp),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrp$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite,alpha=0.8)
+library(gridExtra)
+grid.arrange(infectLow,infectHigh,ncol=2)
 ```
 
 ```{r assignRisktoHouse,echo=FALSE}
@@ -356,9 +360,11 @@ highsite$comrsk<-highsite$mriskstd+highsite$arisk
 ```
 
 ```{r plotCombrisk,echo=FALSE,fig.height=3,fig.width=3,eval=FALSE}
-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
+lowComb<-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
 
-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
+highComb<-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
+library(gridExtra)
+grid.arrange(lowComb,highComb,ncol=2)
 ```
 
 ```{r checkLinearityAssumption,echo=FALSE,results='hide',eval=FALSE}
@@ -455,7 +461,7 @@ pandoc.table(sepout,type="rmarkdown",split.tables=Inf)
 
 ```{r smoothTWI_sens,echo=FALSE}
 #use focal to create moving window with gaussian weights for assiging household risk
-#create filter for focal window
+# create filter for focal window
 r<-raster(ncols=36,nrows=36,xmn=0)
 #convert TWI to raster
 lowtr_s<-lowtwi
@@ -463,11 +469,20 @@ hightr_s<-hightwi
 fmat<-focalWeight(r,d=10,type='Gauss')
 mriskLows<-focal(lowtr_s,fmat,filename='smoothLowTWI_sens',pad=T,padValue=median(lowt$band1),overwrite=T)
 mriskHighs<-focal(hightr_s,fmat,filename='smoothHighTWI_sens',pad=T,padValue=median(hight$band1),overwrite=T)
+```
 
+```{r plotTWI_Sens,echo=FALSE,eval=FALSE}
 lowtrps<-as.data.frame(mriskLows,xy=T)
 hightrps<-as.data.frame(mriskHighs,xy=T)
-# ggplot(data=lowtrps[complete.cases(lowtrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(lowtrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9)
-# ggplot(data=hightrps[complete.cases(hightrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Mosquito Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite[-2537,],alpha=0.8)
+lowtrps$stdrsk<-base::scale(lowtrps$layer)
+hightrps$stdrsk<-base::scale(hightrps$layer)
+
+TWIlowSens<-ggplot(data=lowtrps[complete.cases(lowtrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Unscaled Infection Risk",low = "green", mid = "yellow", high = "red",  midpoint = median(lowtrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme_bw()+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=lowsite[-565,],alpha=0.9,pch=1)+ggtitle("Endemic Site")+xlab("Longitude")+ylab("Latitude")
+
+TWIhighSens<-ggplot(data=hightrps[complete.cases(hightrps),],aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("",low = "green", mid = "yellow", high = "red",  midpoint = median(hightrps$layer,na.rm=T), space = "rgb", na.value = "grey50", guide = "colourbar")+theme_bw()+theme(legend.position='bottom')+ geom_point(aes(x=lon, y=lat),data=highsite[-which(highsite$lon==max(highsite$lon)),],alpha=0.8,pch=1)+ggtitle("Epidemic-prone Site")+xlab("Longitude")+ylab("Latitude")
+library(gridExtra)
+grid.arrange(TWIlowSens,TWIhighSens,ncol=2)
+#ggsave(filename="C:/Classes/AppliedBiostat/Manuscript/TWIPanelSens.emf",width=6,height=3,units="in")
 ```
 
 
@@ -480,21 +495,41 @@ highsite$mriskstds<-scale(log(highsite$mrisks+1),center=F)
 ```
 
 ```{r plotMrisk_sens,echo=FALSE,eval=FALSE}
-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mrisks),data=lowsite,alpha=0.9)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
+lowInfect<-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mrisks),data=lowsite,alpha=0.9)+scale_colour_gradient("Infection Risk",low="blue",high="red")
 
-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mrisks),data=highsite,alpha=0.8)+scale_colour_gradient("Mosquito Risk",low="blue",high="red")
+highInfect<-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=mrisks),data=highsite,alpha=0.8)+scale_colour_gradient("Infection Risk",low="blue",high="red")
+
+
+
 ```
 
 
 ```{r CombinedRisk_sens,echo=FALSE}
 lowsite$comrsks<-scale(log(lowsite$mrisks+1),center=F)+scale(log(lowsite$arisk+1),center=F)
 highsite$comrsks<-scale(log(highsite$mrisks+1),center=F)+scale(log(highsite$arisk+1),center=F)
+both<-rbind(lowsite[,-34],highsite)
 ```
 
 ```{r plotCombrisk_sens,echo=FALSE,fig.height=7,fig.width=7,eval=FALSE}
-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsks),data=lowsite,alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
 
-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsks),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
+lowCombined<-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsks),data=lowsite,alpha=0.9)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme_bw()+theme(legend.position='bottom',legend.box='horizontal')+ylim(c(-.1,-.06))+xlim(c(34.96,35.01))+ylab("Latitude")+xlab("Longitude")+ggtitle("Endemic Site")
+
+highcombined<-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsks),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme_bw()+theme(legend.position='bottom',legend.box='horizontal')+ylab("Latitude")+xlab("Longitude")+ggtitle("Epidemic-prone Site")
+
+
+library(gridExtra)
+grid.arrange(lowCombined,highcombined,ncol=2)
+
+#density plots
+#make idealized intervention
+probs<-both$comrsks/max(both$comrsks,na.rm=T)
+both$ideal<-rbinom(dim(both)[1],1,prob=probs)
+both$Site<-ifelse(both$site=="Low","Endemic","Epidemic-Prone")
+netplot<-ggplot(data=both,aes(x=comrsks))+geom_density(aes(fill=factor(net)),alpha=.6,adjust=2)+facet_wrap(~Site)+theme_bw()+xlab("Standardized Combined Risk")+scale_fill_manual("LLIN Usage",values=c("red","blue"),labels=c("No","Yes"))
+sprayplot<-ggplot(data=both,aes(x=comrsks))+geom_density(aes(fill=factor(hspray)),alpha=.6,adjust=2)+facet_wrap(~Site)+theme_bw()+xlab("Standardized Combined Risk")+scale_fill_manual("IRS Usage",values=c("red","blue"),labels=c("No","Yes"))
+idealplot<-ggplot(data=both,aes(x=comrsks))+geom_density(aes(fill=factor(ideal)),alpha=.6,adjust=2)+facet_wrap(~Site)+theme_bw()+xlab("Standardized Combined Risk")+scale_fill_manual("Ideal\nTargeted\nIntervention",values=c("red","blue"),labels=c("No","Yes"))
+grid.arrange(netplot,sprayplot,idealplot,ncol=1)
+
 ```
 
 ```{r checkLinearityAssumption_sens,echo=FALSE,results='hide',eval=FALSE}
@@ -518,7 +553,11 @@ rcspline.plot(highsite$mrisks,highsite$net,model="logistic",xlab="Mosquito Risk"
 rcspline.plot(lowsite$mrisks,lowsite$hspray,model="logistic")
 rcspline.plot(highsite$mrisks,highsite$hspray,model="logistic",xlab="Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
 ```
+```{r GlobalInteractionModel,echo=FALSE}
 
+intsm<-glm(hspray~comrsks*site,data=both,family="binomial")
+intnm<-glm(net~comrsks*site,data=both,family="binomial")
+```
 ```{r model1_sens,echo=FALSE}
 m1ls<-glm(hspray~comrsks,data=lowsite,family="binomial")
 m1ls.est<-c(exp(summary(m1ls)$coef[2,1]),exp(summary(m1ls)$coef[2,1]-1.96*summary(m1ls)$coef[2,2]),exp(summary(m1ls)$coef[2,1]+1.96*summary(m1ls)$coef[2,2]))
