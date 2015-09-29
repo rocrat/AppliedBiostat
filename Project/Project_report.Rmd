@@ -119,7 +119,7 @@ SummaryTable(data=sumdat,rowvars=c("under5f","under1f","under18f","over65f","per
 
 
 ```{r CalcAgeRisk,echo=FALSE}
-sumdat$arisk<-with(sumdat,(2*under1)+under5+over65)
+sumdat$arisk<-with(sumdat,(2*under1)+under5)#+over65
 sumdat$ariskstd<-scale(log(sumdat$arisk+1),center=F)
 #for sensitivity analysis exclude elderly group
 sumdat$arisks<-with(sumdat,(2*under1)+under5)
@@ -522,6 +522,7 @@ grid.arrange(lowCombined,highcombined,ncol=2)
 
 #density plots
 #make idealized intervention
+both<-both[-3142,]
 probs<-both$comrsks/max(both$comrsks,na.rm=T)
 both$ideal<-rbinom(dim(both)[1],1,prob=probs)
 both$Site<-ifelse(both$site=="Low","Endemic","Epidemic-Prone")

@@ -1,1 +1,4 @@
 \beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{Background}{3}{0}{1}
+\beamer@sectionintoc {2}{$l_1$ regularization}{12}{0}{2}
+\beamer@sectionintoc {3}{Model Selection}{36}{0}{3}
