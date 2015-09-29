@@ -11,12 +11,12 @@
 \begin{frame}{Outline}
 \begin{itemize}
 \item What are ``Modern" methods?  How do they differ?
-\item Penalization Methods
-  \begin{itemize}
-  \item Ridge regression
-  \item LASSO
-  \item SCAD
-  \end{itemize}
+\item Penalization Methods (regularizations)
+%   \begin{itemize}
+%   \item Ridge regression
+%   \item LASSO
+%   \item SCAD
+%   \end{itemize}
 \item Model Selection / Averaging
 \end{itemize}
 \end{frame}
@@ -301,14 +301,65 @@ All the information criteria follow the same general formula:\\
 \end{frame}
 
 \begin{frame}{Model Averaging}
+How confident are we about the ``best" model?\\
+\pause
+\bigskip
+How much better does the best model have to be?\\
+\pause
+\bigskip
+What about incorporating information from all the models?\\
+\pause
+\bigskip
+This is called multi-model inference.
+\end{frame}
 
+\begin{frame}{Model Averaging}
+Model averaging (also called multi-model inference) has two main flavors:
+\bigskip
+\pause
+\begin{itemize}
+\item Bayesian Model Averaging (BMA)
+\item Frequentist Model Averaging (FMA)
+\end{itemize}
+\pause
+\bigskip
+These both follow the same general formula but have different philosophical motivations and interpretations
+\end{frame}
+
+\begin{frame}{Model Averaging}
+The basic mechanics:
+\begin{itemize}
+\item Fit each model and assign an information score (AIC, BIC, etc.)
+\pause
+\item Calculate a weight for each model based on the information score
+$$w_i = \frac{e^{-\frac{1}{2}.IC_i}}{\sum e^{-\frac{1}{2}.IC_i}}$$
+where $.IC_i$ is your favorite information criteria for model $i$.
+\pause
+\item Use calculated weights to created a weighted average of the models
+\pause
+\item Adjust standard errors for model uncertainty
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Multi-model Inference vs Regularization}
+\begin{itemize}
+\item Must have plausable models for model averaging (already know what variables are important)
+\bigskip
+\item Regularization methods can handle very high dimensions ($k>n$)
+\bigskip
+\item Model averaging incorporates the uncertainty in the final model
+\bigskip
+\item Both methods shrink coefficients and improve prediction.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Questions?}
 
-
-Stanford open course on statistical learning (you will learn R at the same time) by Tevor Hastie, R. Tibshirani, and others.
-
+\textbf{Regularization:}\\
+Stanford open course on statistical learning (you will learn R at the same time) by Tevor Hastie, R. Tibshirani, and others.\\
+\bigskip
+\textbf{Model Averaging:}\\
+Burnham and Anderson. 2004. Multimodel Inference. \emph{Socio. Meth. and Research} 33(2)\\
 \end{frame}
 
 \end{document}
