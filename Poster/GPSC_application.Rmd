@@ -1,0 +1,25 @@
+---
+title: "GPSC travel grant application"
+author: "Dominic LaRoche"
+date: "October 26, 2015"
+output: word_document
+---
+
+#Professional Development:
+I decided to attend the International Conference on Health Policy Statistics (ICHPS) to expand my professional portfolio, learn about the most current problems in health policy statistics, and meet with experts in the field.  
+
+As a statistician, it is important to be able to work comfortably in a wide range of research areas.  My background is in ecology and evolutionary biology but I am now working toward a PhD in Biostatistics in the Mel and Enid Zuckerman College of Public Health.  Being a member of the college of public health I have re-focused my research towards public health issues including health policy.  Presenting my poster on the value of using remotely-sensed data to inform mosquito abatement programs broadens my existing portfolio of research and highlights my ability to work in a wide range of fields.  Having presented my poster I will have the opportunity to publish my research in a special issue of *Health Services Research and Outcomes Methodology*.  
+
+Attending the ICHPS as a student provided me with an opportunity to attend a number of workshops provided byt he conference for free.  I attended four workshops while at the conference: 1) Predictive Modeling on Data with Severe Class Imbalance, 2) Evaluating the Impact of Unmeasured Confounding in Comparative Observational Research, 3) Causal Inference in Healthcare Studies with Multiple Treatments, and 4) Bias Adjustment in Comparative Real World Data Research.  These 4 workshops provided hands on training and professional development that will serve me well in my career in public health.
+
+Finally, attending the ICHPS gave me an opportunity to meet with other students and investigators studying the statistics behind health policy and public health in general.  As a relatively small conference I was able to meet nearly every conference attendee.  I made valuable connections to both federal researchers and academic statisticians from other institutions, both of which will assist in finding a postion post-graduation. 
+
+#Description of Work
+I presented a poster outlining my research developing a method to identify households with members at high risk for contracting malaria.  Millions of dollars are spent annually on malaria prevention in tropical areas where the disease occurs.  Despite this large effort many households do not receive any malaria abatement measures due to the limited resources availble to established prevention programs.  Since not all at-risk households receive some form of malaria prevention it is important to target these treatments at the highest risk households where the intervention can have the greatest impact.
+
+The risk for a household can be broken down into two main components: 1) healh risk and 2) exposure risk.  A household with a high health risk would be one in which some members of the household are likely to suffer worse health outcomes if exposed to the malaria pathogen; these include pregnant women and young children. A household with high exposure risk would be one in which the members of the household are more likely to encounter a malaria infected mosquito.  Most malaria programs are based on only health risk and target pregnant women and young children for distribution of interventions.  However, coverage for those with high health risk is far from complete.  Further targeting households with high exposure risk would increase the efficacy of the limited interventions available. 
+
+Determining the risk of malaria exposure for a large number of potential households on the ground simultaneously is pohibitively expensive.  I utilized freely available, high-resolution elevation data provided by the United States Geological Survey to identify areas where water was likely to pool and provide habitat for breeding mosquitoes at two villages in Kenya.  I then combined information from a survey of all households to determine which households had both high health risk and high exposure risk and compared this with which households actually had access to malaria prevention measures.  The results indicate that current protocols for distributing malaria interventions does not target the highest risk households.  My method could be used in the future to help target interventions to individuals with the highest risk of exposure to mosquitoes.
+
+#Description of Event
+I presented my research as a poster the International Conference on Health Policy Statistics
