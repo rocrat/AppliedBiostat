@@ -1,26 +1,26 @@
-[general] 
-creator=R package 'raster' 
-created= 2015-04-08 12:01:59 
-[georeference] 
-nrows= 72 
-ncols= 24 
-xmin= 34.999583454 
-ymin= -0.110416086325946 
-xmax= 35.0195834539987 
-ymax= -0.050416086329945 
-projection= +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
-[data] 
-datatype= INT2S 
-byteorder= little 
-nbands= 1 
-bandorder= BIL 
-categorical= FALSE 
-minvalue= 1174 
-maxvalue= 1222 
-nodatavalue= -32768 
-[legend] 
-legendtype=  
-values=  
-color=  
-[description] 
-layername= layer 
+[general]
+creator=R package 'raster'
+created=2015-10-05 07:47:40
+[georeference]
+nrows=72
+ncols=24
+xmin=34.999583454
+ymin=-0.110416086325946
+xmax=35.0195834539987
+ymax=-0.050416086329945
+projection=+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0
+[data]
+datatype=INT2S
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=1174
+maxvalue=1222
+nodatavalue=-32768
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=srtm_44_13

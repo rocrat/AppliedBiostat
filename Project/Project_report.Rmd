@@ -211,6 +211,7 @@ lowp<-data.frame(rasterToPoints(lowelcomp))
 
 highsite<-sumdat[sumdat$site=="High",]
 highp<-data.frame(rasterToPoints(highel))
+names(highp)[3] <- "layer"
 # ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=hspray),data=highsite,alpha=0.4)+scale_colour_manual("Spray",values=c("red","blue"))
 ```
 
@@ -352,11 +353,18 @@ ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient
 ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1200, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=arisk),data=lowsite[-565,],alpha=0.9)+scale_colour_gradient("Age Risk",low="blue",high="red")
 
 ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=arisk),data=highsite,alpha=0.8)+scale_colour_gradient("Age Risk",low="blue",high="red")
+
+lowp$site <- "Endemic"
+highp$site <- "Epidemic"
+pdat <- rbind(lowp, highp)
 ```
 
 ```{r CombinedRisk,echo=FALSE}
 lowsite$comrsk<-lowsite$mriskstd+lowsite$arisk
 highsite$comrsk<-highsite$mriskstd+highsite$arisk
+lowsite$site <- "Endemic"
+highsite$site <- "Epidemic"
+sitedat <- rbind(lowsite[-565,], highsite)
 ```
 
 ```{r plotCombrisk,echo=FALSE,fig.height=3,fig.width=3,eval=FALSE}
@@ -365,6 +373,14 @@ lowComb<-ggplot(data=lowp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_
 highComb<-ggplot(data=highp,aes(x=x,y=y))+geom_raster(aes(fill=layer))+scale_fill_gradient2("Elevation",low = "brown", mid = "yellow", high = "green",  midpoint = 1714, space = "rgb", na.value = "grey50", guide = "colourbar")+ geom_point(aes(x=lon, y=lat,color=comrsk),data=highsite,alpha=0.8)+scale_colour_gradient("Combined Risk",low="blue",high="red")+theme(legend.position='bottom',legend.box='horizontal')
 library(gridExtra)
 grid.arrange(lowComb,highComb,ncol=2)
+
+highm<- get_googlemap(center=c(34.965,.2), zoom = 13, maptype="terrain",filename="c:/Classes/AppliedBiostat/HighSite")
+highmap <- ggmap(highm) + geom_point(aes(x=lon, y=lat,color=comrsk), data=highsite, alpha=0.8) + scale_colour_gradient("Combined Risk", low="blue", high="red") + theme(legend.position='bottom',legend.box='horizontal')
+
+lowm<- get_googlemap(center=c(34.98,-.08), zoom = 14, maptype="terrain",filename="c:/Classes/AppliedBiostat/LowSite")
+lowmap <- ggmap(lowm) + geom_point(aes(x=lon, y=lat,color=comrsk), data=lowsite[-565,], alpha=0.9) + scale_colour_gradient("Combined Risk", low="blue", high="red") + theme(legend.position='bottom', legend.box='horizontal')
+
+grid.arrange(lowmap, highmap, ncol=2)
 ```
 
 ```{r checkLinearityAssumption,echo=FALSE,results='hide',eval=FALSE}
