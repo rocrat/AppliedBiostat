@@ -1,0 +1,41 @@
+---
+title: "Dean's Fund Application"
+author: "Dominic LaRoche"
+date: "October 26, 2015"
+output: word_document
+---
+
+#Introduction/Background
+I decided to present my research at the International Conference on Health Policy Statistics (ICHPS) to solcit valuable feedback from experts in the field, expand my professional portfolio, learn about the most current problems in health policy statistics, and network with active members of the statistics community.  
+
+As a statistician, it is important to be able to work comfortably in a wide range of research areas.  My background is in ecology and evolutionary biology but I am now working toward a PhD in Biostatistics in the Mel and Enid Zuckerman College of Public Health.  Being a member of the college of public health I have re-focused my research towards public health issues including health policy.  Presenting my poster on the value of using remotely-sensed data to inform mosquito abatement programs broadens my existing portfolio of research and highlights my ability to work in a wide range of fields.  Having presented my poster I will have the opportunity to publish my research in a special issue of *Health Services Research and Outcomes Methodology*.  
+
+Attending the ICHPS as a student provided me with an opportunity to attend a number of workshops provided by he conference for free.  I attended four workshops while at the conference: 1) Predictive Modeling on Data with Severe Class Imbalance, 2) Evaluating the Impact of Unmeasured Confounding in Comparative Observational Research, 3) Causal Inference in Healthcare Studies with Multiple Treatments, and 4) Bias Adjustment in Comparative Real World Data Research.  These 4 workshops provided hands on training and professional development that will serve me well in my career in public health.
+
+Finally, attending the ICHPS gave me an opportunity to meet with other students and investigators studying the statistics behind health policy and public health in general.  As a relatively small conference I was able to meet nearly every conference attendee.  I made valuable connections to both federal researchers and academic statisticians from other institutions, both of which will assist in finding a position post-graduation. 
+
+#Description of presented research
+I presented a poster outlining my research developing a method to identify households with members at high risk for contracting malaria.  Millions of dollars are spent annually on malaria prevention in tropical areas where the disease occurs.  Despite this large effort many households do not receive any malaria abatement measures due to the limited resources available to established prevention programs.  Since not all at-risk households receive some form of malaria prevention it is important to target these treatments at the highest risk households where the intervention can have the greatest impact.
+
+The risk for a household can be broken down into two main components: 1) health risk and 2) exposure risk.  A household with a high health risk would be one in which some members of the household are likely to suffer worse health outcomes if exposed to the malaria pathogen; these include pregnant women and young children. A household with high exposure risk would be one in which the members of the household are more likely to encounter a malaria infected mosquito.  Most malaria programs are based on only health risk and target pregnant women and young children for distribution of interventions.  However, coverage for those with high health risk is far from complete.  Further targeting households with high exposure risk would increase the efficacy of the limited interventions available. 
+
+Determining the risk of malaria exposure for a large number of potential households on the ground simultaneously is prohibitively expensive.  I utilized freely available, high-resolution elevation data provided by the United States Geological Survey to identify areas where water was likely to pool and provide habitat for breeding mosquitoes at two villages in Kenya.  I then combined information from a survey of all households to determine which households had both high health risk and high exposure risk and compared this with which households actually had access to malaria prevention measures.  The results indicate that current protocols for distributing malaria interventions does not target the highest risk households.  My method could be used in the future to help target interventions to individuals with the highest risk of exposure to mosquitoes.
+
+#Abstract
+Malaria is a significant threat to public health in countries where the disease is either endemic or epidemic. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria with the use of prophylactic interventions. The World Health Organization recommends preferential administration of interventions to pregnant women and infants because of the high disease burden borne by this group. However, previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections. We use a topographic wetness index, combined with a household census of intervention use, at two sites in Kenya to assess intervention administration. We find preferential administration of interventions at the high-elevation epidemic-prone site but not at the low-elevation endemic site. Our results have important implications for assessing the administration of interventions in the battle against malaria.
+
+#Description of Conference
+The International Conference on Health Policy Statistics is part of the American Statistical Association conference schedule and provides a unique forum for discussing the research needs and solutions related to public health and health policy research.  The conference takes place over 3 days with the first day dedicated to small workshops and work group meetings.  The conference also had several social events where I was able to meet and mingle with other statisticians and students in a less professional setting.  I was able to attend keynote speeches by Gail R. Wilensky, the senior adviser on health and welfare issues to President George H.W. Bush, and Mark L. Berger, vice president of real world data analytics at Pfizer Inc.  These speeches provided me with broad perspective about the types of analytical challenges facing health policy researchers as I begin my own career in this field.
+
+#Efforts to Secure Other Funding
+I have also submitted an application to the GPSC Travel Grant for $500 to help cover the cost of the trip.  I won't find out about the status of the GPSC application until after December 1st.  
+
+#Budget
+
+```{r budget, echo=FALSE, message=FALSE, results='asis'}
+library(pander)
+bdg <- matrix(c("Southwest Airlines", "La Quinta Inn and Suites, Warwick", "$89.10 x 2 days", "3 full days @ $30/day", "Alamo Car Rental", "Student Registration", "Poster Printing", "Total Budget", "Pending GPSC Travel Grant", "", "$547.50", "", "$178.20", "$90.00", "$117.81", "$100.00", "$90.00", "$1123.51", "-$500", "$623.51"), 10, 2)
+rownames(bdg) <- c("Airfare", "Lodging", "Lodging Cost", "Per Diem", "Transportation", "Registration", "Other", "", "Other Funding", "Requested Funding")
+colnames(bdg) <- c("Description", "Cost")
+pandoc.table(bdg)
+```
