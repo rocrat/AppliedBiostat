@@ -1,0 +1,651 @@
+\documentclass{article}
+%For regular papers, a motivating example should be presented early in the paper. The statistical development should then be presented, and the results applied to the example.
+
+\begin{document}
+
+<< ReadIn, echo = FALSE, message = FALSE, warning = FALSE>>= 
+#read in and check data 
+rm(list = ls())
+library(car)
+library(ggplot2)
+library(ggmap)
+library(MASS)
+longdat <- read.csv("C:/Classes/AppliedBiostat/Project/Domconv_918.csv")[1:17823, ]
+longdat$site <- Recode(longdat$site, "c('High', 'HIGH') = 'High'")
+longdat$Villcodef <- as.factor(longdat$Villcode)
+longdat$Housef <- as.factor(longdat$House)
+#create a variable which combines subcode,  villcode,  and house
+longdat$household <- factor(with(longdat,  paste(Subcode,  Villcode,  House,  sep = "_")))
+longdat$latlon <- factor(with(longdat,  paste(Lat,  Long,  sep = "_")))
+# There are more unique housholds than latlons!
+# strsplit(unique(dat$latlon), split = "_") #get unique lat lons in a list
+longdat$Age <- as.numeric(as.character(longdat$Age))#introducing NAs on purpose
+longdat$HHhead <- Recode(longdat$HHhead, "c('F', 'M', 'N/A') = 'N'")
+longdat$Relate <- as.numeric(as.character(Recode(longdat$Relate, "'N/A' = NA")))
+longdat$HHspray <- Recode(longdat$HHspray, "c('', '4', 'N/A') = NA")
+longdat$NetHH <- Recode(longdat$NetHH, "'N/A' = NA")
+longdat$NetHH <- droplevels(longdat$NetHH)
+@
+
+<<r eliminateDuplicates, echo = FALSE, eval = FALSE>>= 
+#find duplicates entries within households
+houses <- factor(unique(longdat$household))
+N <- length(houses)
+#loop through households and find entires that have unique age sex combos
+longdat$age_sex <- factor(paste(longdat$Age, longdat$Sex, sep = "_"))
+subdat <- list(length = N)
+for( i in 1:N){
+  #limit to 1 household
+  housedat <- longdat[longdat$household =  = houses[i], ]
+  include <- which(!duplicated(housedat$age_sex))
+  subdat[[i]] <- housedat[include, ]
+}
+datunique <- do.call(rbind, subdat)
+rm(subdat)
+@
+
+<<r summarizeHouseHolds,  echo = FALSE,  eval = FALSE>>= 
+#This chunk is to create a new data set which is based on the household 
+numocc <- numFem <- numMale <- oldest <- youngest <- headsex <- headage <- net <- under5 <- under1 <- under18 <- over65 <- periph <- lat <- lon <- hspray <- site <- elev <- lang <- rep(0, length = N)
+#loop through each unique household and calculate summary variables
+for (i in 1:N){
+  numocc[i] <- length(which(datunique$household =  = houses[i]))
+  numFem[i] <- sum(datunique$household =  = houses[i] & datunique$Sex =  = "F", na.rm = T)
+  numMale[i] <- sum(datunique$household =  = houses[i] & datunique$Sex =  = "M", na.rm = T)
+  oldest[i] <- max(datunique[datunique$household =  = houses[i], ]$Age)
+  youngest[i] <- min(datunique[datunique$household =  = houses[i], ]$Age)
+  if(length(datunique[(datunique$household =  = houses[i] & datunique$HHhead =  = "Y"), ]$Sex) =  = 1){
+    headsex[i] <- as.character(datunique[(datunique$household =  = houses[i] & datunique$HHhead =  = "Y"), ]$Sex)
+  }else{headsex[i] <- NA}
+  if(length(datunique[datunique$household =  = houses[i]& datunique$HHhead =  = "Y", ]$Age) =  = 1){
+    headage[i] <- datunique[datunique$household =  = houses[i]& datunique$HHhead =  = "Y", ]$Age
+  }else{headage[i] <- NA}
+  netans <- as.character(datunique[datunique$household =  = houses[i], ]$NetHH)
+  net[i] <- sum(netans =  = "Y", na.rm = T)
+  under5[i] <- sum(datunique[datunique$household =  = houses[i], ]$Age>1 & datunique[datunique$household =  = houses[i], ]$Age< = 5, na.rm = T)#children >1 and less than 5
+  under1[i] <- sum(datunique[datunique$household =  = houses[i], ]$Age< = 1, na.rm = T)
+  under18[i] <- sum(datunique[datunique$household =  = houses[i], ]$Age<18, na.rm = T)
+  over65[i] <- sum(datunique[datunique$household =  = houses[i], ]$Age> = 65, na.rm = T)
+  family <- datunique[datunique$household =  = houses[i], ]$Relate
+  periph[i] <- any(family>9)#classify any one more distant than grandchild as periphery
+  lat[i] <- datunique[datunique$household =  = houses[i], ]$Lat[1]
+  lon[i] <- datunique[datunique$household =  = houses[i], ]$Long[1]
+  spray <- datunique[datunique$household =  = houses[i], ]$HHspray
+  hspray[i] <- sum(spray =  = "Y", na.rm = T)
+  site[i] <- datunique[datunique$household =  = houses[i], ]$site[1]
+  elev[i] <- datunique[datunique$household =  = houses[i], ]$Elevation[1]
+  lang[i] <- datunique[datunique$household =  = houses[i], ]$Lang[1]
+  
+}
+#create data frame from new data vectors
+hdat <- data.frame(houses, numocc, numFem, numMale, oldest, youngest, headsex, headage, net, under5, under1, under18, over65, periph, lat, lon, hspray, site, elev, lang)
+#save new data to csv file so I don't have to run this costly loop again
+write.csv(hdat, "C:/Classes/AppliedBiostat/Project/housedata.csv")
+@
+
+\section{Abstract}
+Malaria is a significant threat to public health in countries where the disease is either endemic or epidemic. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria with the use of prophylactic interventions. The World Health Organization recommends preferential administration of interventions to pregnant women and infants because of the high disease burden borne by this group. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections. We use a topographic wetness index,  combined with a household census of intervention use,  at two sites in Kenya to assess intervention administration. We find preferential administration of interventions at the high-elevation epidemic-prone site but not at the low-elevation endemic site. Our results have important implications for assessing the administration of interventions in the battle against malaria.
+
+
+\section{Introduction}
+
+Malaria is considered a significant threat to public health and a socio-economic burden in countries where the disease is either endemic or epidemic~\cite{Crouch2005}. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria. Many national strategic plans to reduce or eliminate malaria are in their third generation.  Spatial targeting of high risk areas is a strategy that has been recommended but few studies have assessed if government programs are achieving differential coverage in high risk areas~\cite{Shantz-Dunn2009}.  \\
+
+The government of Kenya developed the “National Malaria Strategy 2009-2017” in response to the ongoing threat of malaria~\cite{CITE3}. This strategy outlined 6 objectives,  the first of which is “to have at least 80\% of people living in malaria risk areas using appropriate malaria preventive interventions.” The two primary non-pharmaceutical interventions identified in the plan are Indoor Residual Spraying (IRS) and Long Lasting Insecticidal Nets (LLINs). The strategy outlined for achieving the intervention objective included the initial mass distribution of LLINs where malaria is either endemic (western lowlands) or epidemic-prone (western highlands); followed by routine distribution of LLINs to pregnant women and children under 1 year of age and a subsidized sale of LLINs. The strategy also outlined the use of widespread IRS followed by focal treatments in epidemic-prone areas.\\
+
+The World Health Organization recommends prioritizing the administration of interventions to pregnant women and children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group~\cite{CITE4}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections~\cite{CITE2}. Moreover,  remotely-sensed topographic data has been previously validated as a tool for assessing risk of malaria infection by identifying areas where water is likely to pool and Anopheles densities are likely to be higher~\cite{CITE 5, 6}. Our primary objective was to use topographic data,  combined with a household census of intervention use,  to develop a method of %determine if existing protocols of intervention administration simultaneously targeted households with high risk members and high infection risk. Since policies for intervention administration differed between the epidemic-prone and endemic regions we also sought to compare the distribution of interventions between these two regions.\\
+
+
+\section{Data Description}
+\subsection{House Hold Data}
+Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
+
+<<r importNewData, echo = FALSE, message = FALSE, results = 'asis'>>= 
+rm(list = ls())
+library(BDSS)
+library(pander)
+hdat <- read.csv("C:/Classes/AppliedBiostat/Project/housedata.csv")
+sumdat <- hdat
+sumdat$net <- factor(ifelse(is.na(sumdat$net), NA, ifelse(sumdat$net =  = 0, "No", "Yes")))
+sumdat$under5f <- factor(ifelse(is.na(sumdat$under5), NA, ifelse(sumdat$under5> = 1, "Yes", "No")))
+sumdat$under1f <- factor(ifelse(is.na(sumdat$under1), NA, ifelse(sumdat$under1> = 1, "Yes", "No")))
+sumdat$under18f <- factor(ifelse(is.na(sumdat$under18), NA, ifelse(sumdat$under18> = 1, "Yes", "No")))
+sumdat$over65f <- factor(ifelse(is.na(sumdat$under18), NA, ifelse(sumdat$over65> = 1, "Yes", "No")))
+sumdat$periph <- factor(ifelse(is.na(sumdat$periph), NA, ifelse(sumdat$periph =  = 1, "Yes", "No")))
+sumdat$hspray <- factor(ifelse(is.na(sumdat$hspray), NA, ifelse(sumdat$hspray =  = 0, "No", "Yes")))
+sumdat$site <- factor(ifelse(is.na(sumdat$site), NA, ifelse(sumdat$site =  = 1, "High", "Low")))
+sumdat[which(sumdat$site =  = "Low" & sumdat$lat>0), ]$site <- "High"#correct mis-labelled site
+@
+
+<<HouseSummary, echo = FALSE, results = 'asis', eval = FALSE>>= 
+SummaryTable(data = sumdat, rowvars = c("under5f", "under1f", "under18f", "over65f", "periph", "hspray", "site", "headsex"), row.names = c("Under 5", "Under 1", "Under 18", "Peripheral Family", "House Sprayed", "Site", "House Head Sex"), colvar = "net", cont.vars = c("numocc", "numFem", "numMale", "oldest", "youngest", "headage", "elev"), output = "rmarkdown")
+@
+
+
+<<r CalcAgeRisk, echo = FALSE>>= 
+sumdat$arisk <- with(sumdat, (2*under1)+under5)#+over65
+sumdat$ariskstd <- scale(log(sumdat$arisk+1), center = F)
+#for sensitivity analysis exclude elderly group
+sumdat$arisks <- with(sumdat, (2*under1)+under5)
+sumdat$ariskstds <- scale(log(sumdat$arisks+1), center = F)
+@
+
+\subsection{Geo-Spatial Data}
+We utilized 90 meter resolution elevation data from the National Aeronautics and Space Administration (NASA) Shuttle Radar Topography Mission (SRTM).  The high elevation site was sufficiently covered by tile number 43-12 but we utilized two adjacent tiles (43-13 and 44-13) in order to eliminate possible edge effects for eastern households at the low site.
+
+\section{Study Objectives}
+
+\subsection{Primary Objective}
+
+Our primary objective was to determine whether populations at high combined risk for both exposure to,  and a poor outcome from,  malaria are receiving mitigating treatments at a higher rate than those with a low combined risk. Specifically we will test the following alternative hypotheses:
+
+$H_0:$ High-risk households are not more likely to receive treatment than low-risk households.  
+$H_a:$ High-risk households are more likely to receive treatment than low-risk households.
+
+\subsection{Secondary Objectives}
+
+As a secondary objective,  we will determine if populations which are only at risk for a poor health outcome from malaria are preferentially receiving mitigating treatments.  By combining measures from the primary and secondary outcomes we will determine if there would be a benefit from modifying treatment administration protocols to incorporate information on the risk of mosquito exposure in addition to the current strategy.  We will also determine if individuals at risk due to old age are more likely to be missed by current protocols.
+
+\section{Statistical Methods}
+
+The unit of study for this analysis is the household since both bed nets and aerial spraying are administered at the household level.  Therefore,  we summarized the information from the individual surveys into household attributes. We identified unique households by the unique combination of sub-location,  village,  and house number.  We found and eliminated duplicate individual surveys by identifying entries with identical house identification and age attributes.  This potentially removed non-duplicate individuals (such as twins in the same household) but we felt the introduced bias would be negligible.  For each unique house we calculated the number of individuals under 1,  the number of individuals over 1 and under 5,  and the number of individuals over 65.  We also determined if each house had received a bed net or aerial spraying.  Since responses among household members was not consistent we assigned a treatment to the house if any member of the house responded affirmatively.
+
+Since the two sites have substantially different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We also analyzed spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
+
+Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We assigned an age-based health risk score (age-based risk hereafter) to each household with the following formula:
+$$\text{Risk Score}  =  (2 \times \text{Children} \leq 1)+ (1 < \text{Children} \leq 5) + (\text{Adults} > 65)$$
+
+We assigned twice the weight to children under 1 since they have the highest risk of the categories (Gupta et al. 1999 and Snow et al. 1999).  We did not have information on pregnancy so we could not include this in the current risk assessment although there is a known risk for premature birth (Menendez et al. 2000).
+
+We assigned each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area.  We used a Topographical Wetness Index (TWI) derived from the DEM data to determine areas likely to provide breeding habitat for mosquitoes.  The TWI combines the total basin area (the area from which water will flow to a particular point) with the slope at that point to determine the amount of water likely to accumulate and provide breeding habitat for mosquitoes.  We used the TWI algorithm provided by the open source System for Automated Geo-scientific Analyses (SAGA) to locate areas of high wetness.  We assumed the mosquito exposure risk of a household was inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we applied a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assigned each house the risk score of the cell it was in.
+
+\subsection{Primary Analysis}
+
+To be at risk for a poor outcome a person must 1) come in contact with a malaria hosting mosquito,  and 2) be inherently vulnerable to malaria infection (i.e. very young or very old).  We will create two risk scores representing each of these household risks.  The household health risk will be equal to the number of individuals at high risk (i.e. under age 5 or over age 65).  The household exposure risk will be equal to the score of the risk surface at the house location.  Since these risks will be calculated on different scales we will center at 0 and standardize risk scores so that they are scale-independent.
+
+We will add the standardized household health risk with the standardized household exposure risk to create a combined risk.  We will then determine if high risk households are more likely to have received either a bed-net or aerial spraying with a logistic model;
+
+$$log(\frac{p}{1-p}) = \beta_0 + \beta_1 \times \text{Combined Household Risk}, $$
+
+where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is > 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.  If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
+
+\subsection{Secondary Analyses}
+
+Existing protocols may be adequate at addressing household risk due to either inherent health risk or mosquito exposure risk,  but not both.  We will conduct the same primary analysis but separate out these two risk scores as separate predictors:
+
+$$log(\frac{p}{1-p}) = \beta_0 + \beta_2 \times \text{Mosquito Exposure Risk} + \beta_3 \times \text{Health Risk}, $$
+
+where p  =  Probability of a house having a treatment.  The interpretation of $\beta_2$ and $\beta_3$ is the same as $\beta_1$ from the primary analysis,  but specific to a risk type.
+
+
+\subsection{Sensitivity Analyses}
+
+Bed nets are currently targeted at pregnant women so we expect that bed net usage will be higher in households with young children.  However,  our age-based risk score also incorporates elderly household members.  Therefore,  in order to determine if current protocols are effective in targeting pregnant women and young children,  we will re-define the age based risk to only include the two young child age categories. We will repeat the above analysis with the restricted age-based risk score for both bed nets and aerial spraying.
+
+There are currently many ways to calculate TWI in practice and it is unclear what effect a different TWI algorithm  would have on our results.  In order to determine the sensitivity of our results to choice of TWI algorithm we calculated a second mosquito risk surface with tighter restrictions on water out-flow.  We did this in two steps. We first identified local depressions by determining,  for each cell in the study region,  if the cell had a lower elevation than the mean of its neighboring cells.  This will effectively identify valleys but not necessarily pools,  i.e. where water outflow is likely to be low.  Therefore,  we also calculated the aspect variance of the neighboring cells.  Areas with high aspect variance are likely to form pools or peaks.  Combining the two measures will identify only depressions with low water outflow. We repeated the analyses described above with the restricted TWI algorithm.
+
+
+<<getDEM, echo = FALSE, message = FALSE, message = FALSE, results = 'hide'>>= 
+library(raster, quietly = TRUE, warn.conflicts = FALSE)
+library(ggplot2)
+library(rgdal)
+demlow <- getData(name = 'SRTM', download = FALSE, path = "C:/Classes/AppliedBiostat/Project", lon = 34.98, lat = -.08)
+demlow2 <- getData(name = 'SRTM', download = FALSE, path = "C:/Classes/AppliedBiostat/Project", lon = 35.98, lat = -.08)
+#plot(dem)
+demhigh <- getData(name = 'SRTM', download = FALSE, path = "C:/Classes/AppliedBiostat/Project", lon = 34.965, lat = .2)
+lowel <- readGDAL("C:/Classes/AppliedBiostat/Project/srtm_43_13.tif")
+lowel2 <- readGDAL("C:/Classes/AppliedBiostat/Project/srtm_44_13.tif")
+highel <- readGDAL("C:/Classes/AppliedBiostat/Project/srtm_43_12.tif")
+#shrink area
+lowext <- extent(34.950000, 35.00042, -0.110000, -0.050000)
+lowel <- crop(demlow, lowext, "C:/Classes/AppliedBiostat/Project/LowSiteData", overwrite = TRUE)
+lowext2 <- extent(35.000000, 35.020000, -0.110000, -0.050000)
+lowel2 <- crop(demlow2, lowext2, "C:/Classes/AppliedBiostat/Project/LowSiteData2", overwrite = TRUE)
+# image(lowel)
+highext <- extent(34.900000, 35.000417, 0.150000, 0.250000)
+highel <- crop(demhigh, highext, "C:/Classes/AppliedBiostat/Project/HighSiteData", overwrite = TRUE)
+
+lowelcomp <- merge(lowel, lowel2)
+writeGDAL(as(lowelcomp, "SpatialPixelsDataFrame"), fname = "LowDEM.tif")
+writeGDAL(as(highel, "SpatialPixelsDataFrame"), fname = "HighDEM.tif")
+
+lowsite <- sumdat[sumdat$site =  = "Low", ]
+lowp <- data.frame(rasterToPoints(lowelcomp))
+# ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = hspray), data = lowsite[-565, ], alpha = 0.4)+scale_colour_manual("Spray", values = c("red", "blue"))
+
+highsite <- sumdat[sumdat$site =  = "High", ]
+highp <- data.frame(rasterToPoints(highel))
+names(highp)[3]  <-  "layer"
+# ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = hspray), data = highsite, alpha = 0.4)+scale_colour_manual("Spray", values = c("red", "blue"))
+@
+
+<<computeSWI, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'>>= 
+# library(RSAGA)
+# rsgenv <- rsaga.env(path = "C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32", check.libpath = FALSE, check.SAGA = FALSE, check.os.default = FALSE, modules = "C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
+# rsaga.import.gdal("LowSiteData.grd", env = rsgenv)
+library(SDMTools)
+#calculate elevation variance
+#first get diff from mean to deterime if it is a dip or a peak
+#create 3 different windows for calculating dips,  this will account for drainage area to some extent
+meanmat3 <- matrix(1/9, 3, 3)
+meanmat7 <- matrix(1/49, 7, 7)
+meanmat11 <- matrix(1/121, 11, 11)
+#find dips at these three different windows
+meanel3 <- focal(lowelcomp, w = meanmat3)#, pad = T, pad.value = mean(values(lowelcomp)))
+meandiff3 <- lowelcomp-meanel3
+values(meandiff3) <- ifelse(values(meandiff3)<0, values(meandiff3), 0)
+
+meanel7 <- focal(lowelcomp, w = meanmat7)#, pad = T, pad.value = mean(values(lowelcomp)))
+meandiff7 <- lowelcomp-meanel7
+values(meandiff7) <- ifelse(values(meandiff7)<0, values(meandiff7), 0)
+
+meanel11 <- focal(lowelcomp, w = meanmat11)#, pad = T, pad.value = mean(values(lowelcomp)))
+meandiff11 <- lowelcomp-meanel11
+values(meandiff11) <- ifelse(values(meandiff11)<0, values(meandiff11), 0)
+
+lowdips <- meandiff3+meandiff7+meandiff11
+
+#calculate aspect of each cell
+lowasp <- aspect(lowelcomp, latlon = TRUE)
+lowaspc <- lowasp
+#categorize into quadrants
+values(lowaspc) <- ifelse(values(lowasp)>45 & values(lowasp) < =  135, 1, 
+                        ifelse(values(lowasp)>135 & values(lowasp) < =  225, 2, 
+                               ifelse(values(lowasp)>225 & values(lowasp) < =  315, 3, 
+                                      ifelse(values(lowasp)>315 & values(lowasp) < = 360, 4, 
+                                             ifelse(values(lowasp)>0 & values(lowasp) < =  45, 4, NA)))))
+#Calculate aspect variance
+aspmat3 <- matrix(1, 3, 3)
+aspmat7 <- matrix(1, 7, 7)
+aspmat11 <- matrix(1, 11, 11)
+aspvar3 <- focal(lowaspc, aspmat3, fun = var, na.rm = T)
+aspvar7 <- focal(lowaspc, aspmat7, fun = var, na.rm = T)
+aspvar11 <- focal(lowaspc, aspmat11, fun = var, na.rm = T)
+
+lowaspvar <- aspvar3+aspvar7+aspvar11
+lowtwi <- lowaspvar*lowdips*-1
+
+#repeat for High site
+meanel3 <- focal(highel, w = meanmat3)#, pad = T, pad.value = mean(values(highel)))
+meandiff3 <- highel-meanel3
+values(meandiff3) <- ifelse(values(meandiff3)<0, values(meandiff3), 0)
+
+meanel7 <- focal(highel, w = meanmat7)#, pad = T, pad.value = mean(values(highel)))
+meandiff7 <- highel-meanel7
+values(meandiff7) <- ifelse(values(meandiff7)<0, values(meandiff7), 0)
+
+meanel11 <- focal(highel, w = meanmat11)#, pad = T, pad.value = mean(values(highel)))
+meandiff11 <- highel-meanel11
+values(meandiff11) <- ifelse(values(meandiff11)<0, values(meandiff11), 0)
+
+highdips <- meandiff3+meandiff7+meandiff11
+
+#Repeat for High site
+highasp <- aspect(highel, latlon = TRUE)
+highaspc <- highasp
+#categorize into quadrants
+values(highaspc) <- ifelse(values(highasp)>45 & values(highasp) < =  135, 1, 
+                        ifelse(values(highasp)>135 & values(highasp) < =  225, 2, 
+                               ifelse(values(highasp)>225 & values(highasp) < =  315, 3, 
+                                      ifelse(values(highasp)>315 & values(highasp) < = 360, 4, 
+                                             ifelse(values(highasp)>0 & values(highasp) < =  45, 4, NA)))))
+#Calculate aspect variance
+aspmat3 <- matrix(1, 3, 3)
+aspmat7 <- matrix(1, 7, 7)
+aspmat11 <- matrix(1, 11, 11)
+aspvar3 <- focal(highaspc, aspmat3, fun = var, na.rm = T)
+aspvar7 <- focal(highaspc, aspmat7, fun = var, na.rm = T)
+aspvar11 <- focal(highaspc, aspmat11, fun = var, na.rm = T)
+
+highaspvar <- aspvar3+aspvar7+aspvar11
+hightwi <- highaspvar*highdips*-1
+#plot restricted TWI
+htwi <- as.data.frame(hightwi, xy = TRUE)
+ltwi <- as.data.frame(lowtwi, xy = TRUE)
+# ggplot(data = ltwi[complete.cases(ltwi), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = 15,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")
+# # 
+# ggplot(data = htwi[complete.cases(htwi), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = max(htwi$layer, na.rm = TRUE)/2,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")
+
+
+lowTWI <- readGDAL("C:/Classes/AppliedBiostat/Project/LowTWI.tif")#TWI calculated by SAGA
+highTWI <- readGDAL("C:/Classes/AppliedBiostat/Project/HighTWI.tif")
+lowt <- data.frame(lowTWI)
+# ggplot(data = lowt, aes(x = x, y = y))+geom_raster(aes(fill = band1))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = -8,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")#+ geom_point(aes(x = lon,  y = lat, color = hspray), data = lowsite[-565, ])+scale_colour_manual("Spray", values = c("green", "blue"))
+# 
+hight <- data.frame(highTWI)
+# ggplot(data = hight, aes(x = x, y = y))+geom_raster(aes(fill = band1))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = -5,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")#+ geom_point(aes(x = lon,  y = lat, color = hspray), data = highsite)+scale_colour_manual("Spray", values = c("red", "blue"))
+@
+
+<<smoothTWI, echo = FALSE>>= 
+#use focal to create moving window with gaussian weights for assiging household risk
+#create filter for focal window
+r <- raster(ncols = 36, nrows = 36, xmn = 0)
+#convert TWI to raster
+lowtr <- raster(lowTWI, layer = "band1")
+hightr <- raster(highTWI, layer = "band1")
+fmat <- focalWeight(r, d = 10, type = 'Gauss')
+mriskLow <- focal(lowtr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/smoothLowTWI', pad = T, padValue = median(lowt$band1), overwrite = T)
+mriskHigh <- focal(hightr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/smoothHighTWI', pad = T, padValue = median(hight$band1), overwrite = T)
+@
+<<PlotTWI, echo = FALSE, eval = FALSE>>= 
+lowtrp <- as.data.frame(mriskLow, xy = T)
+hightrp <- as.data.frame(mriskHigh, xy = T)
+infectLow <- ggplot(data = lowtrp[complete.cases(lowtrp), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Infection Risk", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  =  -12,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+theme(legend.position = 'bottom')+ geom_point(aes(x = lon,  y = lat), data = lowsite[-565, ], alpha = 0.9)+xlab("Longitute")+ylab("Latitude")
+infectHigh <- ggplot(data = hightrp[complete.cases(hightrp), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Infection Risk", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  =  median(hightrp$layer, na.rm = T),  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+theme(legend.position = 'bottom')+ geom_point(aes(x = lon,  y = lat), data = highsite, alpha = 0.8)+xlab("Longitute")+ylab("Latitude")
+
+library(gridExtra)
+grid.arrange(infectLow, infectHigh, ncol = 2)
+@
+
+<< assignRisktoHouse, echo = FALSE>>= 
+lowsite$mrisk <- extract(mriskLow, y = cbind(lowsite$lon, lowsite$lat))
+highsite$mrisk <- extract(mriskHigh, y = cbind(highsite$lon, highsite$lat))
+#Standardize the risk scores
+lowsite$mriskpos <- lowsite$mrisk+abs(min(lowsite$mrisk, na.rm = T))
+highsite$mriskpos <- highsite$mrisk+abs(min(highsite$mrisk, na.rm = T))
+lowsite$mriskstd <- scale(log(lowsite$mriskpos+1), center = F)
+highsite$mriskstd <- scale(log(highsite$mriskpos+1), center = F)
+@
+
+<<plotMrisk, echo = FALSE, eval = FALSE>>= 
+ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = mriskstd), data = lowsite[-565, ], alpha = 0.9)+scale_colour_gradient("Mosquito Risk", low = "blue", high = "red")
+
+ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = mriskstd), data = highsite, alpha = 0.8)+scale_colour_gradient("Mosquito Risk", low = "blue", high = "red")
+@
+
+<<plotArisk, echo = FALSE, eval = FALSE>>= 
+ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = arisk), data = lowsite[-565, ], alpha = 0.9)+scale_colour_gradient("Age Risk", low = "blue", high = "red")
+
+ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = arisk), data = highsite, alpha = 0.8)+scale_colour_gradient("Age Risk", low = "blue", high = "red")
+
+lowp$site  <-  "Endemic"
+highp$site  <-  "Epidemic"
+pdat  <-  rbind(lowp,  highp)
+@
+
+<<CombinedRisk, echo = FALSE>>= 
+lowsite$comrsk <- lowsite$mriskstd+lowsite$arisk
+highsite$comrsk <- highsite$mriskstd+highsite$arisk
+lowsite$site  <-  "Endemic"
+highsite$site  <-  "Epidemic"
+sitedat  <-  rbind(lowsite[-565, ],  highsite)
+@
+
+<<plotCombrisk, echo = FALSE, fig.height = 3, fig.width = 3, eval = FALSE>>= 
+lowComb <- ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = comrsk), data = lowsite[-565, ], alpha = 0.9)+scale_colour_gradient("Combined Risk", low = "blue", high = "red")+theme(legend.position = 'bottom', legend.box = 'horizontal')
+
+highComb <- ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = comrsk), data = highsite, alpha = 0.8)+scale_colour_gradient("Combined Risk", low = "blue", high = "red")+theme(legend.position = 'bottom', legend.box = 'horizontal')
+library(gridExtra)
+grid.arrange(lowComb, highComb, ncol = 2)
+
+highm <-  get_googlemap(center = c(34.965, .2),  zoom  =  13,  maptype = "terrain", filename = "c:/Classes/AppliedBiostat/HighSite")
+highmap  <-  ggmap(highm) + geom_point(aes(x = lon,  y = lat, color = comrsk),  data = highsite,  alpha = 0.8) + scale_colour_gradient("Combined Risk",  low = "blue",  high = "red") + theme(legend.position = 'bottom', legend.box = 'horizontal')
+
+lowm <-  get_googlemap(center = c(34.98, -.08),  zoom  =  14,  maptype = "terrain", filename = "c:/Classes/AppliedBiostat/LowSite")
+lowmap  <-  ggmap(lowm) + geom_point(aes(x = lon,  y = lat, color = comrsk),  data = lowsite[-565, ],  alpha = 0.9) + scale_colour_gradient("Combined Risk",  low = "blue",  high = "red") + theme(legend.position = 'bottom',  legend.box = 'horizontal')
+
+grid.arrange(lowmap,  highmap,  ncol = 2)
+@
+
+<<checkLinearityAssumption, echo = FALSE, results = 'hide', eval = FALSE>>= 
+lowsite$hspray <- ifelse(lowsite$hspray =  = "No", 0, 1)
+lowsite$net <- ifelse(lowsite$net =  = "No", 0, 1)
+highsite$hspray <- ifelse(highsite$hspray =  = "No", 0, 1)
+highsite$net <- ifelse(highsite$net =  = "No", 0, 1)
+
+rcspline.plot(lowsite$comrsk, lowsite$net, model = "logistic", xlab = "Combined Risk", ylab = "Log Odds Net Use")#evidence of non-linearity (u-shape)
+rcspline.plot(highsite$comrsk, highsite$net, model = "logistic", xlab = "Combined Risk")
+rcspline.plot(lowsite$comrsk, lowsite$hspray, model = "logistic")
+rcspline.plot(highsite$comrsk, highsite$hspray, model = "logistic")
+
+rcspline.plot(lowsite$arisk, lowsite$net, model = "logistic")
+rcspline.plot(highsite$arisk, highsite$net, model = "logistic")
+
+rcspline.plot(lowsite$arisk, lowsite$hspray, model = "logistic")
+rcspline.plot(highsite$arisk, highsite$hspray, model = "logistic")
+
+rcspline.plot(lowsite$mrisk, lowsite$net, model = "logistic")
+rcspline.plot(highsite$mrisk, highsite$net, model = "logistic", xlab = "Mosquito Risk")#evidence of non-linearity increasing,  leveling off then slight decrease
+rcspline.plot(lowsite$mrisk, lowsite$hspray, model = "logistic")
+rcspline.plot(highsite$mrisk, highsite$hspray, model = "logistic", xlab = "Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
+@
+
+<<model1, echo = FALSE>>= 
+m1ls <- glm(hspray~comrsk, data = lowsite, family = "binomial")
+m1ls.est <- c(exp(summary(m1ls)$coef[2, 1]), exp(summary(m1ls)$coef[2, 1]-1.96*summary(m1ls)$coef[2, 2]), exp(summary(m1ls)$coef[2, 1]+1.96*summary(m1ls)$coef[2, 2]))
+m1ln <- glm(net~comrsk, data = lowsite, family = "binomial")
+m1ln.est <- c(exp(summary(m1ln)$coef[2, 1]), exp(summary(m1ln)$coef[2, 1]-1.96*summary(m1ln)$coef[2, 2]), exp(summary(m1ln)$coef[2, 1]+1.96*summary(m1ln)$coef[2, 2]))
+#adjust for non-linearity
+lq1 <- quantile(lowsite$comrsk, prob = .25)
+lq2 <- quantile(lowsite$comrsk, prob = .5)
+lq3 <- quantile(lowsite$comrsk, prob = .75)
+lowsite$comrsk_q <- ifelse(lowsite$comrsk < =  lq1, 1, ifelse(lowsite$comrsk>lq1 & lowsite$comrsk< = lq2, 2, ifelse(lowsite$comrsk>lq2 & lowsite$comrsk< = lq3, 3, 4)))
+m1lnq <- glm(net~factor(comrsk_q), data = lowsite, family = "binomial")
+# summary(m1lnq)
+
+m1hs <- glm(hspray~comrsk, data = highsite, family = "binomial")
+m1hs.est <- c(exp(summary(m1hs)$coef[2, 1]), exp(summary(m1hs)$coef[2, 1]-1.96*summary(m1hs)$coef[2, 2]), exp(summary(m1hs)$coef[2, 1]+1.96*summary(m1hs)$coef[2, 2]))
+m1hn <- glm(net~comrsk, data = highsite, family = "binomial")
+m1hn.est <- c(exp(summary(m1hn)$coef[2, 1]), exp(summary(m1hn)$coef[2, 1]-1.96*summary(m1hn)$coef[2, 2]), exp(summary(m1hn)$coef[2, 1]+1.96*summary(m1hn)$coef[2, 2]))
+
+Treatment <- rep(c("Net", "Spray"), 2)
+Site <- c("High", "", "Low", "")
+outmat <- round(matrix(c(m1hn.est, m1hs.est, m1ln.est, m1ls.est), 4, 3, byrow = T), 2)
+colnames(outmat) <- c("OR", "Lower 95% CI", "Upper 95% CI")
+obj1out <- cbind(Site, Treatment, outmat)
+@
+
+\section{Results}
+The odds of receiving either a bed net or aerial spraying are higher for households with higher combined risk,  but only at the high site (table 1).  For each 1 standard deviation increase in combined risk at the high site the probability of receiving a bed net increases 27% (OR: 1.27,  95% CI: 1.18,  1.35) and the probability of aerial spraying increases 15% (OR: 1.15,  95% CI: 1.03,  1.29).  At the low site,  we found no preferential administration of either treatment to high combined risk households.  We found some evidence,  from the fitting of a restricted cubic spline,  of a non-linear relationship between the log-odds of net use and combined risk at the low site.  However,  modelling the mean risk for each risk quantile did not change our results. 
+
+The probability of bed net use at the high site was more strongly associated with age-based risk,  whereas the probability of aerial spraying at the high site was more strongly associated with mosquito-based risk (table 3).  However,  We did not find the same pattern at the low site where we found households with high mosquito-based risk were actually significantly less likely to receive aerial spraying (OR: 0.35,  95% CI: 0.14,  0.83).  
+
+Table 1. Odds of receiving a treatment as a function of combined risk.
+<<Obj1Table, echo = FALSE, results = 'asis'>>= 
+pandoc.table(obj1out, type = "rmarkdown", split.tables = Inf)
+@
+
+<<SepModels, echo = FALSE>>= 
+#Separate model for each risk type
+m2als <- glm(hspray~arisk, data = lowsite, family = "binomial")
+m2als.est <- c(exp(summary(m2als)$coef[2, 1]), exp(summary(m2als)$coef[2, 1]-1.96*summary(m2als)$coef[2, 2]), exp(summary(m2als)$coef[2, 1]+1.96*summary(m2als)$coef[2, 2]))
+m2aln <- glm(net~arisk, data = lowsite, family = "binomial")
+m2aln.est <- c(exp(summary(m2aln)$coef[2, 1]), exp(summary(m2aln)$coef[2, 1]-1.96*summary(m2aln)$coef[2, 2]), exp(summary(m2aln)$coef[2, 1]+1.96*summary(m2aln)$coef[2, 2]))
+m2mls <- glm(hspray~mrisk, data = lowsite, family = "binomial")
+m2mls.est <- c(exp(summary(m2mls)$coef[2, 1]), exp(summary(m2mls)$coef[2, 1]-1.96*summary(m2mls)$coef[2, 2]), exp(summary(m2mls)$coef[2, 1]+1.96*summary(m2mls)$coef[2, 2]))
+m2mln <- glm(net~mrisk, data = lowsite, family = "binomial")
+m2mln.est <- c(exp(summary(m2mln)$coef[2, 1]), exp(summary(m2mln)$coef[2, 1]-1.96*summary(m2mln)$coef[2, 2]), exp(summary(m2mln)$coef[2, 1]+1.96*summary(m2mln)$coef[2, 2]))
+
+m2ahs <- glm(hspray~arisk, data = highsite, family = "binomial")
+m2ahs.est <- c(exp(summary(m2ahs)$coef[2, 1]), exp(summary(m2ahs)$coef[2, 1]-1.96*summary(m2ahs)$coef[2, 2]), exp(summary(m2ahs)$coef[2, 1]+1.96*summary(m2ahs)$coef[2, 2]))
+m2ahn <- glm(net~arisk, data = highsite, family = "binomial")
+m2ahn.est <- c(exp(summary(m2ahn)$coef[2, 1]), exp(summary(m2ahn)$coef[2, 1]-1.96*summary(m2ahn)$coef[2, 2]), exp(summary(m2ahn)$coef[2, 1]+1.96*summary(m2ahn)$coef[2, 2]))
+m2mhs <- glm(hspray~mrisk, data = highsite, family = "binomial")
+m2mhs.est <- c(exp(summary(m2mhs)$coef[2, 1]), exp(summary(m2mhs)$coef[2, 1]-1.96*summary(m2mhs)$coef[2, 2]), exp(summary(m2mhs)$coef[2, 1]+1.96*summary(m2mhs)$coef[2, 2]))
+m2mhn <- glm(net~mrisk, data = highsite, family = "binomial")
+m2mhn.est <- c(exp(summary(m2mhn)$coef[2, 1]), exp(summary(m2mhn)$coef[2, 1]-1.96*summary(m2mhn)$coef[2, 2]), exp(summary(m2mhn)$coef[2, 1]+1.96*summary(m2mhn)$coef[2, 2]))
+
+sepmat <- round(matrix(c(m2ahn.est, m2mhn.est, m2ahs.est, m2mhs.est, m2aln.est, m2mln.est, m2als.est, m2mls.est), 4, 6, byrow = T), 2)
+colnames(sepmat) <- c(rep("Age Risk", 3), rep("Mosquito Risk", 3))
+est <- c("", "", rep(c("OR", "Lower 95% CI", "Upper 95% CI"), 2))
+sepout <- cbind(Site, Treatment, sepmat)
+sepout <- rbind(est, sepout)
+rownames(sepout) <- 1:nrow(sepout)
+@
+
+Table 2.  Odds of treatment from risk of either mosquito exposure or malaria risk.
+<<objective2Table, echo = FALSE, results = 'asis'>>= 
+pandoc.table(sepout, type = "rmarkdown", split.tables = Inf)
+@
+
+
+<<smoothTWI_sens, echo = FALSE>>= 
+#use focal to create moving window with gaussian weights for assiging household risk
+# create filter for focal window
+r <- raster(ncols = 36, nrows = 36, xmn = 0)
+#convert TWI to raster
+lowtr_s <- lowtwi
+hightr_s <- hightwi
+fmat <- focalWeight(r, d = 10, type = 'Gauss')
+mriskLows <- focal(lowtr_s, fmat, filename = 'smoothLowTWI_sens', pad = T, padValue = median(lowt$band1), overwrite = T)
+mriskHighs <- focal(hightr_s, fmat, filename = 'smoothHighTWI_sens', pad = T, padValue = median(hight$band1), overwrite = T)
+@
+
+<<plotTWI_Sens, echo = FALSE, eval = FALSE>>= 
+lowtrps <- as.data.frame(mriskLows, xy = T)
+hightrps <- as.data.frame(mriskHighs, xy = T)
+lowtrps$stdrsk <- base::scale(lowtrps$layer)
+hightrps$stdrsk <- base::scale(hightrps$layer)
+
+TWIlowSens <- ggplot(data = lowtrps[complete.cases(lowtrps), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Unscaled Infection Risk", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  =  median(lowtrps$layer, na.rm = T),  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+theme_bw()+theme(legend.position = 'bottom')+ geom_point(aes(x = lon,  y = lat), data = lowsite[-565, ], alpha = 0.9, pch = 1)+ggtitle("Endemic Site")+xlab("Longitude")+ylab("Latitude")
+
+TWIhighSens <- ggplot(data = hightrps[complete.cases(hightrps), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  =  median(hightrps$layer, na.rm = T),  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+theme_bw()+theme(legend.position = 'bottom')+ geom_point(aes(x = lon,  y = lat), data = highsite[-which(highsite$lon =  = max(highsite$lon)), ], alpha = 0.8, pch = 1)+ggtitle("Epidemic-prone Site")+xlab("Longitude")+ylab("Latitude")
+library(gridExtra)
+grid.arrange(TWIlowSens, TWIhighSens, ncol = 2)
+#ggsave(filename = "C:/Classes/AppliedBiostat/Manuscript/TWIPanelSens.emf", width = 6, height = 3, units = "in")
+@
+
+
+<<assignRisktoHouse_sens, echo = FALSE>>= 
+lowsite$mrisks <- extract(mriskLows, y = cbind(lowsite$lon, lowsite$lat))
+highsite$mrisks <- extract(mriskHighs, y = cbind(highsite$lon, highsite$lat))
+#Standardize the risk scores
+lowsite$mriskstds <- scale(log(lowsite$mrisks+1), center = F)
+highsite$mriskstds <- scale(log(highsite$mrisks+1), center = F)
+@
+
+<<plotMrisk_sens, echo = FALSE, eval = FALSE>>= 
+lowInfect <- ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = mrisks), data = lowsite, alpha = 0.9)+scale_colour_gradient("Infection Risk", low = "blue", high = "red")
+
+highInfect <- ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = mrisks), data = highsite, alpha = 0.8)+scale_colour_gradient("Infection Risk", low = "blue", high = "red")
+
+@
+
+
+<<CombinedRisk_sens, echo = FALSE>>= 
+lowsite$comrsks <- scale(log(lowsite$mrisks+1), center = F)+scale(log(lowsite$arisk+1), center = F)
+highsite$comrsks <- scale(log(highsite$mrisks+1), center = F)+scale(log(highsite$arisk+1), center = F)
+both <- rbind(lowsite[, -34], highsite)
+@
+
+<<plotCombrisk_sens, echo = FALSE, fig.height = 7, fig.width = 7, eval = FALSE>>= 
+
+lowCombined <- ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = comrsks), data = lowsite, alpha = 0.9)+scale_colour_gradient("Combined Risk", low = "blue", high = "red")+theme_bw()+theme(legend.position = 'bottom', legend.box = 'horizontal')+ylim(c(-.1, -.06))+xlim(c(34.96, 35.01))+ylab("Latitude")+xlab("Longitude")+ggtitle("Endemic Site")
+
+highcombined <- ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = comrsks), data = highsite, alpha = 0.8)+scale_colour_gradient("Combined Risk", low = "blue", high = "red")+theme_bw()+theme(legend.position = 'bottom', legend.box = 'horizontal')+ylab("Latitude")+xlab("Longitude")+ggtitle("Epidemic-prone Site")
+
+
+library(gridExtra)
+grid.arrange(lowCombined, highcombined, ncol = 2)
+
+#density plots
+#make idealized intervention
+both <- both[-3142, ]
+probs <- both$comrsks/max(both$comrsks, na.rm = T)
+both$ideal <- rbinom(dim(both)[1], 1, prob = probs)
+both$Site <- ifelse(both$site =  = "Low", "Endemic", "Epidemic-Prone")
+netplot <- ggplot(data = both, aes(x = comrsks))+geom_density(aes(fill = factor(net)), alpha = .6, adjust = 2)+facet_wrap(~Site)+theme_bw()+xlab("Standardized Combined Risk")+scale_fill_manual("LLIN Usage", values = c("red", "blue"), labels = c("No", "Yes"))
+sprayplot <- ggplot(data = both, aes(x = comrsks))+geom_density(aes(fill = factor(hspray)), alpha = .6, adjust = 2)+facet_wrap(~Site)+theme_bw()+xlab("Standardized Combined Risk")+scale_fill_manual("IRS Usage", values = c("red", "blue"), labels = c("No", "Yes"))
+idealplot <- ggplot(data = both, aes(x = comrsks))+geom_density(aes(fill = factor(ideal)), alpha = .6, adjust = 2)+facet_wrap(~Site)+theme_bw()+xlab("Standardized Combined Risk")+scale_fill_manual("Ideal\nTargeted\nIntervention", values = c("red", "blue"), labels = c("No", "Yes"))
+grid.arrange(netplot, sprayplot, idealplot, ncol = 1)
+
+@
+
+<<checkLinearityAssumption_sens, echo = FALSE, results = 'hide', eval = FALSE>>= 
+# lowsite$hspray <- ifelse(lowsite$hspray =  = "No", 0, 1)
+# lowsite$net <- ifelse(lowsite$net =  = "No", 0, 1)
+# highsite$hspray <- ifelse(highsite$hspray =  = "No", 0, 1)
+# highsite$net <- ifelse(highsite$net =  = "No", 0, 1)
+
+rcspline.plot(lowsite$comrsks, lowsite$net, model = "logistic", xlab = "Combined Risk", ylab = "Log Odds Net Use")#evidence of non-linearity (u-shape)
+rcspline.plot(highsite$comrsks, highsite$net, model = "logistic", xlab = "Combined Risk")
+rcspline.plot(lowsite$comrsks, lowsite$hspray, model = "logistic")
+rcspline.plot(highsite$comrsks, highsite$hspray, model = "logistic")
+
+rcspline.plot(lowsite$arisk, lowsite$net, model = "logistic")
+rcspline.plot(highsite$arisk, highsite$net, model = "logistic")
+rcspline.plot(lowsite$arisk, lowsite$hspray, model = "logistic")
+rcspline.plot(highsite$arisk, highsite$hspray, model = "logistic")
+
+rcspline.plot(lowsite$mrisks, lowsite$net, model = "logistic")
+rcspline.plot(highsite$mrisks, highsite$net, model = "logistic", xlab = "Mosquito Risk")
+rcspline.plot(lowsite$mrisks, lowsite$hspray, model = "logistic")
+rcspline.plot(highsite$mrisks, highsite$hspray, model = "logistic", xlab = "Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
+@
+<<GlobalInteractionModel, echo = FALSE>>= 
+
+intsm <- glm(hspray~comrsks*site, data = both, family = "binomial")
+intnm <- glm(net~comrsks*site, data = both, family = "binomial")
+@
+<<model1_sens, echo = FALSE>>= 
+m1ls <- glm(hspray~comrsks, data = lowsite, family = "binomial")
+m1ls.est <- c(exp(summary(m1ls)$coef[2, 1]), exp(summary(m1ls)$coef[2, 1]-1.96*summary(m1ls)$coef[2, 2]), exp(summary(m1ls)$coef[2, 1]+1.96*summary(m1ls)$coef[2, 2]))
+m1ln <- glm(net~comrsks, data = lowsite, family = "binomial")
+m1ln.est <- c(exp(summary(m1ln)$coef[2, 1]), exp(summary(m1ln)$coef[2, 1]-1.96*summary(m1ln)$coef[2, 2]), exp(summary(m1ln)$coef[2, 1]+1.96*summary(m1ln)$coef[2, 2]))
+
+m1hs <- glm(hspray~comrsks, data = highsite, family = "binomial")
+m1hs.est <- c(exp(summary(m1hs)$coef[2, 1]), exp(summary(m1hs)$coef[2, 1]-1.96*summary(m1hs)$coef[2, 2]), exp(summary(m1hs)$coef[2, 1]+1.96*summary(m1hs)$coef[2, 2]))
+m1hn <- glm(net~comrsks, data = highsite, family = "binomial")
+m1hn.est <- c(exp(summary(m1hn)$coef[2, 1]), exp(summary(m1hn)$coef[2, 1]-1.96*summary(m1hn)$coef[2, 2]), exp(summary(m1hn)$coef[2, 1]+1.96*summary(m1hn)$coef[2, 2]))
+
+Treatment <- rep(c("Net", "Spray"), 2)
+Site <- c("High", "", "Low", "")
+outmats <- round(matrix(c(m1hn.est, m1hs.est, m1ln.est, m1ls.est), 4, 3, byrow = T), 2)
+colnames(outmats) <- c("OR", "Lower 95% CI", "Upper 95% CI")
+obj1outs <- cbind(Site, Treatment, outmat, outmats)
+@
+
+\subsection{Sensitivity Analysis}
+
+The use of the restricted TWI algorithm identified fewer regions as high risk than the SAGA packaged algorithm at both sites (fig. 2).  The use of the restricted TWI based risk surface in the combined risk score increased the odds of high-risk households receiving a treatment for both the high and low sites,  although the increase in OR for the low site remained non-significant (table 3).
+
+Eliminating elderly household members from the age-based risk calculation increased the odds ratio for net use at both the high and low sites (Table 4).  However,  the OR for aerial spraying decreased slightly at both sites.  
+
+Table 3. Comparison of restricted TWI results with general TWI results.
+<<Obj1Table_sens, echo = FALSE, results = 'asis'>>= 
+pandoc.table(obj1outs, type = "rmarkdown", split.tables = Inf)
+@
+
+<<SepModels_sens, echo = FALSE>>= 
+#Separate model for each risk type
+m2als <- glm(hspray~arisk, data = lowsite, family = "binomial")
+m2als.est <- c(exp(summary(m2als)$coef[2, 1]), exp(summary(m2als)$coef[2, 1]-1.96*summary(m2als)$coef[2, 2]), exp(summary(m2als)$coef[2, 1]+1.96*summary(m2als)$coef[2, 2]))
+m2aln <- glm(net~arisk, data = lowsite, family = "binomial")
+m2aln.est <- c(exp(summary(m2aln)$coef[2, 1]), exp(summary(m2aln)$coef[2, 1]-1.96*summary(m2aln)$coef[2, 2]), exp(summary(m2aln)$coef[2, 1]+1.96*summary(m2aln)$coef[2, 2]))
+m2mls <- glm(hspray~arisks, data = lowsite, family = "binomial")
+m2mls.est <- c(exp(summary(m2mls)$coef[2, 1]), exp(summary(m2mls)$coef[2, 1]-1.96*summary(m2mls)$coef[2, 2]), exp(summary(m2mls)$coef[2, 1]+1.96*summary(m2mls)$coef[2, 2]))
+m2mln <- glm(net~arisks, data = lowsite, family = "binomial")
+m2mln.est <- c(exp(summary(m2mln)$coef[2, 1]), exp(summary(m2mln)$coef[2, 1]-1.96*summary(m2mln)$coef[2, 2]), exp(summary(m2mln)$coef[2, 1]+1.96*summary(m2mln)$coef[2, 2]))
+
+m2ahs <- glm(hspray~arisk, data = highsite, family = "binomial")
+m2ahs.est <- c(exp(summary(m2ahs)$coef[2, 1]), exp(summary(m2ahs)$coef[2, 1]-1.96*summary(m2ahs)$coef[2, 2]), exp(summary(m2ahs)$coef[2, 1]+1.96*summary(m2ahs)$coef[2, 2]))
+m2ahn <- glm(net~arisk, data = highsite, family = "binomial")
+m2ahn.est <- c(exp(summary(m2ahn)$coef[2, 1]), exp(summary(m2ahn)$coef[2, 1]-1.96*summary(m2ahn)$coef[2, 2]), exp(summary(m2ahn)$coef[2, 1]+1.96*summary(m2ahn)$coef[2, 2]))
+m2mhs <- glm(hspray~arisks, data = highsite, family = "binomial")
+m2mhs.est <- c(exp(summary(m2mhs)$coef[2, 1]), exp(summary(m2mhs)$coef[2, 1]-1.96*summary(m2mhs)$coef[2, 2]), exp(summary(m2mhs)$coef[2, 1]+1.96*summary(m2mhs)$coef[2, 2]))
+m2mhn <- glm(net~arisks, data = highsite, family = "binomial")
+m2mhn.est <- c(exp(summary(m2mhn)$coef[2, 1]), exp(summary(m2mhn)$coef[2, 1]-1.96*summary(m2mhn)$coef[2, 2]), exp(summary(m2mhn)$coef[2, 1]+1.96*summary(m2mhn)$coef[2, 2]))
+
+sepmats <- round(matrix(c(m2ahn.est, m2mhn.est, m2ahs.est, m2mhs.est, m2aln.est, m2mln.est, m2als.est, m2mls.est), 4, 6, byrow = T), 2)
+colnames(sepmats) <- c(rep("Age Risk (<5 or >65)", 3), rep("Age Risk (<5)", 3))
+est <- c("", "", rep(c("OR", "Lower 95% CI", "Upper 95% CI"), 2))
+sepouts <- cbind(Site, Treatment, sepmats)
+sepouts <- rbind(est, sepouts)
+rownames(sepouts) <- 1:nrow(sepouts)
+@
+
+Table 4.  Comparison of the odds of receiving a treatment based on health risk due to age with and without the inclusion of elderly household members. 
+<<r objective2Table_sens, echo = FALSE, results = 'asis'>>= 
+pandoc.table(sepouts, type = "rmarkdown", split.tables = Inf)
+@
+
+\section{Discussion}
+
+Current protocols for administration of bed nets target pregnant women.  Therefore,  we would expect that households with young children would be more likely to have bed nets.  We found that age-based risk was associated with an increased probability of bed net use at the high site but not the low site.  Although the association of bed net use with high age-based risk improved slightly when elderly adults were removed from the risk calculation,  it was still not substantial or significant.  
+
+Aerial spraying is intended to target households at high risk for mosquito exposure under current protocols so we would expect that households with high mosquito-based risk would be associated with aerial spraying.  Again,  this is the pattern we observed at the high site but not the low site where we found the opposite association.  Use of the restricted TWI algorithm suggested that the association was at least in the preferable direction at the low site but not significantly.  The sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as ground-truthing or infection rate data.  This has been done previously (CITE CITE),  but only with a single algorithm.  
+
+
+
+
+\end{document}
