@@ -1,0 +1,673 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.4.16)  30 JAN 2016 16:08
+entering extended mode
+**LaRoche_Manuscript_JABES.tex
+(C:\Classes\AppliedBiostat\Project\LaRoche_Manuscript_JABES.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
+abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
+croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
+lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
+ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
+ lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
+german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
+an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
+ishmax, welsh, loaded.
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+(C:\Users\Dominic\AppData\Roaming\MiKTeX\2.9\tex\latex\framed\framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip43
+\fb@frw=\dimen105
+\fb@frh=\dimen106
+\FrameRule=\dimen107
+\FrameSep=\dimen108
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\alltt.sty"
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+(C:\Users\Dominic\AppData\Roaming\MiKTeX\2.9\tex\latex\upquote\upquote.sty
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+)
+(C:\Classes\AppliedBiostat\Project\LaRoche_Manuscript_JABES.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+
+(C:\Users\Dominic\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count88
+\scratchdimen=\dimen109
+\scratchbox=\box26
+\nofMPsegments=\count89
+\nofMParguments=\count90
+\everyMPshowfont=\toks15
+\MPscratchCnt=\count91
+\MPscratchDim=\dimen110
+\MPnumerator=\count92
+\makeMPintoPDFobject=\count93
+\everyMPtoPDFconversion=\toks16
+)
+Package color Info: Redefining color shadecolor on input line 56.
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 59.
+
+
+LaTeX Warning: Citation `Crouch2005' on page 1 undefined on input line 72.
+
+
+LaTeX Warning: Citation `Shantz-Dunn2009' on page 1 undefined on input line 72.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--73
+
+ []
+
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+
+LaTeX Warning: Citation `CITE3' on page 1 undefined on input line 74.
+
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
+
+ []
+
+
+LaTeX Warning: Citation `CITE4' on page 1 undefined on input line 76.
+
+
+LaTeX Warning: Citation `CITE2' on page 1 undefined on input line 76.
+
+
+LaTeX Warning: Citation `NEWCITE' on page 1 undefined on input line 76.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--77
+
+ []
+
+[1
+
+{C:/Users/Dominic/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+
+LaTeX Warning: Citation `CITE 5' on page 2 undefined on input line 78.
+
+
+LaTeX Warning: Citation `6' on page 2 undefined on input line 78.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--79
+
+ []
+
+
+LaTeX Warning: Citation `Bevin1979' on page 2 undefined on input line 82.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 83.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 83.
+! Argument of \frac has an extra }.
+<inserted text> 
+                \par 
+l.83 $$ln\frac{a}}
+                  {tanb},$$
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+! Paragraph ended before \frac was complete.
+<to be read again> 
+                   \par 
+l.83 $$ln\frac{a}}
+                  {tanb},$$
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.83 $$ln\frac{a}}
+                  {tanb},$$
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Display math should end with $$.
+<to be read again> 
+                   \par 
+l.83 $$ln\frac{a}}
+                  {tanb},$$
+The `$' that I just saw supposedly matches a previous `$$'.
+So I shall assume that you typed `$$' both times.
+
+! Too many }'s.
+<recently read> }
+                 
+l.83 $$ln\frac{a}}
+                  {tanb},$$
+You've closed more groups than you opened.
+Such booboos are generally harmless, so keep going.
+
+! Display math should end with $$.
+<to be read again> 
+                   a
+l.84 where $a
+             $ is the local upslope area and $tanb$ is the local slope in ra...
+The `$' that I just saw supposedly matches a previous `$$'.
+So I shall assume that you typed `$$' both times.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.86 
+     
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+Overfull \hbox (1513.04907pt too wide) in paragraph at lines 84--86
+\OT1/cmr/m/n/10 a$\OML/cmm/m/it/10 isthelocalupslopeareaand$\OT1/cmr/m/n/10 tan
+b$\OML/cmm/m/it/10 isthelocalslopeinradians:SinceTWIwasfirstdefinednumerousmeth
+odshavebeendevelopedtocalculateitTherearecurrentlymanywaystocalculateTWIinpract
+iceanditisunclearwhateffectadifferentTWIalgorithmwouldhaveonourresults:Inordert
+odeterminethesensitivityofourresultstochoiceofTWIalgorithmwecalculatedasecondmo
+squitorisksurfacewithtighterrestrictionsonwaterout \OMS/cmsy/m/n/10  $
+ []
+
+
+Overfull \hbox (2102.12611pt too wide) in paragraph at lines 84--86
+$\OML/cmm/m/it/10 flow:Wedidthisintwosteps:Wefirstidentifiedlocaldepressionsbyd
+etermining; foreachcellinthestudyregion; ifthecellhadalowerelevationthanthemean
+ofitsneighboringcells:Thiswilleffectivelyidentifyvalleysbutnotnecessarilypools;
+ i:e:wherewateroutflowislikelytobelow:Therefore; wealsocalculatedtheaspectvaria
+nceoftheneighboringcells:Areaswithhighaspectvariancearelikelytoformpoolsorpeaks
+:Combiningthetwomeasureswillidentifyonlydepressionswithlowwateroutflow:Werepeat
+edtheanalysesdescribedabovewiththerestrictedTWIalgorithm:[] $
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 84--86
+
+ []
+
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+
+Underfull \hbox (badness 10000) in paragraph at lines 95--96
+
+ []
+
+[2] [3]
+Overfull \hbox (1.13948pt too wide) in paragraph at lines 129--130
+[]\OT1/cmr/m/n/10 Each house-hold var-ied with re-spect to both the risk of ex-
+po-sure to mosquitoes
+ []
+
+! Undefined control sequence.
+l.130 $$\text
+             {Risk Score}  =  (2 \times \text{Children} \leq 1)+ (1 < \text{...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.130 $$\text{Risk Score}  =  (2 \times \text
+                                             {Children} \leq 1)+ (1 < \text{...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.130 ...times \text{Children} \leq 1)+ (1 < \text
+                                                  {Children} \leq 5) + (\tex...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.130 ...1)+ (1 < \text{Children} \leq 5) + (\text
+                                                  {Adults} > 65)$$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[4]
+! Undefined control sequence.
+l.142 ...p}{1-p}) = \beta_0 + \beta_1 \times \text
+                                                  {Combined Household Risk}, $$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.150 ...p}{1-p}) = \beta_0 + \beta_2 \times \text
+                                                  {Mosquito Exposure Risk} +...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.150 ...ito Exposure Risk} + \beta_3 \times \text
+                                                  {Health Risk}, $$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 165.
+
+Overfull \hbox (17.24684pt too wide) in paragraph at lines 168--169
+[]\OT1/cmtt/m/n/10 ## Error in library(SDMTools): there is no package called 'S
+DMTools'[] 
+ []
+
+
+Overfull \hbox (32.9967pt too wide) in paragraph at lines 170--171
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): could not find functi
+on "aspect"[] 
+ []
+
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 174--175
+[]\OT1/cmtt/m/n/10 ## Error in values(lowasp): error in evaluating the argument
+ 'x' in
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 174--175
+\OT1/cmtt/m/n/10 selecting a method for function 'values': Error: object 'lowas
+p'
+ []
+
+
+Overfull \hbox (6.74693pt too wide) in paragraph at lines 176--177
+[]\OT1/cmtt/m/n/10 ## Error in focal(lowaspc, aspmat3, fun = var, na.rm = T): e
+rror in
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 176--177
+\OT1/cmtt/m/n/10 evaluating the argument 'x' in selecting a method for function
+ 'focal':
+ []
+
+
+Overfull \hbox (6.74693pt too wide) in paragraph at lines 178--179
+[]\OT1/cmtt/m/n/10 ## Error in focal(lowaspc, aspmat7, fun = var, na.rm = T): e
+rror in
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 178--179
+\OT1/cmtt/m/n/10 evaluating the argument 'x' in selecting a method for function
+ 'focal':
+ []
+
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 180--181
+[]\OT1/cmtt/m/n/10 ## Error in focal(lowaspc, aspmat11, fun = var, na.rm = T): 
+error in
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 180--181
+\OT1/cmtt/m/n/10 evaluating the argument 'x' in selecting a method for function
+ 'focal':
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 182--183
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'aspvar3' not 
+found[] 
+ []
+
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 184--185
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'lowaspvar' no
+t found[] 
+ []
+
+
+Overfull \hbox (32.9967pt too wide) in paragraph at lines 186--187
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): could not find functi
+on "aspect"[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 188--189
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'highasp' not 
+found[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 190--191
+[]\OT1/cmtt/m/n/10 ## Error in values(highasp): error in evaluating the argumen
+t 'x'
+ []
+
+
+Overfull \hbox (22.4968pt too wide) in paragraph at lines 190--191
+\OT1/cmtt/m/n/10 in selecting a method for function 'values': Error: object 'hi
+ghasp'
+ []
+
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 192--193
+[]\OT1/cmtt/m/n/10 ## Error in focal(highaspc, aspmat3, fun = var, na.rm = T): 
+error in
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 192--193
+\OT1/cmtt/m/n/10 evaluating the argument 'x' in selecting a method for function
+ 'focal':
+ []
+
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 194--195
+[]\OT1/cmtt/m/n/10 ## Error in focal(highaspc, aspmat7, fun = var, na.rm = T): 
+error in
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 194--195
+\OT1/cmtt/m/n/10 evaluating the argument 'x' in selecting a method for function
+ 'focal':
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 196--197
+[]\OT1/cmtt/m/n/10 ## Error in focal(highaspc, aspmat11, fun = var, na.rm = T):
+ error
+ []
+
+
+Overfull \hbox (43.49661pt too wide) in paragraph at lines 196--197
+\OT1/cmtt/m/n/10 in evaluating the argument 'x' in selecting a method for funct
+ion 'focal':
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 198--199
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'aspvar3' not 
+found[] 
+ []
+
+
+Overfull \hbox (17.24684pt too wide) in paragraph at lines 200--201
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'highaspvar' n
+ot found[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 202--203
+[]\OT1/cmtt/m/n/10 ## Error in as.data.frame(hightwi, xy = TRUE): error in eval
+uating
+ []
+
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 202--203
+\OT1/cmtt/m/n/10 the argument 'x' in selecting a method for function 'as.data.f
+rame':
+ []
+
+
+Overfull \hbox (17.24684pt too wide) in paragraph at lines 204--204
+[]\OT1/cmtt/m/n/10 ## Error in as.data.frame(lowtwi, xy = TRUE): error in evalu
+ating the
+ []
+
+
+Overfull \hbox (32.9967pt too wide) in paragraph at lines 204--204
+\OT1/cmtt/m/n/10 argument 'x' in selecting a method for function 'as.data.frame
+': Error:
+ []
+
+[5] [6]
+Package color Info: Redefining color shadecolor on input line 267.
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 272--273
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'hightwi' not 
+found[] 
+ []
+
+
+Overfull \hbox (9.05688pt too wide) in paragraph at lines 274--275
+[]\OT1/cmtt/m/n/10 ## Error in focal(lowtr[]s, fmat, filename = "smoothLowTWI[]
+sens", pad
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 274--275
+\OT1/cmtt/m/n/10 = T, : error in evaluating the argument 'x' in selecting a met
+hod
+ []
+
+
+Overfull \hbox (19.5568pt too wide) in paragraph at lines 276--276
+[]\OT1/cmtt/m/n/10 ## Error in focal(hightr[]s, fmat, filename = "smoothHighTWI
+[]sens", pad
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 276--276
+\OT1/cmtt/m/n/10 = T, : error in evaluating the argument 'x' in selecting a met
+hod
+ []
+
+Package color Info: Redefining color shadecolor on input line 283.
+
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 286--287
+[]\OT1/cmtt/m/n/10 ## Error in extract(mriskLows, y = cbind(lowsite$lon, lowsit
+e$lat)):
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 286--287
+\OT1/cmtt/m/n/10 error in evaluating the argument 'x' in selecting a method for
+ function
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 288--288
+[]\OT1/cmtt/m/n/10 ## Error in extract(mriskHighs, y = cbind(highsite$lon, high
+site$lat)):
+ []
+
+
+Overfull \hbox (27.74675pt too wide) in paragraph at lines 288--288
+\OT1/cmtt/m/n/10 error in evaluating the argument 'x' in selecting a method for
+ function
+ []
+
+Package color Info: Redefining color shadecolor on input line 295.
+
+Overfull \hbox (74.99634pt too wide) in paragraph at lines 298--299
+[]\OT1/cmtt/m/n/10 ## Error in scale(log(lowsite$mrisks + 1), center = F) + sca
+le(log(lowsite$arisk
+ []
+
+
+Overfull \hbox (85.49625pt too wide) in paragraph at lines 300--300
+[]\OT1/cmtt/m/n/10 ## Error in scale(log(highsite$mrisks + 1), center = F) + sc
+ale(log(highsite$arisk
+ []
+
+[7]
+Package color Info: Redefining color shadecolor on input line 307.
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 310--311
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'comrsks' not 
+found[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 312--312
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'comrsks' not 
+found[] 
+ []
+
+Package color Info: Redefining color shadecolor on input line 315.
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 318--319
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'comrsks' not 
+found[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 320--321
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'comrsks' not 
+found[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 322--323
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'comrsks' not 
+found[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 324--324
+[]\OT1/cmtt/m/n/10 ## Error in eval(expr, envir, enclos): object 'comrsks' not 
+found[] 
+ []
+
+
+Overfull \hbox (11.41714pt too wide) in paragraph at lines 335--339
+[]\OT1/cmr/m/n/10 -------------------------------------------------------------
+--------------------------- Site Treat-
+ []
+
+[8] [9] (C:\Classes\AppliedBiostat\Project\LaRoche_Manuscript_JABES.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 1262 strings out of 493921
+ 17060 string characters out of 3147276
+ 73078 words of memory out of 3000000
+ 4589 multiletter control sequences out of 15000+200000
+ 5326 words of font info for 20 fonts, out of 3000000 for 9000
+ 841 hyphenation exceptions out of 8191
+ 27i,5n,21p,1034b,168s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
+sfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.p
+fb>
+Output written on LaRoche_Manuscript_JABES.pdf (9 pages, 138658 bytes).
+PDF statistics:
+ 68 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
