@@ -98,24 +98,34 @@ The government of Kenya developed the “National Malaria Strategy 2009-2017” 
 
 The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group~\cite{CITE4}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections~\cite{CITE2}. Identifying individuals which are both vulnerable to infection and likely to be exposed to an infected mosquito is therefore a priority.  However, exisiting distribution campains do not typically account for both infection risk and disease burden simulataneously \cite{NEWCITE}.\\  
 
-Remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection by identifying areas where water is likely to pool and Anopheles densities are likely to be higher~\cite{CITE 5, 6}. This method, therefore, has the potential to both inform new distribution campains and evaluate the efficacy of existing campains. Our primary objective was to use topographic data, combined with a household census of demographics and intervention use,  to develop a method for identifying high risk households.  Becuase of the wide variety of TWI algorithms used in practice we further wanted to investigate the sensitivity of the results to the choice of TWI algorithm.  We applied the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  Since policies for intervention administration, as well as topographic features, differed between the epidemic-prone and endemic regions we also sought to compare the sensitivity of the method to choice of TWI algorithm between these two regions.\\
+Freely available remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection by identifying areas where water is likely to pool and Anopheles densities are likely to be higher~\cite{CITE 5, 6}. This method, therefore, has the potential to both inform new distribution campains and evaluate the efficacy of existing campains. Our primary objective was to use topographic data, combined with a household census of demographics and intervention use,  to develop a method for identifying high risk households.  Becuase of the wide variety of TWI algorithms used in practice we further wanted to investigate the sensitivity of the results to the choice of TWI algorithm.  We applied the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  Since policies for intervention administration, as well as topographic features, differed between the epidemic-prone and endemic regions we also sought to compare the sensitivity of the method to choice of TWI algorithm between these two regions.\\
 
 \section{Statistical Methodology}%main idea is to use traditional or aspect variance methods and see if there is a substantial difference.  Would be best 
+Every household on a landscape will vary with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We develop a method to combine these two risk factors into an overall risk score for each household within a managment area in order to identify the households which will yeild the greatest benefit from the application of limited profalactic resources.\\
+
 \subsection{Topographical Wetness Index}
 The Topographical Wetness index was originally introduced by Bevin and Kirby in 1979~\cite{Bevin1979}.  TWI combines a measure of the amount of upstream drainage area with the local slope to determine the amount of wetness likely to accumulate at a point and is defined by Bevin and Kirby as:
 $$ln\frac{a}}{tanb},$$
-where $a$ is the local upslope area and $tanb$ is the local slope in radians.  Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sorenson2006} as well as alternative modeling strategies \cite{Grabs2009}.  The primary 
-There are currently many ways to calculate TWI in practice and it is unclear what effect a different TWI algorithm  would have on our results.  In order to determine the sensitivity of our results to choice of TWI algorithm we calculated a second mosquito risk surface with tighter restrictions on water out-flow.  We did this in two steps. We first identified local depressions by determining,  for each cell in the study region,  if the cell had a lower elevation than the mean of its neighboring cells.  This will effectively identify valleys but not necessarily pools,  i.e. where water outflow is likely to be low.  Therefore,  we also calculated the aspect variance of the neighboring cells.  Areas with high aspect variance are likely to form pools or peaks.  Combining the two measures will identify only depressions with low water outflow. We repeated the analyses described above with the restricted TWI algorithm.\\
+where $a$ is the local upslope area and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
+
+Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sorenson2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to breed.  However, it is unclear what effect differing TWI algorithms would have on our results. To determine the sensitivity of our method to choice of TWI algorithm, we implement 3 differnt algorithms which differ in their calculation of the upslope area and local slope: 1) traditional TWI~\cite{Bevin1979}, 2) the SAGA Wetness Index~\cite{Boehner2001}, and 3) a simplified terrain wetness index which simply identifies depressions.  We carried out all analyses using the statistical programming language R version 3.2.3~\cite{R}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software ~\cite{Boehner2006}. Details for the calculation of all three methods are provided in appendix A.\\
+
+We assign each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area from each TWI algorithm.  We assume the mosquito exposure risk of a household is inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we apply a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assign each house the risk score of the cell it is in or, for high resolution topographical data such as LiDAR, the average of the cells a property occupies.
+
+
+\subsection{Individual Health Risk}
+Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We assigned an individual-based health risk score (age-based risk hereafter) to each household with the following formula:
+
+$$\text{Risk Score}  =  (2 \times \text{Children} \leq 1) + (1 < \text{Children} \leq 5) + (2 \times \text{Pregnant Women})$$
+
+We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk~\cite{Gupta1999, Snow1999, Menendez2000).  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zica virus children may have a relatively low health risk whereas pregnant women and sexually active women may have much higher risk.\\
+
+\subsection{Overall Risk}
 
 
 
-We utilized 90 meter resolution elevation data from the National Aeronautics and Space Administration (NASA) Shuttle Radar Topography Mission (SRTM).  The high elevation site was sufficiently covered by tile number 43-12 but we utilized two adjacent tiles (43-13 and 44-13) in order to eliminate possible edge effects for eastern households at the low site.
 
 
-
-\section{Description of the Data}
-\subsection{House Hold Data}
-Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
 
 <<r importNewData, echo = FALSE, message = FALSE, results = 'asis'>>= 
 rm(list = ls())
@@ -150,14 +160,18 @@ The unit of study for this analysis is the household since both bed nets and aer
 
 Since the two sites have substantially different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We also analyzed spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
 
-Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We assigned an age-based health risk score (age-based risk hereafter) to each household with the following formula:
-$$\text{Risk Score}  =  (2 \times \text{Children} \leq 1)+ (1 < \text{Children} \leq 5) + (\text{Adults} > 65)$$
 
-We assigned twice the weight to children under 1 since they have the highest risk of the categories (Gupta et al. 1999 and Snow et al. 1999).  We did not have information on pregnancy so we could not include this in the current risk assessment although there is a known risk for premature birth (Menendez et al. 2000).
 
-We assigned each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area.  We used a Topographical Wetness Index (TWI) derived from the DEM data to determine areas likely to provide breeding habitat for mosquitoes.  The TWI combines the total basin area (the area from which water will flow to a particular point) with the slope at that point to determine the amount of water likely to accumulate and provide breeding habitat for mosquitoes.  We used the TWI algorithm provided by the open source System for Automated Geo-scientific Analyses (SAGA) to locate areas of high wetness.  We assumed the mosquito exposure risk of a household was inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we applied a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assigned each house the risk score of the cell it was in.
 
-\subsection{Primary Analysis}
+
+\subsection{Example Analysis}
+
+We utilized 90 meter resolution elevation data from the National Aeronautics and Space Administration (NASA) Shuttle Radar Topography Mission (SRTM).  The high elevation site was sufficiently covered by tile number 43-12 but we utilized two adjacent tiles (43-13 and 44-13) in order to eliminate possible edge effects for eastern households at the low site.
+
+
+\section{Description of the Data}
+\subsection{House Hold Data}
+Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
 
 To be at risk for a poor outcome a person must 1) come in contact with a malaria hosting mosquito,  and 2) be inherently vulnerable to malaria infection (i.e. very young or very old).  We will create two risk scores representing each of these household risks.  The household health risk will be equal to the number of individuals at high risk (i.e. under age 5 or over age 65).  The household exposure risk will be equal to the score of the risk surface at the house location.  Since these risks will be calculated on different scales we will center at 0 and standardize risk scores so that they are scale-independent.
 
@@ -679,6 +693,8 @@ Current protocols for administration of bed nets target pregnant women.  Therefo
 Aerial spraying is intended to target households at high risk for mosquito exposure under current protocols so we would expect that households with high mosquito-based risk would be associated with aerial spraying.  Again,  this is the pattern we observed at the high site but not the low site where we found the opposite association.  Use of the restricted TWI algorithm suggested that the association was at least in the preferable direction at the low site but not significantly.  The sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as ground-truthing or infection rate data.  This has been done previously (CITE CITE),  but only with a single algorithm.  
 
 
+\includebibliography
 
+\appendix{A}
 
 \end{document}
