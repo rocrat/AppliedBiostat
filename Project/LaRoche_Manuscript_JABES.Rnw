@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{fullpage}
 %For regular papers, a motivating example should be presented early in the paper. The statistical development should then be presented, and the results applied to the example.
 
 \begin{document}
@@ -12,6 +13,7 @@ library(ggmap)
 library(MASS)
 library(plyr)
 library(dplyr)
+library(xtable)
 longdat <- read.csv("C:/Classes/AppliedBiostat/Project/Domconv_918.csv")[1:17823, ]
 longdat$site <- Recode(longdat$site, "c('High', 'HIGH') = 'High'")
 longdat$Villcodef <- as.factor(longdat$Villcode)
@@ -86,8 +88,8 @@ hdat <- data.frame(houses, numocc, numFem, numMale, oldest, youngest, headsex, h
 write.csv(hdat, "C:/Classes/AppliedBiostat/Project/housedata.csv")
 @
 
-\section{Abstract}
-Malaria is a significant threat to public health in countries where the disease is either endemic or epidemic. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria with the use of prophylactic interventions. The World Health Organization recommends preferential administration of interventions to pregnant women and infants because of the high disease burden borne by this group. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections. We use a topographic wetness index,  combined with a household census of intervention use,  at two sites in Kenya to assess intervention administration. We find preferential administration of interventions at the high-elevation epidemic-prone site but not at the low-elevation endemic site. Our results have important implications for assessing the administration of interventions in the battle against malaria.
+%\section{Abstract}
+%Malaria is a significant threat to public health in countries where the disease is either endemic or epidemic. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria with the use of prophylactic interventions. The World Health Organization recommends preferential administration of interventions to pregnant women and infants because of the high disease burden borne by this group. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections. We use a topographic wetness index,  combined with a household census of intervention use,  at two sites in Kenya to assess intervention administration. We find preferential administration of interventions at the high-elevation epidemic-prone site but not at the low-elevation endemic site. Our results have important implications for assessing the administration of interventions in the battle against malaria.
 
 
 \section{Introduction}
@@ -110,19 +112,15 @@ where $a$ is the local upslope area and $tanb$ is the local slope in radians.  T
 
 Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sorenson2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to breed.  However, it is unclear what effect differing TWI algorithms would have on our results. To determine the sensitivity of our method to choice of TWI algorithm, we implement 3 differnt algorithms which differ in their calculation of the upslope area and local slope: 1) traditional TWI~\cite{Bevin1979}, 2) the SAGA Wetness Index~\cite{Boehner2001}, and 3) a simplified terrain wetness index which simply identifies depressions.  We carried out all analyses using the statistical programming language R version 3.2.3~\cite{R}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software ~\cite{Boehner2006}. Details for the calculation of all three methods are provided in appendix A.\\
 
-We assign each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area from each TWI algorithm.  We assume the mosquito exposure risk of a household is inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we apply a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assign each house the risk score of the cell it is in or, for high resolution topographical data such as LiDAR, the average of the cells a property occupies.
+We assign each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area from each TWI algorithm.  We assume the mosquito exposure risk of a household is inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we apply a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assign each house the risk score of the cell it is in or, for high resolution topographical data such as LiDAR, the average of the cells a property occupies.\\
 
 
 \subsection{Individual Health Risk}
-Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We assigned an individual-based health risk score (age-based risk hereafter) to each household with the following formula:
-
-$$\text{Risk Score}  =  (2 \times \text{Children} \leq 1) + (1 < \text{Children} \leq 5) + (2 \times \text{Pregnant Women})$$
-
-We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk~\cite{Gupta1999, Snow1999, Menendez2000).  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zica virus children may have a relatively low health risk whereas pregnant women and sexually active women may have much higher risk.\\
+Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. The household risk formulae will vary depending on the disease under study and the most vulnerable population(s) for that disease.  We recommend a simple additive risk score, like the score formula provided below developed for malaria, based on expert opinion or relevant literature. The sole purpose of the health risk score is to differentiate households with high risk from those with low risk.  More complicated formulae can be constructed but we beleive a simple formula will be easier to interpret and adequate for most applications.\\
 
 \subsection{Overall Risk}
 
-
+To be at risk for a poor outcome a person must 1) come in contact with a disease harboring mosquito,  and 2) be inherently vulnerable to infection (e.g. very young or very old).  We create two risk scores representing each of these types of risk for every household on the landscape.  Since these risks will be calculated on different scales we will center at 0 and standardize risk scores so that they are scale-independent.  These two scores can then be combined with a weighted sum to create an overall risk score for the household.  Weights in the sum are determined by expert opinion, in our example below we use equal weights.  This method lends itself well to the addition of additional risk scores, such as the distance to a health care provider, or even risk attenuating factors such as the presence of window screens, which can all be summed together with appropriate weights. 
 
 
 
@@ -154,11 +152,11 @@ sumdat$ariskstds <- scale(log(sumdat$arisks+1), center = F)
 
 
 
-\section{Statistical Methods}
+%\section{Statistical Methods}
 
-The unit of study for this analysis is the household since both bed nets and aerial spraying are administered at the household level.  Therefore,  we summarized the information from the individual surveys into household attributes. We identified unique households by the unique combination of sub-location,  village,  and house number.  We found and eliminated duplicate individual surveys by identifying entries with identical house identification and age attributes.  This potentially removed non-duplicate individuals (such as twins in the same household) but we felt the introduced bias would be negligible.  For each unique house we calculated the number of individuals under 1,  the number of individuals over 1 and under 5,  and the number of individuals over 65.  We also determined if each house had received a bed net or aerial spraying.  Since responses among household members was not consistent we assigned a treatment to the house if any member of the house responded affirmatively.
+%The unit of study for this analysis is the household since both bed nets and aerial spraying are administered at the household level.  Therefore,  we summarized the information from the individual surveys into household attributes. We identified unique households by the unique combination of sub-location,  village,  and house number.  We found and eliminated duplicate individual surveys by identifying entries with identical house identification and age attributes.  This potentially removed non-duplicate individuals (such as twins in the same household) but we felt the introduced bias would be negligible.  For each unique house we calculated the number of individuals under 1,  the number of individuals over 1 and under 5,  and the number of individuals over 65.  We also determined if each house had received a bed net or aerial spraying.  Since responses among household members was not consistent we assigned a treatment to the house if any member of the house responded affirmatively.
 
-Since the two sites have substantially different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We also analyzed spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
+%Since the two sites have substantially different rates of spraying and bed net usage we will analyze the high and low sites separately with regards to these outcomes.  We also analyzed spraying and bed net usage separately within each site since these are known to be distributed to households under different protocols and are therefore likely to have different patterns.
 
 
 
@@ -166,33 +164,24 @@ Since the two sites have substantially different rates of spraying and bed net u
 
 \subsection{Example Analysis}
 
-We utilized 90 meter resolution elevation data from the National Aeronautics and Space Administration (NASA) Shuttle Radar Topography Mission (SRTM).  The high elevation site was sufficiently covered by tile number 43-12 but we utilized two adjacent tiles (43-13 and 44-13) in order to eliminate possible edge effects for eastern households at the low site.
+Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. Our objective was to determine if the highest risk households were given preference in the administration of interventions in the form of both bed nets and indoor residual spraying.\\
 
+We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
 
-\section{Description of the Data}
-\subsection{House Hold Data}
-Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
+We assigned an individual-based health risk score (age-based risk hereafter) to each household with the following formula:
 
-To be at risk for a poor outcome a person must 1) come in contact with a malaria hosting mosquito,  and 2) be inherently vulnerable to malaria infection (i.e. very young or very old).  We will create two risk scores representing each of these household risks.  The household health risk will be equal to the number of individuals at high risk (i.e. under age 5 or over age 65).  The household exposure risk will be equal to the score of the risk surface at the house location.  Since these risks will be calculated on different scales we will center at 0 and standardize risk scores so that they are scale-independent.
+$$\text{Risk Score}  =  (2 \times \text{Children} \leq 1) + (1 < \text{Children} \leq 5) + (2 \times \text{Pregnant Women})$$
 
-We will add the standardized household health risk with the standardized household exposure risk to create a combined risk.  We will then determine if high risk households are more likely to have received either a bed-net or aerial spraying with a logistic model;
+We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk~\cite{Gupta1999, Snow1999, Menendez2000).  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zica virus children may have a relatively low health risk whereas pregnant women and sexually active women may have much higher risk.\\
+
+We added the standardized household health risk with the standardized household exposure risk to create a combined risk.  We then determined if high risk households are more likely to have received either a bed-net or aerial spraying with a logistic model;
 
 $$log(\frac{p}{1-p}) = \beta_0 + \beta_1 \times \text{Combined Household Risk}, $$
 
-where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is > 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.  If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
+where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is > 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.\\  %If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
 
-\subsection{Secondary Analyses}
+In order to determin the sensitivity of this method to the choice of TWI algorithm, we repeated the analysis using each of the three TWI algorithms described in appendix A.
 
-Existing protocols may be adequate at addressing household risk due to either inherent health risk or mosquito exposure risk,  but not both.  We will conduct the same primary analysis but separate out these two risk scores as separate predictors:
-
-$$log(\frac{p}{1-p}) = \beta_0 + \beta_2 \times \text{Mosquito Exposure Risk} + \beta_3 \times \text{Health Risk}, $$
-
-where p  =  Probability of a house having a treatment.  The interpretation of $\beta_2$ and $\beta_3$ is the same as $\beta_1$ from the primary analysis,  but specific to a risk type.
-
-
-\subsection{Sensitivity Analyses}
-
-Bed nets are currently targeted at pregnant women so we expect that bed net usage will be higher in households with young children.  However,  our age-based risk score also incorporates elderly household members.  Therefore,  in order to determine if current protocols are effective in targeting pregnant women and young children,  we will re-define the age based risk to only include the two young child age categories. We will repeat the above analysis with the restricted age-based risk score for both bed nets and aerial spraying.
 
 
 
@@ -223,12 +212,10 @@ writeGDAL(as(highel, "SpatialPixelsDataFrame"), fname = "HighDEM.tif")
 
 lowsite <- sumdat[sumdat$site == "Low", ]
 lowp <- data.frame(rasterToPoints(lowelcomp))
-# ggplot(data = lowp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = hspray), data = lowsite[-565, ], alpha = 0.4)+scale_colour_manual("Spray", values = c("red", "blue"))
 
 highsite <- sumdat[sumdat$site == "High", ]
 highp <- data.frame(rasterToPoints(highel))
 names(highp)[3]  <-  "layer"
-# ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1714,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")+ geom_point(aes(x = lon,  y = lat, color = hspray), data = highsite, alpha = 0.4)+scale_colour_manual("Spray", values = c("red", "blue"))
 @
 
 <<computeSWI, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'>>= 
@@ -482,14 +469,14 @@ colnames(outmat) <- c("OR", "Lower 95% CI", "Upper 95% CI")
 obj1out <- cbind(Site, Treatment, outmat)
 @
 
-\section{Results}
-The odds of receiving either a bed net or aerial spraying are higher for households with higher combined risk,  but only at the high site (table 1).  For each 1 standard deviation increase in combined risk at the high site the probability of receiving a bed net increases 27% (OR: 1.27,  95% CI: 1.18,  1.35) and the probability of aerial spraying increases 15% (OR: 1.15,  95% CI: 1.03,  1.29).  At the low site,  we found no preferential administration of either treatment to high combined risk households.  We found some evidence,  from the fitting of a restricted cubic spline,  of a non-linear relationship between the log-odds of net use and combined risk at the low site.  However,  modelling the mean risk for each risk quantile did not change our results. 
+\subsection{Results}
+The odds of receiving either a bed net or aerial spraying are higher for households with higher combined risk,  but only at the high site (table 1).  For each 1 standard deviation increase in combined risk at the high site the probability of receiving a bed net increases 27\% (OR: 1.27,  95\% CI: 1.18,  1.35) and the probability of aerial spraying increases 15\% (OR: 1.15,  95\% CI: 1.03,  1.29).  At the low site,  we found no preferential administration of either treatment to high combined risk households.  We found some evidence,  from the fitting of a restricted cubic spline,  of a non-linear relationship between the log-odds of net use and combined risk at the low site.  However,  modelling the mean risk for each risk quantile did not change our results. 
 
-The probability of bed net use at the high site was more strongly associated with age-based risk,  whereas the probability of aerial spraying at the high site was more strongly associated with mosquito-based risk (table 3).  However,  We did not find the same pattern at the low site where we found households with high mosquito-based risk were actually significantly less likely to receive aerial spraying (OR: 0.35,  95% CI: 0.14,  0.83).  
+The probability of bed net use at the high site was more strongly associated with age-based risk,  whereas the probability of aerial spraying at the high site was more strongly associated with mosquito-based risk (table 3).  However,  We did not find the same pattern at the low site where we found households with high mosquito-based risk were actually significantly less likely to receive aerial spraying (OR: 0.35,  95\% CI: 0.14,  0.83).  
 
 Table 1. Odds of receiving a treatment as a function of combined risk.
 <<Obj1Table, echo = FALSE, results = 'asis'>>= 
-pandoc.table(obj1out, type = "rmarkdown", split.tables = Inf)
+xtable(obj1out)
 @
 
 <<SepModels, echo = FALSE>>= 
@@ -522,7 +509,7 @@ rownames(sepout) <- 1:nrow(sepout)
 
 Table 2.  Odds of treatment from risk of either mosquito exposure or malaria risk.
 <<objective2Table, echo = FALSE, results = 'asis'>>= 
-pandoc.table(sepout, type = "rmarkdown", split.tables = Inf)
+xtable(sepout)
 @
 
 
@@ -650,7 +637,7 @@ Eliminating elderly household members from the age-based risk calculation increa
 
 Table 3. Comparison of restricted TWI results with general TWI results.
 <<Obj1Table_sens, echo = FALSE, results = 'asis'>>= 
-pandoc.table(obj1outs, type = "rmarkdown", split.tables = Inf)
+xtable(obj1outs)
 @
 
 <<SepModels_sens, echo = FALSE>>= 
@@ -683,7 +670,7 @@ rownames(sepouts) <- 1:nrow(sepouts)
 
 Table 4.  Comparison of the odds of receiving a treatment based on health risk due to age with and without the inclusion of elderly household members. 
 <<r objective2Table_sens, echo = FALSE, results = 'asis'>>= 
-pandoc.table(sepouts, type = "rmarkdown", split.tables = Inf)
+xtable(sepouts)
 @
 
 \section{Discussion}
