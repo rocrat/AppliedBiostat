@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{fullpage}
-\usepackage[linkcolor=blue]{hyperref}
+%\usepackage{graphicsx}
+\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
 \usepackage[backend=bibtex]{biblatex}
 \addbibresource{mybib.bib}
 %For regular papers, a motivating example should be presented early in the paper. The statistical development should then be presented, and the results applied to the example.
@@ -117,9 +118,9 @@ where $a$ is the local up-slope area (local area draining to the point) and $tan
 
 Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sørensen2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to breed.  However, it is unclear what effect differing TWI algorithms would have on our results. To determine the sensitivity of our method to choice of TWI algorithm, we implement 2 different algorithms which differ in their calculation of the up-slope area and local slope: 1) the SAGA Wetness Index \cite{Bohner2002} (hereafter "general TWI"), and 2) a simplified terrain wetness index which simply identifies depressions without regard to up-slope area (hereafter "restricted TWI").  We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.\\
 
-Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{\verbatim http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html} \cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the upslope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger upslope area and a smaller catchment area slope are predicted to have more water accumulation.\\
+Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{ http://www.saga-gis.org\cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
 
-In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based identifying depressions with low outflow and disregarding the upslope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel in the landscape at three resolutions of increasing size:  
+In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel in the landscape at three resolutions of increasing size:  
 
 $$\mu_{i,j} = \frac{\sum_{p \in j}e_p}{|p \in j|},$$
 
@@ -130,22 +131,23 @@ $$\Delta e_{i} = \sum_{j \in 1,2,3} \delta e_{i,j}$$
 
 We then identify areas with low outflow by calculating the variance of the aspects of neighboring pixels.  Since aspect is measured on a circular scale from 1 to 360 the variance of two aspects which are in fact quite close to each other but on opposite sides of the circular reset would be artificially high.  For example, the aspect of two points facing close to due north could be 359 and 1.  The variance of these two points would be $var(359,1)= 64082$.  However, the variance of two aspects of equal distance but not on opposite sides of the circular reset would be $var(1,3) = 2$.  In order to mitigate this difficulty we first translate each aspect to a cardinal direction denoted 1, 2, 3, or 4. We then calculate the variance of the aspects of the cells in each of 3 moving windows the same size as above ($90m \times 90m$, $210m \times 210m$, and $330m \times 330m$) and sum the resulting variances for each pixel:
 
-$$\sigma{i,j} = var(.$$
+$$\sigma_{i} = \sum_{j \in 1,2,3} var(a_{i \in j}),$$
 
+where $a_{i \in j}$ are the set of aspects in the moving window $j$  around pixel $i$.  The final wetness index is then calculated as, 
+$$w_i = -1 \times \Delta e_i \times \sigma_i.$$
 
+Relatively large positive values of $w_i$ are expected to have higher wetness than small positive numbers.  Negative numbers indicate a ridge or peak and are therefore expected to be dry.\\
  
 
-We assign each household a risk for exposure to mosquitoes (mosquito-based risk hereafter) by deriving a continuous risk surface over the study area from each TWI algorithm.  We assume the mosquito exposure risk of a household is inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we apply a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  We then assign each house the risk score of the cell it is in or, for high resolution topographical data such as Li-DAR, the average of the cells a property occupies.\\
+We assign each household a risk for exposure to mosquitoes (exposure risk hereafter) by deriving a continuous risk surface over the study area from each TWI algorithm.  We assume the mosquito exposure risk of a household is inversely related to the distance to one or more of these high-wetness areas.  Therefore,  we apply a Gaussian filter with $\sigma = 10$ to create a weighted average of mosquito risk for each cell in the study area.  The Gaussian filter is an isometric 2-dimensional smoothing function with a Gaussian kernel.  The value of $\sigma$ determines the degree of smoothing and should be scaled appropriately to match the resolution of the data.  The value of $\sigma$ can be tuned for a specific application if data is available and appropriate to do so. Each house is then assigned the risk score of the cell it is in or, for high resolution topographical data such as LiDAR (laser radar), the average of the cells a property occupies.\\
 
 
 \subsection{Individual Health Risk}
-Each household varied with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. The household risk formulas will vary depending on the disease under study and the most vulnerable population(s) for that disease.  We recommend a simple additive risk score, like the score formula provided below developed for malaria, based on expert opinion or relevant literature. The sole purpose of the health risk score is to differentiate households with high risk from those with low risk.  More complicated formulas can be constructed but we believe a simple formula will be easier to interpret and adequate for most applications.\\
+Each household varied with respect to both the risk of exposure to mosquitoes and the number of at-risk individuals in the household. The household risk formulas will vary depending on the disease under study and the most vulnerable population(s) for that disease.  We recommend a simple additive risk score, like the score formula provided below developed for malaria, based on expert opinion or relevant literature. The sole purpose of the health risk score is to differentiate households with high risk from those with low risk.  More complicated formulas can be constructed but we believe a simple formula will be easier to interpret and adequate for most applications.\\
 
 \subsection{Overall Risk}
 
-To be at risk for a poor outcome a person must 1) come in contact with a disease harboring mosquito,  and 2) be inherently vulnerable to infection (e.g. very young or very old).  We create two risk scores representing each of these types of risk for every household on the landscape.  Since these risks will be calculated on different scales we will center at 0 and standardize risk scores so that they are scale-independent.  These two scores can then be combined with a weighted sum to create an overall risk score for the household.  Weights in the sum are determined by expert opinion, in our example below we use equal weights.  This method lends itself well to the addition of additional risk scores, such as the distance to a health care provider, or even risk attenuating factors such as the presence of window screens, which can all be summed together with appropriate weights. 
-
-
+To be at risk for a poor outcome a person must 1) come in contact with a disease harboring mosquito,  and 2) be inherently vulnerable to infection (e.g. very young or very old).  We create two risk scores representing each of these types of risk for every household on the landscape.  Since these risks will be calculated on different scales we center at 0 and standardize risk scores so that they are scale-independent.  These two scores can then be combined with a weighted sum to create an overall risk score for the household.  Weights in the sum are determined by expert opinion, in our example below we use equal weights.  This method lends itself well to the addition of additional risk scores, such as the distance to a health care provider, or even risk attenuating factors such as the presence of window screens, which can all be summed together with appropriate weights. 
 
 
 <<r importNewData, echo = FALSE, message = FALSE, results = 'asis', warning = FALSE>>= 
@@ -171,7 +173,6 @@ sumdat[which(sumdat$site == "Low" & sumdat$lat>0), ]$site <- "High"#correct mis-
 @
 
 
-
 <<r CalcAgeRisk, echo = FALSE>>= 
 sumdat$arisk <- with(sumdat, (2*under1)+under5)#+over65
 sumdat$ariskstd <- scale(log(sumdat$arisk+1), center = F)
@@ -188,20 +189,17 @@ Prior to the initiation of a community-based research program,  two study sites 
 
 We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
 
-We assigned an individual-based health risk score (age-based risk hereafter) to each household with the following formula:
+We assigned an individual-based health risk score (health risk hereafter) to each household with the following formula:
 
-$$Risk\ Score  =  (2 \times \ Children\ \leq 1) + (1 < \ Children\  \leq 5) + (2 \times \ Pregnant\ Women)$$
+$$Health\ Risk\ Score  =  (2 \times \ Children\ \leq 1) + (1 < \ Children\  \leq 5) + (2 \times \ Pregnant\ Women)$$
 
-We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk \cite{Gupta1999, Snow1999, Menendez2000}.  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zica virus children may have a relatively low health risk whereas pregnant women and sexually active women may have much higher risk.\\
+We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk \cite{Gupta1999, Snow1999, Menendez2000}.  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zika virus children may have a relatively low health risk whereas pregnant women and sexually active women may have much higher risk.\\
 
 We added the standardized household health risk with the standardized household exposure risk to create a combined risk.  We then determined if high risk households are more likely to have received either a bed-net or aerial spraying with a logistic model;
 
 $$log(\frac{p}{1-p}) = \beta_0 + \beta_1 \times \ Combined\ Household\ Risk, $$
 
-where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is > 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.\\  %If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
-
-In order to determine2 the sensitivity of this method to the choice of TWI algorithm, we repeated the analysis using each TWI algorithm described in appendix A.
-
+where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is $>$ 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.  We modeled the high and low sites separately because these sites differed substantially in topography and intervention administration protocols.  We also modeled the two interventions separately since they are administered under different protocols.  Finally, in order to determine the sensitivity of this method to the choice of TWI algorithm, we repeated the analysis using both the general and restricted TWI.\\  %If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
 
 
 <<getDEM, echo = FALSE, message = FALSE, message = FALSE, results = 'hide', warning = FALSE>>= 
@@ -507,13 +505,29 @@ obj1out <- cbind(Site, Treatment, outmat)
 @
 
 \subsection{Results}
-The odds of receiving either a bed net or aerial spraying are higher for households with higher combined risk,  but only at the high site (\ref{ORcmb}).  For each 1 standard deviation increase in combined risk at the high site the probability of receiving a bed net increases 27\% (OR: 1.27,  95\% CI: 1.18,  1.35) and the probability of aerial spraying increases 15\% (OR: 1.15,  95\% CI: 1.03,  1.29).  At the low site,  we found no preferential administration of either treatment to high combined risk households.  We found some evidence,  from the fitting of a restricted cubic spline,  of a non-linear relationship between the log-odds of net use and combined risk at the low site.  However,  modelling the mean risk for each risk quantile did not change our results. 
+The odds of receiving either a bed net or aerial spraying were higher for households with higher combined risk,  but only at the high site (\ref{ORcmb}).  For each 1 standard deviation increase in combined risk at the high site the probability of receiving a bed net increased 27\% (OR: 1.27,  95\% CI: 1.18,  1.35) and the probability of aerial spraying increased 15\% (OR: 1.15,  95\% CI: 1.03,  1.29).  At the low site,  we found no preferential administration of either treatment to high combined risk households.  We found some evidence,  from the fitting of a restricted cubic spline,  of a non-linear relationship between the log-odds of net use and combined risk at the low site.  However,  accounting for non-linearity in the model did not change the results so we only report the linear model here.\\ 
 
-The probability of bed net use at the high site was more strongly associated with age-based risk,  whereas the probability of aerial spraying at the high site was more strongly associated with mosquito-based risk (\ref{ORtrt}).  However,  We did not find the same pattern at the low site where we found households with high mosquito-based risk were actually significantly less likely to receive aerial spraying (OR: 0.35,  95\% CI: 0.14,  0.83).  
+The probability of bed net use at the high site was more strongly associated with health risk,  whereas the probability of aerial spraying at the high site was more strongly associated with exposure risk (\ref{ORtrt}).  However,  We did not find the same pattern at the low site where we found households with high exposure risk were actually significantly less likely to receive aerial spraying (OR: 0.35,  95\% CI: 0.14,  0.83).  \\
 
-<<Obj1Table, echo = FALSE, results = 'asis'>>= 
-xtable(obj1out, caption = "Odds of receiving a treatment as a function of combined risk.", label = "ORcmb")
+<<Obj1Table, echo = FALSE, results = 'asis', eval = FALSE>>= 
+print(xtable(obj1out, caption = "Odds of receiving a treatment as a function of combined risk.", label = "ORcmb"), include.rownames = FALSE)
 @
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lllll}
+  \hline 
+Site & Treatment & OR & Lower 95\% CI & Upper 95\% CI \\ 
+  \hline
+High & Net & 1.35 & 1.26 & 1.44 \\ 
+   & Spray & 1.13 & 1.00 & 1.26 \\ 
+  Low & Net & 1.09 & 0.86 & 1.39 \\ 
+   & Spray & 0.9 & 0.61 & 1.34 \\ 
+   \hline
+\end{tabular}
+\caption{Odds of receiving a treatment as a function of combined risk.} 
+\label{ORcmb}
+\end{table}
 
 
 <<SepModels, echo = FALSE>>= 
@@ -544,9 +558,26 @@ sepout <- rbind(est, sepout)
 rownames(sepout) <- 1:nrow(sepout)
 @
 
-<<objective2Table, echo = FALSE, results = 'asis'>>= 
-xtable(sepout, caption = "Odds of treatment from risk of either mosquito exposure or malaria risk.", label = "ORtrt")
+<<objective2Table, echo = FALSE, results = 'asis', eval = FALSE>>= 
+print(xtable(sepout, caption = "Odds of treatment from risk of either mosquito exposure or malaria risk.", label = "ORtrt"), include.rownames = FALSE)
 @
+\begin{table}[ht]
+\centering
+\begin{tabular}{llllllll}
+  \hline
+ &  & \multicolumn{3}{l}{Health Risk} & \multicolumn{3}{l}{Exposure Risk}  \\ 
+  
+Site & Treatment & OR & Lower 95\% CI & Upper 95\% CI & OR & Lower 95\% CI & Upper 95\% CI \\ 
+ \hline
+  High & Net & 1.36 & 1.27 & 1.45 & 1.01 & 0.93 & 1.10 \\ 
+   & Spray & 1.08 & 0.96 & 1.22 & 1.32 & 1.14 & 1.53 \\ 
+  Low & Net & 1.21 & 0.94 & 1.55 & 0.58 & 0.31 & 1.10 \\ 
+   & Spray & 1.08 & 0.67 & 1.74 & 0.34 & 0.15 & 0.79 \\ 
+   \hline
+\end{tabular}
+\caption{Odds of treatment from risk of either mosquito exposure or malaria risk.} 
+\label{ORtrt}
+\end{table}
 
 <<smoothTWI_sens, echo = FALSE>>= 
 #use focal to create moving window with gaussian weights for assiging household risk
@@ -640,11 +671,12 @@ rcspline.plot(highsite$mrisks, highsite$net, model = "logistic", xlab = "Mosquit
 rcspline.plot(lowsite$mrisks, lowsite$hspray, model = "logistic")
 rcspline.plot(highsite$mrisks, highsite$hspray, model = "logistic", xlab = "Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
 @
-<<GlobalInteractionModel, echo = FALSE>>= 
 
+<<GlobalInteractionModel, echo = FALSE>>= 
 intsm <- glm(hspray~comrsks*site, data = both, family = "binomial")
 intnm <- glm(net~comrsks*site, data = both, family = "binomial")
 @
+
 <<model1_sens, echo = FALSE>>= 
 m1ls <- glm(hspray~comrsks, data = lowsite, family = "binomial")
 m1ls.est <- c(exp(summary(m1ls)$coef[2, 1]), exp(summary(m1ls)$coef[2, 1]-1.96*summary(m1ls)$coef[2, 2]), exp(summary(m1ls)$coef[2, 1]+1.96*summary(m1ls)$coef[2, 2]))
@@ -665,12 +697,36 @@ obj1outs <- cbind(Site, Treatment, outmat, outmats)
 
 \subsection{Sensitivity Analysis}
 
-The use of the restricted TWI algorithm identified fewer regions as high risk than the SAGA packaged algorithm at both sites (fig. 2).  The use of the restricted TWI based risk surface in the combined risk score increased the odds of a high-risk labelled household to have received a treatment for both the high and low sites,  although the increase in OR for the low site remained non-significant (\ref{Sens}).
+The use of the restricted TWI algorithm identified fewer regions as high risk than the general TWI at both sites and was less likely to assign exposure risk to areas near a channel (fig. \ref{twis}).  The use of the restricted TWI based risk surface in the combined risk score increased the odds of a high-risk labelled household to have received a treatment for both the high and low sites,  although the increase in OR for the low site remained non-significant (Table \ref{Sens}).
 
   
-<<Obj1Table_sens, echo = FALSE, results = 'asis'>>= 
-xtable(obj1outs, caption = "Comparison of restricted TWI results with general TWI results.", label = "Sens")
+<<Obj1Table_sens, echo = FALSE, results = 'asis', eval = FALSE>>= 
+print(xtable(obj1outs, caption = "Comparison of restricted TWI results with general TWI results.", label = "Sens"), include.rownames = FALSE)
 @
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{llllllll}
+  \hline
+ &  & \multicolumn{3}{l}{General TWI} & \multicolumn{3}{l}{Restricted TWI}\\
+Site & Treatment & OR & Lower 95\% CI & Upper 95\% CI & OR & Lower 95\% CI & Upper 95\% CI \\ 
+  \hline
+High & Net & 1.35 & 1.26 & 1.44 & 1.45 & 1.33 & 1.59 \\ 
+   & Spray & 1.13 & 1.00 & 1.26 & 1.22 & 1.05 & 1.42 \\ 
+  Low & Net & 1.09 & 0.86 & 1.39 & 1.33 & 0.93 & 1.90 \\ 
+   & Spray & 0.90 & 0.61 & 1.34 & 1.10 & 0.59 & 2.03 \\ 
+   \hline
+\end{tabular}
+\caption{Comparison of results when constructing combined risk from the restricted TWI or general TWI.} 
+\label{Sens}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale=.5]{./figure/CompareTWI.png}
+\caption{Comparison of the general TWI (left) and the restricted TWI (right) showing the lower extent of channels identified as moderate to high risk by the restricted TWI.  The restricted TWI also identified several areas missed by the general TWI. }
+\label{twis}
+\end{figure}
 
 <<SepModels_sens, echo = FALSE>>= 
 #Separate model for each risk type
@@ -706,14 +762,14 @@ xtable(sepouts)
 @
 
 \section{Discussion}
-Our methodology is motivated by the need to improve the efficiency of intervention administration protocols and evaluate existing protocols.  Our example analysis evaluates existing protocols in which the administration of bed nets target pregnant women.  Therefore,  we would expect that households with young children would be more likely to have bed nets.  We found that age-based risk was associated with an increased probability of bed net use at the high site but not the low site.  Similarly, under current protocols, aerial spraying is intended to target households at high risk for mosquito exposure  so we would expect that households with high mosquito-based risk would be associated with aerial spraying.  Again,  this is the pattern we observed at the high site but not the low site where we found the opposite association.  Use of the restricted TWI algorithm suggested that the association was at least in the preferable direction at the low site but not significantly.  We believe our method can be used to quickly evaluate the overall risk for a given household and improve the efficiency of distribution protocols.\\
+Our methodology is motivated by the need to improve the efficiency of intervention administration protocols and evaluate existing protocols.  Our example analysis evaluates existing protocols in which the administration of bed nets target pregnant women.  Therefore,  we would expect that households with young children would be more likely to have LLINs.  We found that health risk was associated with an increased probability of ILLN use at the high site but not the low site.  Similarly, under current protocols, aerial spraying is intended to target households at high risk for mosquito exposure  so we would expect that households with high exposure risk would be associated with aerial spraying.  Again,  this is the pattern we observed at the high site but not the low site where we found the opposite association.\\
 
+The general TWI algorithm identified channels at both sites as moderate to high risk.  However, while these channels are likely to have higher wetness, the water may drain too quickly to provide quality breeding habitat for mosquitoes.  Use of the restricted TWI algorithm identified fewer channels as having moderate to high exposure risk while identifying some areas not identified by the general TWI algorithm (fig. \ref{twis}).  Therefore, the restricted TWI algorithm may out-perform the general TWI in identifying mosquito breeding sites.  Our results comparing both TWI algorithms indicates a stronger association between the restricted TWI and intervention use indicating better alignment between the restricted TWI and mosquito risk assessments on the ground. This was particularly noticeable when evaluating the OR of a household receiving indoor residual spraying at the low site where the association was at least in the preferable direction, albeit not significantly.  We believe our method can be used to quickly evaluate the overall risk for a given household and improve the efficiency of distribution protocols.\\
 
-Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  We believe the restricted TWI described in appendix A provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as ground-truthing using infection data.  This has been done previously (Cohen2008, Cohen2010),  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
+Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  We believe the restricted TWI described in appendix A provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as infection data.  This has been done previously (Cohen2008, Cohen2010),  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
 
 
 \printbibliography
 
-\section[]{Appendix A}
 
 \end{document}
