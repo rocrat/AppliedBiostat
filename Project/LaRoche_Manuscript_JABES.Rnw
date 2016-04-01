@@ -112,15 +112,15 @@ The Topographic Wetness Index (TWI) \cite{Beven1979} derived from freely availab
 Every household on a landscape will vary with respect to both the risk of exposure to mosquitoes and the number of at risk individuals in the household. We develop a method to combine these two risk factors into an overall risk score for each household within a management area in order to identify the households which will yield the greatest benefit from the application of limited prophylactic resources.\\
 
 \subsection{Topographical Wetness Index}
-The Topographical Wetness index was originally introduced by Beven and Kirby in 1979 (\cite{Beven1979}).  TWI combines a measure of the amount of upstream drainage area with the local slope to determine the amount of wetness likely to accumulate at a point and is defined by Beven and Kirby as:
+The Topographical Wetness index was originally introduced by Beven and Kirby in 1979 (\cite{Beven1979}).  TWI combines a measure of the amount of upstream drainage area with the local slope to determine the amount of wetness likely to accumulate at a point and is defined by Beven and Kirby generally as:
 $$ln\frac{a}{tanb},$$
-where $a$ is the local up-slope area (local area draining to the point) and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
+where $a$ is the local up-slope area (local area draining to the point) and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sørensen2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
 
-Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sørensen2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to breed.  However, it is unclear what effect differing TWI algorithms would have on our results. To determine the sensitivity of our method to choice of TWI algorithm, we implement 2 different algorithms which differ in their calculation of the up-slope area and local slope: 1) the SAGA Wetness Index \cite{Bohner2002} (hereafter "general TWI"), and 2) a simplified terrain wetness index which simply identifies depressions without regard to up-slope area (hereafter "restricted TWI").  We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.\\
+The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to breed.  However, the general TWI was originally designed to model surface water flow and not necessarily to identify areas where water will pool. A simpler algorithm for identifying only areas where water is likely to pool may perform as well, or better, than a general TWI algorithm and would not require specialized GIS software for implementation.  To examine this, we implement 2 different algorithms which differ in their calculation of the up-slope area and local slope: 1) the SAGA Wetness Index \cite{Bohner2002} (hereafter "general TWI"), and 2) a simplified terrain wetness index which simply identifies depressions without regard to up-slope area (hereafter "restricted TWI").  \\
 
-Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{ http://www.saga-gis.org\cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
+We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.  Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{ http://www.saga-gis.org\cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
 
-In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel in the landscape at three resolutions of increasing size:  
+In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel ($p$) in the landscape at three resolutions of increasing size:  
 
 $$\mu_{i,j} = \frac{\sum_{p \in j}e_p}{|p \in j|},$$
 
@@ -129,12 +129,12 @@ where $\mu_{i,j}$ is the average elevation of the pixels in the window of size $
 $$\delta e_{i,j} = e_i - \mu_{i,j} $$
 $$\Delta e_{i} = \sum_{j \in 1,2,3} \delta e_{i,j}$$
 
-We then identify areas with low outflow by calculating the variance of the aspects of neighboring pixels.  Since aspect is measured on a circular scale from 1 to 360 the variance of two aspects which are in fact quite close to each other but on opposite sides of the circular reset would be artificially high.  For example, the aspect of two points facing close to due north could be 359 and 1.  The variance of these two points would be $var(359,1)= 64082$.  However, the variance of two aspects of equal distance but not on opposite sides of the circular reset would be $var(1,3) = 2$.  In order to mitigate this difficulty we first translate each aspect to a cardinal direction denoted 1, 2, 3, or 4. We then calculate the variance of the aspects of the cells in each of 3 moving windows the same size as above ($90m \times 90m$, $210m \times 210m$, and $330m \times 330m$) and sum the resulting variances for each pixel:
+We then identify areas with low outflow by calculating the variance of the aspects (direction the slope faces) of neighboring pixels, $\theta$.  Since aspect is measured on a circular scale from 1 to 360 the variance of two aspects which are in fact quite close to each other but on opposite sides of the circular scale reset at 360 would be artificially high.  For example, the aspect of two points facing close to due north could be 359 and 1.  The variance of these two points would be $var(359,1)= 64082$.  However, the variance of two aspects of equal distance but not on opposite sides of the circular reset would be $var(1,3) = 2$.  In order to mitigate this difficulty we first translate each aspect to a cardinal direction denoted 1, 2, 3, or 4. We then calculate the variance of the aspects of the cells in each of 3 moving windows the same size as above ($90m \times 90m$, $210m \times 210m$, and $330m \times 330m$) and sum the resulting variances for each pixel:
 
-$$\sigma_{i} = \sum_{j \in 1,2,3} var(a_{i \in j}),$$
+$$\theta_{i} = \sum_{j \in 1,2,3} var(a_{i \in j}),$$
 
 where $a_{i \in j}$ are the set of aspects in the moving window $j$  around pixel $i$.  The final wetness index is then calculated as, 
-$$w_i = -1 \times \Delta e_i \times \sigma_i.$$
+$$w_i = -1 \times \Delta e_i \times \theta_i.$$
 
 Relatively large positive values of $w_i$ are expected to have higher wetness than small positive numbers.  Negative numbers indicate a ridge or peak and are therefore expected to be dry.\\
  
@@ -187,19 +187,18 @@ sumdat$ariskstds <- scale(log(sumdat$arisks+1), center = F)
 
 Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. Our objective was to determine if the highest risk households were given preference in the administration of interventions in the form of both bed nets and indoor residual spraying.\\
 
-We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months. Additional information for each participant was also collected such as age,  sex,  and relation to the head of the household.\\
-
-We assigned an individual-based health risk score (health risk hereafter) to each household with the following formula:
+We collected demographic information for each occupant including age and sex. Both sites have had partial treatment with both LLINs and IRS and household heads provided initial information about LLIN ownership and government administration of household IRS in the previous six months.  We assigned an individual-based health risk score (health risk hereafter) to each household with the following formula:
 
 $$Health\ Risk\ Score  =  (2 \times \ Children\ \leq 1) + (1 < \ Children\  \leq 5) + (2 \times \ Pregnant\ Women)$$
 
-We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk \cite{Gupta1999, Snow1999, Menendez2000}.  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zika virus children may have a relatively low health risk whereas pregnant women and sexually active women may have much higher risk.\\
+We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk \cite{Gupta1999, Snow1999, Menendez2000}.  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the Zika virus children may have a relatively low health risk whereas pregnant women and women of child bearing age may have much higher risk.\\
 
 We added the standardized household health risk with the standardized household exposure risk to create a combined risk.  We then determined if high risk households are more likely to have received either a bed-net or aerial spraying with a logistic model;
 
 $$log(\frac{p}{1-p}) = \beta_0 + \beta_1 \times \ Combined\ Household\ Risk, $$
 
-where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is $>$ 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.  We modeled the high and low sites separately because these sites differed substantially in topography and intervention administration protocols.  We also modeled the two interventions separately since they are administered under different protocols.  Finally, in order to determine the sensitivity of this method to the choice of TWI algorithm, we repeated the analysis using both the general and restricted TWI.\\  %If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
+where p  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is $>$ 1 and statistically significant ($\alpha = 0.05$) then high-risk households are more likely to receive treatment.  %We used a restricted cubic spline function to determine if there was a linear relationship between the log odds of treatment and combined risk.  
+We modeled the high and low sites separately because these sites differed substantially in topography and intervention administration protocols.  We also modeled the two interventions separately since they are administered under different protocols.  Finally, in order to examine the utility of each TWI algorithm, we repeated the analysis using both the general and restricted TWI.\\  %If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
 
 
 <<getDEM, echo = FALSE, message = FALSE, message = FALSE, results = 'hide', warning = FALSE>>= 
@@ -323,6 +322,11 @@ aspvar11 <- focal(highaspc, aspmat11, fun = var, na.rm = T)
 
 highaspvar <- aspvar3+aspvar7+aspvar11
 hightwi <- highaspvar*highdips*-1
+
+#write the rasters to file
+writeRaster(hightwi, "HighSiteTWI.tiff")
+writeRaster(lowtwi, "LowSiteTWI.tiff")
+
 #plot restricted TWI
 htwi <- as.data.frame(hightwi, xy = TRUE)
 ltwi <- as.data.frame(lowtwi, xy = TRUE)
@@ -359,6 +363,10 @@ hightr <- raster(highTWI, layer = "band1")
 fmat <- focalWeight(r, d = 10, type = 'Gauss')
 mriskLow <- focal(lowtr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/smoothLowTWI', pad = T, padValue = median(lowt$band1), overwrite = T)
 mriskHigh <- focal(hightr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/smoothHighTWI', pad = T, padValue = median(hight$band1), overwrite = T)
+
+#Write to file
+writeRaster(mriskHigh, "HighSite_MosquitoRisk.tiff")
+writeRaster(mriskLow, "LowSite_MosquitoRisk.tiff")
 @
 
 <<PlotTWI, echo = FALSE, eval = FALSE>>= 
@@ -695,7 +703,7 @@ colnames(outmats) <- c("OR", "Lower 95% CI", "Upper 95% CI")
 obj1outs <- cbind(Site, Treatment, outmat, outmats)
 @
 
-\subsection{Sensitivity Analysis}
+\subsection{Restricted TWI}
 
 The use of the restricted TWI algorithm identified fewer regions as high risk than the general TWI at both sites and was less likely to assign exposure risk to areas near a channel (fig. \ref{twis}).  The use of the restricted TWI based risk surface in the combined risk score increased the odds of a high-risk labelled household to have received a treatment for both the high and low sites,  although the increase in OR for the low site remained non-significant (Table \ref{Sens}).
 
@@ -764,7 +772,7 @@ xtable(sepouts)
 \section{Discussion}
 Our methodology is motivated by the need to improve the efficiency of intervention administration protocols and evaluate existing protocols.  Our example analysis evaluates existing protocols in which the administration of bed nets target pregnant women.  Therefore,  we would expect that households with young children would be more likely to have LLINs.  We found that health risk was associated with an increased probability of ILLN use at the high site but not the low site.  Similarly, under current protocols, aerial spraying is intended to target households at high risk for mosquito exposure  so we would expect that households with high exposure risk would be associated with aerial spraying.  Again,  this is the pattern we observed at the high site but not the low site where we found the opposite association.\\
 
-The general TWI algorithm identified channels at both sites as moderate to high risk.  However, while these channels are likely to have higher wetness, the water may drain too quickly to provide quality breeding habitat for mosquitoes.  Use of the restricted TWI algorithm identified fewer channels as having moderate to high exposure risk while identifying some areas not identified by the general TWI algorithm (fig. \ref{twis}).  Therefore, the restricted TWI algorithm may out-perform the general TWI in identifying mosquito breeding sites.  Our results comparing both TWI algorithms indicates a stronger association between the restricted TWI and intervention use indicating better alignment between the restricted TWI and mosquito risk assessments on the ground. This was particularly noticeable when evaluating the OR of a household receiving indoor residual spraying at the low site where the association was at least in the preferable direction, albeit not significantly.  We believe our method can be used to quickly evaluate the overall risk for a given household and improve the efficiency of distribution protocols.\\
+Since we do not have mosquito incidence data we evaluate the efficacy of each TWI algorithm by how closely each algorithm matches our expectations based on the intervention administration protocol at each site.  The general TWI algorithm identified channels at both sites as moderate to high risk.  However, while these channels are likely to have higher wetness, the water may drain too quickly to provide quality breeding habitat for mosquitoes.  Use of the restricted TWI algorithm identified fewer channels as having moderate to high exposure risk while identifying some areas not identified by the general TWI algorithm (fig. \ref{twis}).  Therefore, the restricted TWI algorithm may out-perform the general TWI in identifying mosquito breeding sites.  Our results comparing both TWI algorithms indicates a stronger association between the restricted TWI and intervention use indicating better alignment between the restricted TWI and mosquito risk assessments on the ground. This was particularly noticeable when evaluating the OR of a household receiving indoor residual spraying at the low site where the association was at least in the preferable direction, albeit not significantly.  We believe our method can be used to quickly evaluate the overall risk for a given household and improve the efficiency of distribution protocols.\\
 
 Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  We believe the restricted TWI described in appendix A provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as infection data.  This has been done previously (Cohen2008, Cohen2010),  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
 
