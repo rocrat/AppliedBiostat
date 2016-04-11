@@ -102,7 +102,7 @@ Mosquito borne illnesses are a significant threat to public health in countries 
 %introduce the problem
 Malaria and other mosquito borne illnesses are considered a significant threat to public health and a socio-economic burden in countries where these diseases are either endemic or epidemic \cite{Crouch}. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria specifically. Many national strategic plans to reduce or eliminate malaria are in their third generation.  The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group \cite{Bousema2012}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections \cite{Schantz-Dunn2009}. Identifying individuals which are both vulnerable to infection and likely to be exposed to an infected mosquito is therefore a priority.  However, identifying high risk individuals can be costly and inefficient.\\
 
-The Topographic Wetness Index (TWI) \cite{Beven1979} derived from freely available remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection \cite{Cohen2008,Cohen2010}. TWI can potentially identify areas where water is likely to pool and Anopheles densities are likely to be higher. This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.  However, traditional TWI alogorithms are complicated and generally rquire specialized software to implement.  Moreover, simply indentifying areas where are mosquitoes are likely to breed does not account for the differential health risk of the exposed population.  We develop a simple, matrix-based, methodology using topographic data and combine this with a household census of demographics to identify high risk households.  We apply the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  We compare our methodology to a traditional Topographic  Wetness Index by using knowledge of intervention use for two interventions at two sites in Kenya. \\%This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.
+The Topographic Wetness Index (TWI) \cite{Beven1979} derived from freely available remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection \cite{Cohen2008,Cohen2010}. TWI can potentially identify areas where water is likely to pool and Anopheles densities are likely to be higher. This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.  However, traditional TWI algorithms are complicated and generally require specialized software to implement.  Moreover, simply identifying areas where are mosquitoes are likely to breed does not account for the differential health risk of the exposed population.  We develop a simple, matrix-based, methodology using topographic data and combine this with a household census of demographics to identify high risk households.  We apply the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  We compare our methodology to a traditional Topographic  Wetness Index by using knowledge of intervention use for two interventions at two sites in Kenya. \\%This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.
 
 
 
@@ -120,7 +120,7 @@ The primary goal of using TWI in this application is to identify areas where mos
 
 We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.  Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{ http://www.saga-gis.org\cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
 
-In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel ($p$) in the landscape at three resolutions of increasing size:  
+In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based on identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel ($p$) in the landscape at three resolutions of increasing size:  
 
 $$\mu_{i,j} = \frac{\sum_{p \in j}e_p}{|p \in j|},$$
 
@@ -329,8 +329,8 @@ highaspvar <- aspvar3+aspvar7+aspvar11
 hightwi <- highaspvar*highdips*-1
 
 #write the rasters to file
-writeRaster(hightwi, "HighSiteTWI.tiff")
-writeRaster(lowtwi, "LowSiteTWI.tiff")
+# writeRaster(hightwi, "HighSiteTWI.tiff")
+# writeRaster(lowtwi, "LowSiteTWI.tiff")
 
 #plot restricted TWI
 htwi <- as.data.frame(hightwi, xy = TRUE)
@@ -370,8 +370,8 @@ mriskLow <- focal(lowtr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/smo
 mriskHigh <- focal(hightr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/smoothHighTWI', pad = T, padValue = median(hight$band1), overwrite = T)
 
 #Write to file
-writeRaster(mriskHigh, "HighSite_MosquitoRisk.tiff")
-writeRaster(mriskLow, "LowSite_MosquitoRisk.tiff")
+# writeRaster(mriskHigh, "HighSite_MosquitoRisk.tiff")
+# writeRaster(mriskLow, "LowSite_MosquitoRisk.tiff")
 @
 
 <<PlotTWI, echo = FALSE, eval = FALSE>>= 
