@@ -411,6 +411,84 @@
   \warn{\item Invalid format of field 'month'}
 \endentry
 
+\entry{Conrad2015}{article}{}
+  \name{author}{9}{}{%
+    {{}%
+     {Conrad}{C.}%
+     {O.}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bechtel}{B.}%
+     {B.}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bock}{B.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Dietrich}{D.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fischer}{F.}%
+     {E.}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gerlitz}{G.}%
+     {L.}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wehberg}{W.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wichmann}{W.}%
+     {V.}{V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {B{\"{o}}hner}{B.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {English}%
+  }
+  \list{publisher}{1}{%
+    {Copernicus GmbH}%
+  }
+  \strng{namehash}{CO+1}
+  \strng{fullhash}{COBBBMDHFEGLWJWVBJ1}
+  \field{sortinit}{C}
+  \verb{doi}
+  \verb 10.5194/gmd-8-1991-2015
+  \endverb
+  \field{issn}{1991-9603}
+  \field{number}{7}
+  \field{pages}{1991\bibrangedash 2007}
+  \field{title}{{System for Automated Geoscientific Analyses (SAGA) v. 2.1.4}}
+  \verb{url}
+  \verb http://www.geosci-model-dev.net/8/1991/2015/gmd-8-1991-2015.html
+  \endverb
+  \field{volume}{8}
+  \verb{file}
+  \verb :C$\backslash$:/Users/dlaroche/AppData/Local/Mendeley Ltd./Mendeley Des
+  \verb ktop/Downloaded/Conrad et al. - 2015 - System for Automated Geoscientif
+  \verb ic Analyses (SAGA) v. 2.1.4.pdf:pdf
+  \endverb
+  \field{journaltitle}{Geoscientific Model Development}
+  \field{year}{2015}
+  \warn{\item Invalid format of field 'month'}
+\endentry
+
 \entry{Crouch}{report}{}
   \name{author}{1}{}{%
     {{}%
