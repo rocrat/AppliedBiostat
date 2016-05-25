@@ -1,0 +1,15 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\doublespacing
+\usepackage{authblk}
+
+\title{A method for identifying households at high risk for mosquito borne illnesses.}
+\date{}
+\author{Dominic D. LaRoche, Melanie L. Bell, and Kacey C. Ernst}
+\affil{University of Arizona Mel and Enid Zuckerman School of Public Health}
+\begin{document}
+\maketitle
+
+
+\end{document}

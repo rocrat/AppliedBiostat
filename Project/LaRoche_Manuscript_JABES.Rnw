@@ -1,12 +1,15 @@
-\documentclass{article}
-\usepackage{fullpage}
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\doublespacing
+% \usepackage{fullpage}
 %\usepackage{graphicsx}
-\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
-\usepackage[backend=bibtex]{biblatex}
-\addbibresource{mybib.bib}
+% \usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage[backend=bibtex,style=authoryear]{biblatex}
+\addbibresource{MosqBiblio.bib}
 %For regular papers, a motivating example should be presented early in the paper. The statistical development should then be presented, and the results applied to the example.
 \title{A method for identifying households at high risk for mosquito borne illnesses.}
-\author{Dominic D. LaRoche, Melanie L. Bell, and Kacey C. Ernst}
+\date{}
 \begin{document}
 \maketitle
 
@@ -97,12 +100,13 @@ write.csv(hdat, "C:/Classes/AppliedBiostat/Project/housedata.csv")
 \section{Abstract}
 Mosquito borne illnesses are a significant threat to public health. Concerted efforts have been made in the past decade to reduce and in some cases eliminate mosquito borne diseases with the use of prophylactic interventions. The World Health Organization recommends preferential administration of interventions to those with the highest risk of negative/ severe health outcomes. However,  previous research has also identified the benefit of additionally targeting interventions at those with the highest risk of infections to prevent subsequent transmission. We develop a methodology that combines these two targets of health outcomes and infection risk. We use census information to determine health risk and we use a topographic wetness index as an indicator of habitat for mosquito species that inhabit natural environments.  We implement the method to evaluate the community-reported administration of interventions at two sites in Kenya. We find preferential administration of interventions at the high-elevation epidemic-prone site but not at the low-elevation endemic site. Our results have important implications for assessing the administration of interventions in the battle against mosquito borne illnesses.
 
+\textbf{Keywords:} Malaria, West Nile Virus, GIS, Remote Sensing, Public Health 
 
 \section{Introduction}
 %introduce the problem
-Malaria and other mosquito borne illnesses are considered a significant threat to public health and a socio-economic burden in countries where these diseases are either endemic or epidemic \cite{Crouch}. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria specifically. Many national strategic plans to reduce or eliminate malaria are in their third generation.  The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group and the increased likelihood of severe health outcomes\cite{Bousema2012}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections \cite{Schantz-Dunn2009}. Identifying individuals which are both vulnerable to disease and likely to be exposed to an infected mosquito is therefore a priority.  However, identifying high risk individuals can be costly and inefficient.\\
+Malaria and other mosquito borne illnesses are considered a significant threat to public health and a socio-economic burden in countries where these diseases are either endemic or epidemic (\cite{Crouch}). Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria specifically. Many national strategic plans to reduce or eliminate malaria are in their third generation.  The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group and the increased likelihood of severe health outcomes(\cite{Bousema2012}). However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections (\cite{Schantz-Dunn2009}). Identifying individuals which are both vulnerable to disease and likely to be exposed to an infected mosquito is therefore a priority.  However, identifying high risk individuals can be costly and inefficient.\\
 
-The Topographic Wetness Index (TWI) \cite{Beven1979} derived from freely available remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection \cite{Cohen2008,Cohen2010}. TWI can potentially identify areas where water is likely to pool and \emph{Anopheles} densities are likely to be higher. This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.  However, traditional TWI algorithms are complicated and generally require specialized software to implement.  Moreover, simply identifying areas where mosquitoes are likely to breed does not account for the differential health risk of the exposed population.  We develop a simple, matrix-based, methodology using topographic data and combine this with a household census of demographics to identify high risk households.  We apply the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  We compare our methodology to a traditional Topographic  Wetness Index using data on intervention use for two interventions at two sites in Kenya. \\%This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.
+The Topographic Wetness Index (TWI) (\cite{Beven1979}) derived from freely available remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection (\cite{Cohen2008,Cohen2010}). TWI can potentially identify areas where water is likely to pool and \emph{Anopheles} densities are likely to be higher. This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.  However, traditional TWI algorithms are complicated and generally require specialized software to implement.  Moreover, simply identifying areas where mosquitoes are likely to breed does not account for the differential health risk of the exposed population.  We develop a simple, matrix-based, methodology using topographic data and combine this with a household census of demographics to identify high risk households.  We apply the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  We compare our methodology to a traditional Topographic  Wetness Index using data on intervention use for two interventions at two sites in Kenya. \\%This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.
 
 
 
@@ -113,12 +117,12 @@ Every household on a landscape will vary with respect to both the risk of exposu
 
 The Topographical Wetness index was originally introduced by Beven and Kirby in 1979 (\cite{Beven1979}).  TWI combines a measure of the amount of upstream drainage area with the local slope to determine the amount of wetness likely to accumulate at a point and is defined by Beven and Kirby generally as:
 $$ln\frac{a}{tanb},$$
-where $a$ is the local up-slope area (local area draining to the point) and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sørensen2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
+where $a$ is the local up-slope area (local area draining to the point) and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published (\cite{Quinn1995,Sørensen2006}) as well as alternative modeling strategies developed (\cite{Grabs2009}).  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
 
-The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to lay their eggs and go through the immature stages of the life-cycle.  However, the general TWI was originally designed to model surface water flow and not necessarily to identify areas where water will pool. A simpler algorithm for identifying only areas where water is likely to pool may perform as well, or better, than a general TWI algorithm and would not require specialized GIS software for implementation.  To examine this, we implement 2 different algorithms which differ in their calculation of the up-slope area and local slope: 1) the SAGA Wetness Index \cite{Bohner2002} (hereafter "general TWI"), and 2) a simplified topographic wetness index which simply identifies depressions without regard to up-slope area (hereafter "restricted TWI").  \\
+The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to lay their eggs and go through the immature stages of the life-cycle.  However, the general TWI was originally designed to model surface water flow and not necessarily to identify areas where water will pool. A simpler algorithm for identifying only areas where water is likely to pool may perform as well, or better, than a general TWI algorithm and would not require specialized GIS software for implementation.  To examine this, we implement 2 different algorithms which differ in their calculation of the up-slope area and local slope: 1) the SAGA Wetness Index (\cite{Bohner2002}) (hereafter "general TWI"), and 2) a simplified topographic wetness index which simply identifies depressions without regard to up-slope area (hereafter "restricted TWI").  \\
 
 
-We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.  Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{http://www.saga-gis.org}\cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
+We carried out all analyses using the statistical programming language R version 3.2.3 (\cite{RCoreTeam2015}), with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software (\cite{Bohner2006}).  Details for calculation of the general TWI are available in the software documentation available at http://www.saga-gis.org (\cite{Conrad2015}).  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
 
 In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based on identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel ($p$) in the landscape at three resolutions of increasing size:  
 
@@ -150,7 +154,7 @@ Each household varied with respect to both the risk of exposure to mosquitoes an
 To be at risk for a poor outcome a person must 1) come in contact with a disease harboring mosquito,  and 2) be inherently vulnerable to infection (e.g. very young or pregnant).  We create two risk scores representing each of these types of risk for every household on the landscape.  Since these risks will be calculated on different scales we center at 0 and standardize risk scores so that they are scale-independent.  These two scores can then be combined with a weighted sum to create an overall risk score for the household.  Weights in the sum are determined by expert opinion, in our example below we use equal weights.  This method lends itself well to the addition of additional risk scores, such as the distance to a health care provider, or even risk attenuating factors such as the presence of window screens, which can all be summed together with appropriate weights. 
 
 
-<<r importNewData, echo = FALSE, message = FALSE, results = 'asis', warning = FALSE>>= 
+<<r importNewData, echo = FALSE, message = FALSE, results = 'asis', warning = FALSE, cache = TRUE>>= 
 rm(list = ls())
 library(car)
 library(ggplot2)
@@ -173,7 +177,7 @@ sumdat[which(sumdat$site == "Low" & sumdat$lat>0), ]$site <- "High"#correct mis-
 @
 
 
-<<r CalcAgeRisk, echo = FALSE>>= 
+<<r CalcAgeRisk, echo = FALSE, cache = TRUE>>= 
 sumdat$arisk <- with(sumdat, (2*under1)+under5)#+over65
 sumdat$ariskstd <- scale(log(sumdat$arisk+1), center = F)
 #for sensitivity analysis exclude elderly group
@@ -186,9 +190,9 @@ sumdat$ariskstds <- scale(log(sumdat$arisks+1), center = F)
 \subsection{Example Analysis}
 
 %Example Application
-The government of Kenya developed the “National Malaria Strategy 2009-2017” in response to the ongoing threat of malaria \cite{Ministryofpublichealthandsanitation2009}. This strategy outlined 6 objectives,  the first of which is “to have at least 80\% of people living in malaria risk areas using appropriate malaria preventive interventions.” The two primary non-pharmaceutical interventions identified in the plan are Indoor Residual Spraying (IRS) and Long Lasting Insecticidal Nets (LLINs). The strategy outlined for achieving the intervention objective included the initial mass distribution of LLINs where malaria is either endemic (western lowlands) or epidemic-prone (western highlands); followed by routine distribution of LLINs to pregnant women and children under 1 year of age and a subsidized sale of LLINs. The strategy also outlined the use of widespread IRS followed by focal treatments in epidemic-prone areas, i.e. areas where mosquitoes are likely to breed.  We use this information to evaluate our methodology.\\
+The government of Kenya developed the “National Malaria Strategy 2009-2017” in response to the ongoing threat of malaria (\cite{Ministryofpublichealthandsanitation2009}). This strategy outlined 6 objectives,  the first of which is “to have at least 80\% of people living in malaria risk areas using appropriate malaria preventive interventions.” The two primary non-pharmaceutical interventions identified in the plan are Indoor Residual Spraying (IRS) and Long Lasting Insecticidal Nets (LLINs). The strategy outlined for achieving the intervention objective included the initial mass distribution of LLINs where malaria is either endemic (western lowlands) or epidemic-prone (western highlands); followed by routine distribution of LLINs to pregnant women and children under 1 year of age and a subsidized sale of LLINs. The strategy also outlined the use of widespread IRS followed by focal treatments in epidemic-prone areas, i.e. areas where mosquitoes are likely to breed.  We use this information to evaluate our methodology.\\
 
-% The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group \cite{Bousema2012}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections \cite{Schantz-Dunn2009}. Identifying individuals which are both vulnerable to infection and likely to be exposed to an infected mosquito is therefore a priority.  However, existing distribution campaigns do not typically account for both infection risk and disease burden simultaneously.\\
+% The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group (\cite{Bousema2012}). However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections (\cite{Schantz-Dunn2009}). Identifying individuals which are both vulnerable to infection and likely to be exposed to an infected mosquito is therefore a priority.  However, existing distribution campaigns do not typically account for both infection risk and disease burden simultaneously.\\
 
 Prior to the initiation of a community-based research program,  two study sites in western Kenya were mapped and a census was taken. These two sites represent the western highland (hereafter “epidemic-prone”,  N = 3380) and lowland (hereafter “endemic”,  N = 604) populations. Our objective was to determine if the highest risk households were given preference in the administration of interventions in the form of both bed nets and indoor residual spraying.\\
 
@@ -196,7 +200,7 @@ We collected demographic information for each occupant including age and sex. Bo
 
 $$Health\ Risk\ Score  =  (2 \times \ Children\ \leq 1) + (1 < \ Children\  \leq 5) + (2 \times \ Pregnant\ Women)$$
 
-We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk \cite{Gupta1999, Snow1999, Menendez2000}.  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the West Nile virus those of age 65 years and older may have an increased. risk of neurological symptoms and permanent neural damage.\\
+We assigned twice the weight to children under 1 and pregnant women since they have been previously identified as high risk (\cite{Gupta1999, Snow1999, Menendez2000}).  This formula is tailored for malaria exposure but can be adjusted based on \emph{a priori} information about the individual risks for a particular mosquito borne disease. For example, for the West Nile virus those of age 65 years and older may have an increased. risk of neurological symptoms and permanent neural damage.\\
 
 We added the standardized household health risk with the standardized household exposure risk to create a combined risk.  We then determined if high risk households are more likely to have received either a bed-net or indoor residual spraying with a logistic model;
 
@@ -206,7 +210,7 @@ where $p$  =  Probability of a house having a treatment.  If $e^{\beta_1}$ is $>
 We modeled the high and low sites separately because these sites differed substantially in topography, level of malaria transmission, and intervention administration protocols.  We also modeled the two interventions separately since they are administered under different protocols.  Finally, in order to examine the utility of each TWI algorithm, we repeated the analysis using both the general and restricted TWI.\\  %If we found evidence of a non-linear relationship we categorized the risk score into quartiles and re-fit with a means model. 
 
 
-<<getDEM, echo = FALSE, message = FALSE, message = FALSE, results = 'hide', warning = FALSE>>= 
+<<getDEM, echo = FALSE, message = FALSE, message = FALSE, results = 'hide', warning = FALSE, cache = TRUE>>= 
 #read in the digital elevation data
 library(raster, quietly = TRUE, warn.conflicts = FALSE)
 library(rgdal)
@@ -237,7 +241,7 @@ names(highp)[3]  <-  "layer"
 rm(lowel2, lowel)
 @
 
-<<computeSWI, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide', warning = FALSE>>= 
+<<computeSWI, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide', warning = FALSE, cache = TRUE>>= 
 # library(RSAGA)
 # rsgenv <- rsaga.env(path = "C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32", check.libpath = FALSE, check.SAGA = FALSE, check.os.default = FALSE, modules = "C:\\Classes\\AppliedBiostat\\Project\\saga_2.1.4_Win32\\modules")
 # rsaga.import.gdal("LowSiteData.grd", env = rsgenv)
@@ -250,7 +254,7 @@ hight <- data.frame(highTWI)
 # ggplot(data = hight, aes(x = x, y = y))+geom_raster(aes(fill = band1))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = -5,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")#+ geom_point(aes(x = lon,  y = lat, color = hspray), data = highsite)+scale_colour_manual("Spray", values = c("red", "blue"))
 @
 
-<<computeSimpleTWI, echo = FALSE, message = FALSE, results = 'hide', warning = FALSE>>=
+<<computeSimpleTWI, echo = FALSE, message = FALSE, results = 'hide', warning = FALSE, cache = TRUE>>=
 library(SDMTools)
 #calculate elevation variance
 #first get diff from mean to deterime if it is a dip or a peak
@@ -341,7 +345,7 @@ ltwi <- as.data.frame(lowtwi, xy = TRUE)
 rm(aspvar3, aspvar7, aspvar11, highaspvar, lowaspvar, highdips, lowdips, highaspc, lowaspc, meandiff3, meandiff7, meandiff11, meanel3, meanel7, meanel11)
 @
 
-<<CalculateBevinTWI, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE>>=
+<<CalculateBevinTWI, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE, cache = TRUE>>=
 library(dynatopmodel)
 res(lowelcomp) <- as.numeric(yres(lowelcomp))
 # lowelcompP <- raster::setValues(lowelcomp, topmodel::sinkfill(raster::as.matrix(lowelcomp), res = xres(lowelcomp), degree = .001))
@@ -358,7 +362,7 @@ highTWIb <- upslope.area.custom(highel, atb = TRUE)
 sp::plot(highTWIb, main=c("Upslope area (log(m^2/m))", "TWI log(m^2/m)"))
 @
 
-<<smoothTWI, echo = FALSE>>= 
+<<smoothTWI, echo = FALSE, cache = TRUE>>= 
 #use focal to create moving window with gaussian weights for assiging household risk
 #create filter for focal window
 r <- raster(ncols = 36, nrows = 36, xmn = 0)
@@ -374,7 +378,7 @@ mriskHigh <- focal(hightr, fmat, filename = 'C:/Classes/AppliedBiostat/Project/s
 # writeRaster(mriskLow, "LowSite_MosquitoRisk.tiff")
 @
 
-<<PlotTWI, echo = FALSE, eval = FALSE>>= 
+<<PlotTWI, echo = FALSE, eval = FALSE, cache = TRUE>>= 
 lowtrp <- as.data.frame(mriskLow, xy = T)
 hightrp <- as.data.frame(mriskHigh, xy = T)
 infectLow <- ggplot(data = lowtrp[complete.cases(lowtrp), ], aes(x = x, y = y)) + 
@@ -395,7 +399,7 @@ library(gridExtra)
 grid.arrange(infectLow, infectHigh, ncol = 2)
 @
 
-<< assignRisktoHouse, echo = FALSE>>= 
+<< assignRisktoHouse, echo = FALSE, cache = TRUE>>= 
 lowsite$mrisk <- extract(mriskLow, y = cbind(lowsite$lon, lowsite$lat))
 highsite$mrisk <- extract(mriskHigh, y = cbind(highsite$lon, highsite$lat))
 #Standardize the risk scores
@@ -405,7 +409,7 @@ lowsite$mriskstd <- scale(log(lowsite$mriskpos+1), center = F)
 highsite$mriskstd <- scale(log(highsite$mriskpos+1), center = F)
 @
 
-<<plotMrisk, echo = FALSE, eval = FALSE>>= 
+<<plotMrisk, echo = FALSE, eval = FALSE, cache = TRUE>>= 
 ggplot(data = lowp, aes(x = x, y = y)) + 
   geom_raster(aes(fill = layer)) +
   scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar") +
@@ -419,7 +423,7 @@ ggplot(data = highp, aes(x = x, y = y)) +
   scale_colour_gradient("Mosquito Risk", low = "blue", high = "red")
 @
 
-<<plotArisk, echo = FALSE, eval = FALSE>>= 
+<<plotArisk, echo = FALSE, eval = FALSE, cache = TRUE>>= 
 ggplot(data = lowp, aes(x = x, y = y)) +
   geom_raster(aes(fill = layer)) +
   scale_fill_gradient2("Elevation", low  =  "brown",  mid  =  "yellow",  high  =  "green",   midpoint  =  1200,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar") + 
@@ -437,7 +441,7 @@ highp$site  <-  "Epidemic"
 pdat  <-  rbind(lowp,  highp)
 @
 
-<<CombinedRisk, echo = FALSE>>= 
+<<CombinedRisk, echo = FALSE, cache = TRUE>>= 
 lowsite$comrsk <- lowsite$mriskstd+lowsite$arisk
 highsite$comrsk <- highsite$mriskstd+highsite$arisk
 lowsite$site  <-  "Endemic"
@@ -492,7 +496,7 @@ rcspline.plot(lowsite$mrisk, lowsite$hspray, model = "logistic")
 rcspline.plot(highsite$mrisk, highsite$hspray, model = "logistic", xlab = "Mosquito Risk")#evidence of non-linearity (increasing then leveling off)
 @
 
-<<model1, echo = FALSE>>= 
+<<model1, echo = FALSE, cache = TRUE>>= 
 m1ls <- glm(hspray~comrsk, data = lowsite, family = "binomial")
 m1ls.est <- c(exp(summary(m1ls)$coef[2, 1]), exp(summary(m1ls)$coef[2, 1]-1.96*summary(m1ls)$coef[2, 2]), exp(summary(m1ls)$coef[2, 1]+1.96*summary(m1ls)$coef[2, 2]))
 m1ln <- glm(net~comrsk, data = lowsite, family = "binomial")
@@ -543,7 +547,7 @@ High & Net & 1.35 & 1.26 & 1.44 \\
 \end{table}
 
 
-<<SepModels, echo = FALSE>>= 
+<<SepModels, echo = FALSE, cache = TRUE>>= 
 #Separate model for each risk type
 m2als <- glm(hspray~arisk, data = lowsite, family = "binomial")
 m2als.est <- c(exp(summary(m2als)$coef[2, 1]), exp(summary(m2als)$coef[2, 1]-1.96*summary(m2als)$coef[2, 2]), exp(summary(m2als)$coef[2, 1]+1.96*summary(m2als)$coef[2, 2]))
@@ -592,7 +596,7 @@ Site & Treatment & OR & Lower 95\% CI & Upper 95\% CI & OR & Lower 95\% CI & Upp
 \label{ORtrt}
 \end{table}
 
-<<smoothTWI_sens, echo = FALSE>>= 
+<<smoothTWI_sens, echo = FALSE, cache = TRUE>>= 
 #use focal to create moving window with gaussian weights for assiging household risk
 # create filter for focal window
 r <- raster(ncols = 36, nrows = 36, xmn = 0)
@@ -619,7 +623,7 @@ grid.arrange(TWIlowSens, TWIhighSens, ncol = 2)
 @
 
 
-<<assignRisktoHouse_sens, echo = FALSE>>= 
+<<assignRisktoHouse_sens, echo = FALSE, cache = TRUE>>= 
 lowsite$mrisks <- extract(mriskLows, y = cbind(lowsite$lon, lowsite$lat))
 highsite$mrisks <- extract(mriskHighs, y = cbind(highsite$lon, highsite$lat))
 #Standardize the risk scores
@@ -635,7 +639,7 @@ highInfect <- ggplot(data = highp, aes(x = x, y = y))+geom_raster(aes(fill = lay
 @
 
 
-<<CombinedRisk_sens, echo = FALSE>>= 
+<<CombinedRisk_sens, echo = FALSE, cache = TRUE>>= 
 lowsite$comrsks <- scale(log(lowsite$mrisks+1), center = F)+scale(log(lowsite$arisk+1), center = F)
 highsite$comrsks <- scale(log(highsite$mrisks+1), center = F)+scale(log(highsite$arisk+1), center = F)
 both <- rbind(lowsite[, -34], highsite)
@@ -779,7 +783,7 @@ Our methodology is motivated by the need to improve the efficiency of interventi
 
 Since we do not have mosquito incidence data we evaluate the efficacy of each TWI algorithm by how closely each algorithm matches our expectations based on the intervention administration protocol at each site.  The general TWI algorithm identified channels at both sites as moderate to high risk.  However, while these channels are likely to have higher wetness, the water may drain too quickly to provide quality breeding habitat for mosquitoes.  Use of the restricted TWI algorithm identified fewer channels as having moderate to high exposure risk while identifying some areas not identified by the general TWI algorithm (Fig. \ref{twis}).  Therefore, the restricted TWI algorithm may out-perform the general TWI in identifying mosquito breeding sites.  Our results comparing both TWI algorithms indicates a stronger association between the restricted TWI and intervention use indicating better alignment between the restricted TWI and mosquito risk assessments on the ground. This was particularly noticeable when evaluating the OR of a household receiving indoor residual spraying at the low site where the association was at least in the preferable direction, albeit not significantly.  We believe our method can be used to quickly evaluate the overall risk for a given household and improve the efficiency of distribution protocols.\\
 
-Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  This is important when trying to determine which areas should be targeted when resources are limited, as is often the case in areas where mosquito-borne diseases are transmitted. We believe the restricted TWI described in appendix A provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as infection data.  This has been done previously\cite{Cohen2008, Cohen2010},  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
+Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  This is important when trying to determine which areas should be targeted when resources are limited, as is often the case in areas where mosquito-borne diseases are transmitted. We believe the restricted TWI described in appendix A provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as infection data.  This has been done previously (\cite{Cohen2008, Cohen2010}),  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
 
 
 \printbibliography
