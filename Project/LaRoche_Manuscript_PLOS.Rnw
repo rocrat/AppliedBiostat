@@ -14,7 +14,7 @@
 \usepackage{textcomp,marvosym}
 
 % cite package, to clean up citations in the main text. Do not remove.
-\usepackage{cite}
+% \usepackage{cite}
 
 % Use nameref to cite supporting information files (see Supporting Information section for more info)
 \usepackage{nameref,hyperref}
@@ -66,6 +66,9 @@
 \renewcommand{\figurename}{Fig}
 
 % Use the PLoS provided BiBTeX style
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{mybib.bib}
+
 \bibliographystyle{plos2015}
 
 % Remove brackets from numbering in List of References
@@ -97,12 +100,10 @@
 \newcommand{\ipsum}{{\bf IPSUM}}
 
 %% END MACROS SECTION
-\usepackage[backend=bibtex]{biblatex}
-\addbibresource{mybib.bib}
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+% \SweaveOpts{concordance=TRUE}
 \vspace*{0.2in}
 % Title must be 250 characters or less.
 \begin{flushleft}
