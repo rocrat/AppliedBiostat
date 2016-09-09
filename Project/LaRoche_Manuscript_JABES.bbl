@@ -19,12 +19,12 @@
 \entry{Beven1979}{article}{}
   \name{author}{2}{}{%
     {{}%
-     {BEVEN}{B.}%
+     {Beven}{B.}%
      {K.~J.}{K.~J.}%
      {}{}%
      {}{}}%
     {{}%
-     {KIRKBY}{K.}%
+     {Kirkby}{K.}%
      {M.~J.}{M.~J.}%
      {}{}%
      {}{}}%
@@ -37,6 +37,7 @@
   }
   \strng{namehash}{BKJKMJ1}
   \strng{fullhash}{BKJKMJ1}
+  \field{labelyear}{1979}
   \field{sortinit}{B}
   \field{abstract}{%
   Abstract A hydrological forecasting model is presented that attempts to
@@ -69,7 +70,6 @@
   \field{volume}{24}
   \field{journaltitle}{Hydrological Sciences Bulletin}
   \field{year}{1979}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{Bohner2002}{misc}{}
@@ -85,6 +85,7 @@
   }
   \strng{namehash}{BJ1}
   \strng{fullhash}{BJ1}
+  \field{labelyear}{2002}
   \field{sortinit}{B}
   \field{booktitle}{Soil Classification 2001}
   \field{title}{{Soil Regionalisation by Means of Terrain Analysis and Process
@@ -110,6 +111,7 @@
   }
   \strng{namehash}{BJST1}
   \strng{fullhash}{BJST1}
+  \field{labelyear}{2006}
   \field{sortinit}{B}
   \field{title}{{Spatial prediction of soil attributes using terrain analysis
   and climate regionalisation}}
@@ -180,6 +182,7 @@
   prevention {\&} control,Malaria: transmission,Mosquito Control}
   \strng{namehash}{BT+1}
   \strng{fullhash}{BTGJTSRWSDLCTSTWGADCGR1}
+  \field{labelyear}{2012}
   \field{sortinit}{B}
   \verb{doi}
   \verb 10.1371/journal.pmed.1001165
@@ -201,7 +204,6 @@
   \endverb
   \field{journaltitle}{PLoS medicine}
   \field{year}{2012}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{Cohen2010}{article}{}
@@ -242,6 +244,7 @@
   epidemiology,Risk Factors,Water}
   \strng{namehash}{CJM+1}
   \strng{fullhash}{CJMEKCLKAVJMJCCWML1}
+  \field{labelyear}{2010}
   \field{sortinit}{C}
   \field{abstract}{%
   BACKGROUND: Identification of high-risk malaria foci can help enhance
@@ -302,7 +305,6 @@
   \endverb
   \field{journaltitle}{Malaria journal}
   \field{year}{2010}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{Cohen2008}{article}{}
@@ -350,6 +352,7 @@
   Characteristics,Topography, Medical,Weather}
   \strng{namehash}{CJM+1}
   \strng{fullhash}{CJMEKCLKAVJMJCCWML1}
+  \field{labelyear}{2008}
   \field{sortinit}{C}
   \field{abstract}{%
   BACKGROUND: Transmission of Plasmodium falciparum generally decreases with
@@ -369,17 +372,17 @@
   significant associations with malaria were observable at small spatial
   scales. RESULTS: On average, malaria case households (n = 423) were located
   280 m closer to regions with very high wetness indices than non-malaria
-  "control" households (n = 895) (t = 10.35, p < 0.0001). Distance to high
-  wetness indices remained an independent predictor of risk after controlling
-  for household elevation in multivariate regression (OR = 0.93 [95{\%}
-  confidence interval = 0.89-0.96] for a 100 m increase in distance). For every
-  10 m increase in household elevation, there was a 12{\%} decrease in the odds
-  of the house having a malaria case (OR = 0.88 [0.85-0.90]). However, after
-  controlling for distance to regions of high predicted wetness and the
-  community in which the house was located, this reduction in malaria risk was
-  not statistically significant (OR = 0.98 [0.94-1.03]). CONCLUSION: Proximity
-  to terrain with high predicted water accumulation was significantly and
-  consistently associated with increased household-level malaria incidence,
+  "control" households (n = 895) (t = 10.35, p {\textless} 0.0001). Distance to
+  high wetness indices remained an independent predictor of risk after
+  controlling for household elevation in multivariate regression (OR = 0.93
+  [95{\%} confidence interval = 0.89-0.96] for a 100 m increase in distance).
+  For every 10 m increase in household elevation, there was a 12{\%} decrease
+  in the odds of the house having a malaria case (OR = 0.88 [0.85-0.90]).
+  However, after controlling for distance to regions of high predicted wetness
+  and the community in which the house was located, this reduction in malaria
+  risk was not statistically significant (OR = 0.98 [0.94-1.03]). CONCLUSION:
+  Proximity to terrain with high predicted water accumulation was significantly
+  and consistently associated with increased household-level malaria incidence,
   even at small spatial scales with little variation in elevation variables.
   These results suggest that high wetness indices are not merely proxies for
   valley bottoms, and hydrologic flow models may prove valuable for predicting
@@ -408,7 +411,84 @@
   \endverb
   \field{journaltitle}{Malaria journal}
   \field{year}{2008}
-  \warn{\item Invalid format of field 'month'}
+\endentry
+
+\entry{Conrad2015}{article}{}
+  \name{author}{9}{}{%
+    {{}%
+     {Conrad}{C.}%
+     {O.}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bechtel}{B.}%
+     {B.}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bock}{B.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Dietrich}{D.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fischer}{F.}%
+     {E.}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gerlitz}{G.}%
+     {L.}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wehberg}{W.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wichmann}{W.}%
+     {V.}{V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {B{\"{o}}hner}{B.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {English}%
+  }
+  \list{publisher}{1}{%
+    {Copernicus GmbH}%
+  }
+  \strng{namehash}{CO+1}
+  \strng{fullhash}{COBBBMDHFEGLWJWVBJ1}
+  \field{labelyear}{2015}
+  \field{sortinit}{C}
+  \verb{doi}
+  \verb 10.5194/gmd-8-1991-2015
+  \endverb
+  \field{issn}{1991-9603}
+  \field{number}{7}
+  \field{pages}{1991\bibrangedash 2007}
+  \field{title}{{System for Automated Geoscientific Analyses (SAGA) v. 2.1.4}}
+  \verb{url}
+  \verb http://www.geosci-model-dev.net/8/1991/2015/gmd-8-1991-2015.html
+  \endverb
+  \field{volume}{8}
+  \verb{file}
+  \verb :C$\backslash$:/Users/dlaroche/AppData/Local/Mendeley Ltd./Mendeley Des
+  \verb ktop/Downloaded/Conrad et al. - 2015 - System for Automated Geoscientif
+  \verb ic Analyses (SAGA) v. 2.1.4.pdf:pdf
+  \endverb
+  \field{journaltitle}{Geoscientific Model Development}
+  \field{year}{2015}
 \endentry
 
 \entry{Crouch}{report}{}
@@ -461,6 +541,7 @@
   areas,Spatial patterns,Topographic wetness index,Wetlands}
   \strng{namehash}{GT+1}
   \strng{fullhash}{GTSJBKLH1}
+  \field{labelyear}{2009}
   \field{sortinit}{G}
   \field{abstract}{%
   Topography is often one of the major controls on the spatial pattern of
@@ -492,7 +573,6 @@
   \field{volume}{373}
   \field{journaltitle}{Journal of Hydrology}
   \field{year}{2009}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{Gupta1999}{article}{}
@@ -528,6 +608,7 @@
   Falciparum,Malaria, Falciparum: epidemiology,Malaria, Falciparum: immunology}
   \strng{namehash}{GS+1}
   \strng{fullhash}{GSSRWDCAMKNC1}
+  \field{labelyear}{1999}
   \field{sortinit}{G}
   \field{abstract}{%
   In areas of stable transmission, clinical immunity to mild malaria is
@@ -563,41 +644,6 @@
   \field{volume}{5}
   \field{journaltitle}{Nature medicine}
   \field{year}{1999}
-  \warn{\item Invalid format of field 'month'}
-\endentry
-
-\entry{Ministryofpublichealthandsanitation2009}{report}{}
-  \name{author}{2}{}{%
-    {{}%
-     {health}{h.}%
-     {Ministry}{M.}%
-     {of~public}{o.~p.}%
-     {}{}}%
-    {{}%
-     {sanitation}{s.}%
-     {}{}%
-     {}{}%
-     {}{}}%
-  }
-  \strng{namehash}{hMops1}
-  \strng{fullhash}{hMops1}
-  \field{sortinit}{H}
-  \field{number}{July}
-  \field{pages}{116}
-  \field{title}{{National Malaria Strategy 2009-2017}}
-  \verb{url}
-  \verb https://www.google.com/url?sa=t{\&}rct=j{\&}q={\&}esrc=s{\&}source=web{
-  \verb \&}cd=1{\&}ved=0CB4QFjAAahUKEwiXj76j-IzHAhWGVT4KHZD7AFA{\&}url=http://w
-  \verb ww.c-hubonline.org/sites/default/files/resources/main/Kenya{\_}National
-  \verb {\_}Malaria{\_}Strategy{\_}2009-2017.pdf{\&}ei=9GG{\_}VZfFKIar-QGQ94OAB
-  \verb Q{\&}usg=AFQj
-  \endverb
-  \list{institution}{2}{%
-    {Ministry of public health}%
-    {sanitation}%
-  }
-  \field{type}{techreport}
-  \field{year}{2009}
 \endentry
 
 \entry{Menendez2000}{article}{}
@@ -623,8 +669,9 @@
   effects,Female,Hemolysis,Humans,Malaria, Falciparum,Malaria, Falciparum:
   complications,Malaria, Falciparum: drug therapy,Male,Pregnancy,Pregnancy
   Complications, Parasitic}
-  \strng{namehash}{MCFAFAPL1}
+  \strng{namehash}{MC+1}
   \strng{fullhash}{MCFAFAPL1}
+  \field{labelyear}{2000}
   \field{sortinit}{M}
   \field{abstract}{%
   Malaria infection in humans by Plasmodium species is associated with a
@@ -647,7 +694,41 @@
   \field{volume}{16}
   \field{journaltitle}{Parasitology today (Personal ed.)}
   \field{year}{2000}
-  \warn{\item Invalid format of field 'month'}
+\endentry
+
+\entry{Ministryofpublichealthandsanitation2009}{report}{}
+  \name{author}{2}{}{%
+    {{}%
+     {health}{h.}%
+     {Ministry}{M.}%
+     {of~public}{o.~p.}%
+     {}{}}%
+    {{}%
+     {sanitation}{s.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{ophMs1}
+  \strng{fullhash}{ophMs1}
+  \field{labelyear}{2009}
+  \field{sortinit}{O}
+  \field{number}{July}
+  \field{pages}{116}
+  \field{title}{{National Malaria Strategy 2009-2017}}
+  \verb{url}
+  \verb https://www.google.com/url?sa=t{\&}rct=j{\&}q={\&}esrc=s{\&}source=web{
+  \verb \&}cd=1{\&}ved=0CB4QFjAAahUKEwiXj76j-IzHAhWGVT4KHZD7AFA{\&}url=http://w
+  \verb ww.c-hubonline.org/sites/default/files/resources/main/Kenya{\_}National
+  \verb {\_}Malaria{\_}Strategy{\_}2009-2017.pdf{\&}ei=9GG{\_}VZfFKIar-QGQ94OAB
+  \verb Q{\&}usg=AFQj
+  \endverb
+  \list{institution}{2}{%
+    {Ministry of public health}%
+    {sanitation}%
+  }
+  \field{type}{techreport}
+  \field{year}{2009}
 \endentry
 
 \entry{Quinn1995}{article}{}
@@ -668,8 +749,9 @@
      {}{}%
      {}{}}%
   }
-  \strng{namehash}{QPFBKJLR1}
+  \strng{namehash}{QPF+1}
   \strng{fullhash}{QPFBKJLR1}
+  \field{labelyear}{1995}
   \field{sortinit}{Q}
   \verb{doi}
   \verb 10.1002/hyp.3360090204
@@ -685,7 +767,6 @@
   \field{volume}{9}
   \field{journaltitle}{Hydrological Processes}
   \field{year}{1995}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{RCoreTeam2015}{misc}{}
@@ -701,6 +782,7 @@
   }
   \strng{namehash}{R1}
   \strng{fullhash}{R1}
+  \field{labelyear}{2015}
   \field{sortinit}{R}
   \field{title}{{R: A Language and Environment for Statistical Computing}}
   \verb{url}
@@ -727,6 +809,7 @@
   }
   \strng{namehash}{SDJNNM1}
   \strng{fullhash}{SDJNNM1}
+  \field{labelyear}{2009}
   \field{sortinit}{S}
   \field{abstract}{%
   Malaria, a parasitic infection transmitted by mosquitoes, is one of the most
@@ -757,7 +840,6 @@
   \endverb
   \field{journaltitle}{Reviews in obstetrics {\&} gynecology}
   \field{year}{2009}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{Snow1999}{article}{}
@@ -795,6 +877,7 @@
   mortality,Male,Risk Factors}
   \strng{namehash}{SRW+1}
   \strng{fullhash}{SRWCMDUMK1}
+  \field{labelyear}{1999}
   \field{sortinit}{S}
   \field{abstract}{%
   The contribution of malaria to morbidity and mortality among people in Africa
@@ -841,7 +924,6 @@
   \endverb
   \field{journaltitle}{Bulletin of the World Health Organization}
   \field{year}{1999}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{Sørensen2006}{article}{}
@@ -868,8 +950,9 @@
   \list{publisher}{1}{%
     {Copernicus GmbH}%
   }
-  \strng{namehash}{SRZUSJ1}
+  \strng{namehash}{SR+1}
   \strng{fullhash}{SRZUSJ1}
+  \field{labelyear}{2006}
   \field{sortinit}{S}
   \verb{doi}
   \verb 10.5194/hess-10-101-2006
@@ -891,7 +974,6 @@
   \endverb
   \field{journaltitle}{Hydrology and Earth System Sciences}
   \field{year}{2006}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \lossort
