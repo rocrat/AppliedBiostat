@@ -116,9 +116,6 @@
 \renewcommand{\figurename}{Fig}
 
 % Use the PLoS provided BiBTeX style
-% \usepackage[backend=bibtex]{biblatex}
-% \addbibresource{mybib.bib}
-
 \bibliographystyle{plos2015}
 
 % Remove brackets from numbering in List of References
@@ -188,7 +185,7 @@ Mosquito borne illnesses are a significant threat to public health in countries 
 
 \section*{Introduction}
 %introduce the problem
-Malaria and other mosquito borne illnesses are considered a significant threat to public health and a socio-economic burden in countries where these diseases are either endemic or epidemic \cite{Crouch}. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria specifically. Many national strategic plans to reduce or eliminate malaria are in their third generation.  The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group \cite{Bousema2012}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections \cite{Schantz-Dunn2009}. Identifying individuals which are both vulnerable to infection and likely to be exposed to an infected mosquito is therefore a priority.  However, identifying high risk individuals can be costly and inefficient.\\
+Malaria and other mosquito borne illnesses are considered a significant threat to public health and a socio-economic burden in countries where these diseases are either endemic or epidemic \cite{Crouch}. Concerted efforts have been made in the past decade to reduce and in some cases eliminate malaria specifically. Many national strategic plans to reduce or eliminate malaria are in their third generation.  The World Health Organization recommends prioritizing the administration of interventions to pregnant women and young children followed by progressively achieving intervention coverage of all community members. The preferential administration of interventions to pregnant women and young children reflects the disproportionate disease burden borne by this group \cite{Bousema2012}. However,  previous research has identified the benefit of additionally targeting interventions at those with the highest risk of infections \cite{SchantzDunn2009}. Identifying individuals which are both vulnerable to infection and likely to be exposed to an infected mosquito is therefore a priority.  However, identifying high risk individuals can be costly and inefficient.\\
 
 The Topographic Wetness Index (TWI) \cite{Beven1979} derived from freely available remotely-sensed topographic data has been previously investigated as a tool for assessing risk of malaria infection \cite{Cohen2008,Cohen2010}. TWI can potentially identify areas where water is likely to pool and Anopheles densities are likely to be higher. This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.  However, traditional TWI algorithms are complicated and generally require specialized software to implement.  Moreover, simply identifying areas where are mosquitoes are likely to breed does not account for the differential health risk of the exposed population.  We develop a simple, matrix-based, methodology using topographic data and combine this with a household census of demographics to identify high risk households.  We apply the method to two sites in Kenya where malaria is either endemic or epidemic-prone.  We compare our methodology to a traditional Topographic  Wetness Index by using knowledge of intervention use for two interventions at two sites in Kenya. \\%This method, therefore, has the potential to both inform new distribution campaigns and evaluate the efficacy of existing campaigns.
 
@@ -201,12 +198,12 @@ Every household on a landscape will vary with respect to both the risk of exposu
 
 The Topographical Wetness index was originally introduced by Beven and Kirby in 1979 (\cite{Beven1979}).  TWI combines a measure of the amount of upstream drainage area with the local slope to determine the amount of wetness likely to accumulate at a point and is defined by Beven and Kirby generally as:
 $$ln\frac{a}{tanb},$$
-where $a$ is the local up-slope area (local area draining to the point) and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995,Sørensen2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
+where $a$ is the local up-slope area (local area draining to the point) and $tanb$ is the local slope in radians.  The TWI is designed to predict the amount of water that is likely to flow into an area, based on surface topology, and the rate at which this water will flow out of an area.  Since TWI was first defined numerous methods have been developed to calculate it and several review papers have been published \cite{Quinn1995, Sorensen2006} as well as alternative modeling strategies developed \cite{Grabs2009}.  Areas with high in-flow and low out-flow are likely provide habitat for breeding mosquitoes. \\
 
 The primary goal of using TWI in this application is to identify areas where mosquitoes are likely to breed.  However, the general TWI was originally designed to model surface water flow and not necessarily to identify areas where water will pool. A simpler algorithm for identifying only areas where water is likely to pool may perform as well, or better, than a general TWI algorithm and would not require specialized GIS software for implementation.  To examine this, we implement 2 different algorithms which differ in their calculation of the up-slope area and local slope: 1) the SAGA Wetness Index \cite{Bohner2002} (hereafter "general TWI"), and 2) a simplified topographic wetness index which simply identifies depressions without regard to up-slope area (hereafter "restricted TWI").  \\
 
 
-We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.  Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{ http://www.saga-gis.org\cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
+We carried out all analyses using the statistical programming language R version 3.2.3 \cite{RCoreTeam2015}, with the exception of the SAGA TWI which was calculated with the SAGA open-source GIS software \cite{Bohner2006}.  Details for calculation of the general TWI are available in the software documentation available at \href{http://www.saga-gis.org/saga_module_doc/2.1.4/ta_hydrology.html}{http://www.saga-gis.org} \cite{Conrad2015}.  The method involves, for every point on the landscape:  calculating the up-slope area from which water will flow to the point,  calculating the catchment area, and the slope of the catchment area.  Areas with a larger up-slope area and a smaller catchment area slope are predicted to have more water accumulation.\\
 
 In contrast to the relatively complicated calculation of a general TWI, we suggest a simple model based on identifying depressions with low outflow and disregarding the up-slope area.  We first identify depressions and valleys by identifying pixels which are lower than the average of their neighbors.  We do this by first calculating the average elevation of the surrounding pixels for each pixel ($p$) in the landscape at three resolutions of increasing size:  
 
@@ -326,11 +323,13 @@ The probability of bed net use at the high site was more strongly associated wit
 
 
 
+
 \begin{table}[!ht]
+\begin{adjustwidth}{-2.25in}{0in} % Comment out/remove adjustwidth environment if table fits in text column.
+\centering
 \caption{
 {Odds of treatment from risk of either mosquito exposure or malaria risk.} 
 }
-\centering
 \begin{tabular}{llllllll}
   \hline
  &  & \multicolumn{3}{l}{Health Risk} & \multicolumn{3}{l}{Exposure Risk}  \\ 
@@ -344,6 +343,7 @@ Site & Treatment & OR & Lower 95\% CI & Upper 95\% CI & OR & Lower 95\% CI & Upp
    \hline
 \end{tabular}
 \label{ORtrt}
+\end{adjustwidth}
 \end{table}
 
 
@@ -396,7 +396,7 @@ High & Net & 1.35 & 1.26 & 1.44 & 1.45 & 1.33 & 1.59 \\
 
 \begin{figure}[!h]
 \centering
-% \includegraphics[scale=.5]{./figure/CompareTWI.png}
+% \includegraphics[scale=.5]{./figure/CompareTWI}
 \caption{Comparison of the general TWI (left) and the restricted TWI (right) showing the lower extent of channels identified as moderate to high risk by the restricted TWI.  The restricted TWI also identified several areas missed by the general TWI. }
 \label{twis}
 \end{figure}
@@ -411,13 +411,122 @@ Our methodology is motivated by the need to improve the efficiency of interventi
 
 Since we do not have mosquito incidence data we evaluate the efficacy of each TWI algorithm by how closely each algorithm matches our expectations based on the intervention administration protocol at each site.  The general TWI algorithm identified channels at both sites as moderate to high risk.  However, while these channels are likely to have higher wetness, the water may drain too quickly to provide quality breeding habitat for mosquitoes.  Use of the restricted TWI algorithm identified fewer channels as having moderate to high exposure risk while identifying some areas not identified by the general TWI algorithm (Fig~\ref{twis}).  Therefore, the restricted TWI algorithm may out-perform the general TWI in identifying mosquito breeding sites.  Our results comparing both TWI algorithms indicates a stronger association between the restricted TWI and intervention use indicating better alignment between the restricted TWI and mosquito risk assessments on the ground. This was particularly noticeable when evaluating the OR of a household receiving indoor residual spraying at the low site where the association was at least in the preferable direction, albeit not significantly.  We believe our method can be used to quickly evaluate the overall risk for a given household and improve the efficiency of distribution protocols.\\
 
-Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  We believe the restricted TWI provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as infection data.  This has been done previously (Cohen2008, Cohen2010),  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
+Our method does not depend on accurately identifying the absolute risk of any given household, but rather the relative risk of every household on the landscape.  We believe the restricted TWI provides a simple and easily implemented algorithm for identifying high risk areas which may perform better than more complicated TWI algorithms based on the calculation of up-slope areas.  However, the sensitivity of our results to choice of TWI algorithm suggests that the TWI should be validated with additional information such as infection data.  This has been done previously~\cite{Cohen2008, Cohen2010},  but only with a single algorithm at a single site.  We recommend further evaluation of TWI algorithms with actual mosquito borne infection information at multiple sites, preferably with different topographies.\\
 
 
 \nolinenumbers
 
 \begin{thebibliography}{10}
-\bibliography{mybib}
+
+\bibitem{Crouch}
+Crouch M.
+\newblock {The Second National Health Sector Strategic Plan of Kenya: NHSSP II
+  – 2005–2010}.
+\newblock Republic of Kenya Ministry of Health;.
+\newblock Available from:
+  \url{http://www.healthpolicyinitiative.com/Publications/Documents/796{\_}1{\_}796{\_}1{\_}NHSSP{\_}II.pdf}.
+
+\bibitem{Bousema2012}
+Bousema T, Griffin JT, Sauerwein RW, Smith DL, Churcher TS, Takken W, et~al.
+\newblock {Hitting hotspots: spatial targeting of malaria for control and
+  elimination.}
+\newblock PLoS medicine. 2012;9(1):e1001165.
+\newblock doi:{10.1371/journal.pmed.1001165}.
+
+\bibitem{SchantzDunn2009}
+Schantz-Dunn J, Nour NM.
+\newblock {Malaria and pregnancy: a global health perspective.}
+\newblock Reviews in obstetrics {\&} gynecology. 2009;2(3):186--92.
+
+\bibitem{Beven1979}
+Beven KJ, Kirkby MJ.
+\newblock {A physically based, variable contributing area model of basin
+  hydrology / Un mod{\`{e}}le {\`{a}} base physique de zone d'appel variable de
+  l'hydrologie du bassin versant}.
+\newblock Hydrological Sciences Bulletin. 1979;24(1):43--69.
+\newblock doi:{10.1080/02626667909491834}.
+
+\bibitem{Cohen2008}
+Cohen JM, Ernst KC, Lindblade KA, Vulule JM, John CC, Wilson ML.
+\newblock {Topography-derived wetness indices are associated with
+  household-level malaria risk in two communities in the western Kenyan
+  highlands.}
+\newblock Malaria journal. 2008;7(1):40.
+\newblock doi:{10.1186/1475-2875-7-40}.
+
+\bibitem{Cohen2010}
+Cohen JM, Ernst KC, Lindblade KA, Vulule JM, John CC, Wilson ML.
+\newblock {Local topographic wetness indices predict household malaria risk
+  better than land-use and land-cover in the western Kenya highlands.}
+\newblock Malaria journal. 2010;9:328.
+\newblock doi:{10.1186/1475-2875-9-328}.
+
+\bibitem{Quinn1995}
+Quinn PF, Beven KJ, Lamb R.
+\newblock {The in(a/tan/$\beta$) index: How to calculate it and how to use it
+  within the topmodel framework}.
+\newblock Hydrological Processes. 1995;9(2):161--182.
+\newblock doi:{10.1002/hyp.3360090204}.
+
+\bibitem{Sorensen2006}
+Sørensen R, Zinko U, Seibert J.
+\newblock {On the calculation of the topographic wetness index: evaluation of
+  different methods based on field observations}.
+\newblock Hydrology and Earth System Sciences. 2006;10(1):101--112.
+\newblock doi:{10.5194/hess-10-101-2006}.
+
+\bibitem{Grabs2009}
+Grabs T, Seibert J, Bishop K, Laudon H.
+\newblock {Modeling spatial patterns of saturated areas: A comparison of the
+  topographic wetness index and a dynamic distributed model}.
+\newblock Journal of Hydrology. 2009;373(1-2):15--23.
+\newblock doi:{10.1016/j.jhydrol.2009.03.031}.
+
+\bibitem{Bohner2002}
+B{\"{o}}hner J. {Soil Regionalisation by Means of Terrain Analysis and Process
+  Parameterisation}; 2002.
+
+\bibitem{RCoreTeam2015}
+{R Core Team}. {R: A Language and Environment for Statistical Computing}; 2015.
+\newblock Available from: \url{https://www.r-project.org/}.
+
+\bibitem{Bohner2006}
+B{\"{o}}hner J, Selige T.
+\newblock {Spatial prediction of soil attributes using terrain analysis and
+  climate regionalisation}.
+\newblock Gottinger Geographische Abhandlungen. 2006;.
+
+\bibitem{Conrad2015}
+Conrad O, Bechtel B, Bock M, Dietrich H, Fischer E, Gerlitz L, et~al.
+\newblock {System for Automated Geoscientific Analyses (SAGA) v. 2.1.4}.
+\newblock Geoscientific Model Development. 2015;8(7):1991--2007.
+\newblock doi:{10.5194/gmd-8-1991-2015}.
+
+\bibitem{Ministryofpublichealthandsanitation2009}
+of~public health M, sanitation.
+\newblock {National Malaria Strategy 2009-2017}.
+\newblock Ministry of public health and sanitation; 2009. July.
+\newblock Available from:
+  \url{https://www.google.com/url?sa=t{\&}rct=j{\&}q={\&}esrc=s{\&}source=web{\&}cd=1{\&}ved=0CB4QFjAAahUKEwiXj76j-IzHAhWGVT4KHZD7AFA{\&}url=http://www.c-hubonline.org/sites/default/files/resources/main/Kenya{\_}National{\_}Malaria{\_}Strategy{\_}2009-2017.pdf{\&}ei=9GG{\_}VZfFKIar-QGQ94OABQ{\&}usg=AFQj}.
+
+\bibitem{Gupta1999}
+Gupta S, Snow RW, Donnelly CA, Marsh K, Newbold C.
+\newblock {Immunity to non-cerebral severe malaria is acquired after one or two
+  infections.}
+\newblock Nature medicine. 1999;5(3):340--3.
+\newblock doi:{10.1038/6560}.
+
+\bibitem{Snow1999}
+Snow RW, Craig M, Deichmann U, Marsh K.
+\newblock {Estimating mortality, morbidity and disability due to malaria among
+  Africa's non-pregnant population.}
+\newblock Bulletin of the World Health Organization. 1999;77(8):624--40.
+
+\bibitem{Menendez2000}
+Menendez C, Fleming AF, Alonso PL.
+\newblock {Malaria-related anaemia.}
+\newblock Parasitology today (Personal ed). 2000;16(11):469--76.
 
 \end{thebibliography}
+
 \end{document}

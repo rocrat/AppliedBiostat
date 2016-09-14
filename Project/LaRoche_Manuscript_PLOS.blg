@@ -1,9 +1,21 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: LaRoche_Manuscript_PLOS.aux
 The style file: plos2015.bst
-White space in argument---line 28 of file LaRoche_Manuscript_PLOS.aux
- : \citation{S\begingroup
- :                        \let \relax \relax \endgroup [Pleaseinsert\PrerenderUnicode{ø}intopreamble]rensen2006}
-I'm skipping whatever remains of this command
-Database file #1: mybib.bib
-Warning--there's a month but no year in Crouch
+I found no \bibdata command---while reading file LaRoche_Manuscript_PLOS.aux
+Warning--I didn't find a database entry for "Crouch"
+Warning--I didn't find a database entry for "Bousema2012"
+Warning--I didn't find a database entry for "SchantzDunn2009"
+Warning--I didn't find a database entry for "Beven1979"
+Warning--I didn't find a database entry for "Cohen2008"
+Warning--I didn't find a database entry for "Cohen2010"
+Warning--I didn't find a database entry for "Quinn1995"
+Warning--I didn't find a database entry for "Sorensen2006"
+Warning--I didn't find a database entry for "Grabs2009"
+Warning--I didn't find a database entry for "Bohner2002"
+Warning--I didn't find a database entry for "RCoreTeam2015"
+Warning--I didn't find a database entry for "Bohner2006"
+Warning--I didn't find a database entry for "Conrad2015"
+Warning--I didn't find a database entry for "Ministryofpublichealthandsanitation2009"
+Warning--I didn't find a database entry for "Gupta1999"
+Warning--I didn't find a database entry for "Snow1999"
+Warning--I didn't find a database entry for "Menendez2000"
 (There was 1 error message)
