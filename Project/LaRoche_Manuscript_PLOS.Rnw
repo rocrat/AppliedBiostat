@@ -24,7 +24,7 @@
 
 % ligatures disabled
 \usepackage{microtype}
-\DisableLigatures[f]{encoding = *, family = * }
+\DisableLigatures[f]{encoding=*,family=*}
 
 % color can be used to apply background shading to table cells only
 \usepackage[table]{xcolor}
@@ -66,8 +66,8 @@
 \renewcommand{\figurename}{Fig}
 
 % Use the PLoS provided BiBTeX style
-\usepackage[backend=bibtex]{biblatex}
-\addbibresource{mybib.bib}
+% \usepackage[backend=bibtex]{biblatex}
+% \addbibresource{mybib.bib}
 
 \bibliographystyle{plos2015}
 
@@ -103,7 +103,6 @@
 
 
 \begin{document}
-% \SweaveOpts{concordance=TRUE}
 \vspace*{0.2in}
 % Title must be 250 characters or less.
 \begin{flushleft}
@@ -118,7 +117,7 @@ Melanie L. Bell\textsuperscript{1},
 Kacey C. Ernst\textsuperscript{1},
 \\
 \bigskip
-\textbf{1} Mel & Enid Zuckerman College of Public Health, University of Arizona , Tucson, AZ, USA
+\textbf{1} Mel \& Enid Zuckerman College of Public Health, University of Arizona , Tucson, AZ, USA
 \\
 \bigskip
 
@@ -913,7 +912,8 @@ Our method does not depend on accurately identifying the absolute risk of any gi
 
 \nolinenumbers
 
-\printbibliography
+\begin{thebibliography}{10}
+\bibliography{mybib}
 
-
+\end{thebibliography}
 \end{document}
