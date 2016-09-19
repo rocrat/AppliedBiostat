@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.28)  14 SEP 2016 15:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.28)  19 SEP 2016 15:44
 entering extended mode
 **./LaRoche_Manuscript_PLOS.tex
 (LaRoche_Manuscript_PLOS.tex
@@ -540,8 +540,7 @@ G,.JBIG2,.JB2,.eps]
 .sty"
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
 tim
-)
-No file LaRoche_Manuscript_PLOS.aux.
+) (LaRoche_Manuscript_PLOS.aux)
 \openout1 = `LaRoche_Manuscript_PLOS.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 151.
@@ -558,6 +557,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 151.
 LaTeX Font Info:    ... okay on input line 151.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 151.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 151.
+
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
@@ -624,6 +624,7 @@ Package hyperref Info: Link coloring OFF on input line 151.
 LaTeX Info: Redefining \ref on input line 151.
 LaTeX Info: Redefining \pageref on input line 151.
 LaTeX Info: Redefining \nameref on input line 151.
+ (LaRoche_Manuscript_PLOS.out) (LaRoche_Manuscript_PLOS.out)
 \@outlinefile=\write3
 \openout3 = `LaRoche_Manuscript_PLOS.out'.
 
@@ -668,26 +669,6 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `cmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-
-
-LaTeX Warning: Citation `Crouch' on page 1 undefined on input line 188.
-
-
-LaTeX Warning: Citation `Bousema2012' on page 1 undefined on input line 188.
-
-
-LaTeX Warning: Citation `SchantzDunn2009' on page 1 undefined on input line 188
-.
-
-
-LaTeX Warning: Citation `Beven1979' on page 1 undefined on input line 190.
-
-
-LaTeX Warning: Citation `Cohen2008' on page 1 undefined on input line 190.
-
-
-LaTeX Warning: Citation `Cohen2010' on page 1 undefined on input line 190.
-
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2016-09-12 12:11:47
 (epstopdf)                    size: 283246 bytes
@@ -698,45 +679,17 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 ed-to.pdf PLOS-submission.eps>
 (epstopdf)             \includegraphics on input line 190.
 Package epstopdf Info: Output file is already uptodate.
-<PLOS-submission-eps-converted-to.pdf, id=3, 216.81pt x 35.13126pt>
+ <PLOS-submission-eps-converted-to.pdf, id=29, 216.81pt x 35.13126pt>
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
 e 190.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 1 undefined on input line 190.
-
-[1
+ [1
 
 {C:/Users/dlaroche/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./PLOS-s
 ubmission-eps-converted-to.pdf>]
-
-LaTeX Warning: Citation `Beven1979' on page 2 undefined on input line 199.
-
-
-LaTeX Warning: Citation `Quinn1995' on page 2 undefined on input line 201.
-
-
-LaTeX Warning: Citation `Sorensen2006' on page 2 undefined on input line 201.
-
-
-LaTeX Warning: Citation `Grabs2009' on page 2 undefined on input line 201.
-
-
-LaTeX Warning: Citation `Bohner2002' on page 2 undefined on input line 203.
-
-
-LaTeX Warning: Citation `RCoreTeam2015' on page 2 undefined on input line 206.
-
-
-LaTeX Warning: Citation `Bohner2006' on page 2 undefined on input line 206.
-
-
-LaTeX Warning: Citation `Conrad2015' on page 2 undefined on input line 206.
-
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2016-09-12 12:11:47
 (epstopdf)                    size: 283246 bytes
@@ -748,15 +701,12 @@ ed-to.pdf PLOS-submission.eps>
 (epstopdf)             \includegraphics on input line 209.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
+
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
 e 209.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 2 undefined on input line 209.
-
-[2]
+ [2]
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2016-09-12 12:11:47
 (epstopdf)                    size: 283246 bytes
@@ -768,38 +718,21 @@ ed-to.pdf PLOS-submission.eps>
 (epstopdf)             \includegraphics on input line 230.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
- <use PLOS-submission-eps-converted-to.pdf>
+
+<use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
 e 230.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 3 undefined on input line 230.
-
-[3]
+ [3]
 ("C:\Users\dlaroche\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ucs\uni-32.def"
 File: uni-32.def 2013/05/13 UCS: Unicode data U+2000..U+20FF
 )
-
-LaTeX Warning: Citation `Ministryofpublichealthandsanitation2009' on page 4 und
-efined on input line 248.
-
-
 Overfull \hbox (9.61993pt too wide) detected at line 256
 \OML/cmm/m/it/10 Health Risk Score \OT1/cmr/m/n/10 = (2 \OMS/cmsy/m/n/10   \OM
 L/cmm/m/it/10 Children  \OMS/cmsy/m/n/10  \OT1/cmr/m/n/10 1) + (1 \OML/cmm/m/i
 t/10 <  Children  \OMS/cmsy/m/n/10  \OT1/cmr/m/n/10 5) + (2 \OMS/cmsy/m/n/10 
   \OML/cmm/m/it/10 Pregnant Women\OT1/cmr/m/n/10 )
  []
-
-
-LaTeX Warning: Citation `Gupta1999' on page 4 undefined on input line 258.
-
-
-LaTeX Warning: Citation `Snow1999' on page 4 undefined on input line 258.
-
-
-LaTeX Warning: Citation `Menendez2000' on page 4 undefined on input line 258.
 
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2016-09-12 12:11:47
@@ -816,23 +749,7 @@ File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
 e 258.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 4 undefined on input line 258.
-
-[4]
-
-LaTeX Warning: Reference `ORcmb' on page 5 undefined on input line 295.
-
-
-LaTeX Warning: Reference `ORtrt' on page 5 undefined on input line 319.
-
-
-LaTeX Warning: Reference `twis' on page 5 undefined on input line 371.
-
-
-LaTeX Warning: Reference `Sens' on page 5 undefined on input line 371.
-
+ [4]
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2016-09-12 12:11:47
 (epstopdf)                    size: 283246 bytes
@@ -841,21 +758,15 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15311 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 372.
+(epstopdf)             \includegraphics on input line 371.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
+
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 372.
+e 371.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 5 undefined on input line 372.
-
-[5]
-
-LaTeX Warning: Reference `twis' on page 6 undefined on input line 412.
-
+ [5]
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2016-09-12 12:11:47
 (epstopdf)                    size: 283246 bytes
@@ -864,28 +775,20 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15311 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 412.
+(epstopdf)             \includegraphics on input line 411.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
+
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 412.
+e 411.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 6 undefined on input line 412.
-
-[6]
-
-LaTeX Warning: Citation `Cohen2008' on page 7 undefined on input line 414.
-
-
-LaTeX Warning: Citation `Cohen2010' on page 7 undefined on input line 414.
-
+ [6]
 Package microtype Info: Loading generic settings for font family
 (microtype)             `cmtt' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+
 ("C:\Users\dlaroche\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ucs\uni-0.def"
 File: uni-0.def 2013/05/13 UCS: Unicode data U+0000..U+00FF
 )
@@ -897,21 +800,14 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15311 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 489.
+(epstopdf)             \includegraphics on input line 484.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 489.
+e 484.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 7 undefined on input line 489.
-
-[7]
-
-Package lastpage Warning: Rerun to get the references right on input line 532.
-
+ [7]
 
 AED: lastpage setting LastPage
 Package epstopdf Info: Source file: <PLOS-submission.eps>
@@ -922,47 +818,30 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15311 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 532.
+(epstopdf)             \includegraphics on input line 531.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 532.
+e 531.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
-
-
-LaTeX Warning: Reference `LastPage' on page 8 undefined on input line 532.
-
-[8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 532.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 532.
+ [8]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 531.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 531.
  (LaRoche_Manuscript_PLOS.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 532.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 532.
-
-
-Package rerunfilecheck Warning: File `LaRoche_Manuscript_PLOS.out' has changed.
-
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `LaRoche_Manuscript_PLOS.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  4EAE7638004D905C4490C6D3F16C1A4B;296.
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 532.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 531.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 531.
+Package rerunfilecheck Info: File `LaRoche_Manuscript_PLOS.out' has not changed
+.
+(rerunfilecheck)             Checksum: 4EAE7638004D905C4490C6D3F16C1A4B;296.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 531.
  ) 
 Here is how much of TeX's memory you used:
- 11754 strings out of 493634
- 176095 string characters out of 3143735
- 314446 words of memory out of 3000000
- 14873 multiletter control sequences out of 15000+200000
- 9389 words of font info for 56 fonts, out of 3000000 for 9000
+ 11768 strings out of 493634
+ 176355 string characters out of 3143735
+ 315763 words of memory out of 3000000
+ 14879 multiletter control sequences out of 15000+200000
+ 9497 words of font info for 57 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  42i,15n,43p,1417b,596s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
@@ -979,9 +858,9 @@ es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fon
 ts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
 /public/amsfonts/cm/cmtt10.pfb>
-Output written on LaRoche_Manuscript_PLOS.pdf (8 pages, 222265 bytes).
+Output written on LaRoche_Manuscript_PLOS.pdf (8 pages, 230610 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
+ 203 PDF objects out of 1000 (max. 8388607)
  41 named destinations out of 1000 (max. 500000)
- 12294 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 12334 words of extra memory for PDF output out of 14400 (max. 10000000)
 
