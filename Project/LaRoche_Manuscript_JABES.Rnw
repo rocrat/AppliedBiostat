@@ -339,9 +339,63 @@ hightwi <- highaspvar*highdips*-1
 #plot restricted TWI
 htwi <- as.data.frame(hightwi, xy = TRUE)
 ltwi <- as.data.frame(lowtwi, xy = TRUE)
-# ggplot(data = ltwi[complete.cases(ltwi), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = 15,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")
-# # 
-# ggplot(data = htwi[complete.cases(htwi), ], aes(x = x, y = y))+geom_raster(aes(fill = layer))+scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = max(htwi$layer, na.rm = TRUE)/2,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar")
+
+library(cowplot)
+htwi$Scaled.Wetness <- raster::scale(htwi$layer, center = TRUE)
+ltwi$Scaled.Wetness <- raster::scale(ltwi$layer, center = TRUE)
+hight$Scaled.Wetness <- raster::scale(hight$band1, center = TRUE)
+lowt$Scaled.Wetness <- raster::scale(lowt$band1, center = TRUE)
+
+htwi$Site <- "Epidemic Prone"
+hight$Site <- "Epidemic Prone"
+ltwi$Site <- "Endemic"
+lowt$Site <- "Endemic"
+
+hight$Algorithm <- "Traditional TWI"
+lowt$Algorithm <- "Traditional TWI"
+ltwi$Algorithm <- "Restricted TWI"
+htwi$Algorithm <- "Restricted TWI"
+
+htwic <- htwi[complete.cases(htwi),]
+
+minX <- min(htwic$x)
+maxX <- max(htwic$x)
+minY <- min(htwic$y)
+maxY <- max(htwic$y)
+
+plotdfh <- rbind(hight[which(hight$x > minX & hight$y > minY & hight$x < maxX & hight$y < maxY), -1], htwi[, -3])
+highCompare <- ggplot(data = plotdfh[complete.cases(plotdfh), ], aes(x = x, y = y)) + 
+  geom_raster(aes(fill = Scaled.Wetness)) + 
+  scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = max(plotdfh$Scaled.Wetness, na.rm = TRUE)/2,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar") + 
+  facet_wrap(~Algorithm) +# theme_bw() + 
+  ylab("Latitude") + xlab("Longitude") + coord_equal() #+ 
+  #ggtitle("Epidemic Prone Site")
+
+ltwic <- ltwi[complete.cases(ltwi),]
+
+minX <- min(ltwic$x)
+maxX <- max(ltwic$x)
+minY <- min(ltwic$y)
+maxY <- max(ltwic$y)
+
+plotdfl <- rbind(lowt[which(lowt$x > minX & lowt$y > minY & lowt$x < maxX & lowt$y < maxY), -1], ltwi[, -3])
+
+lowCompare <- ggplot(data = plotdfl[complete.cases(plotdfl), ], aes(x = x, y = y)) + 
+  geom_raster(aes(fill = Scaled.Wetness)) + 
+  scale_fill_gradient2("Wetness", low  =  "green",  mid  =  "yellow",  high  =  "red",   midpoint  = max(plotdfl$Scaled.Wetness, na.rm = TRUE)/2,  space  =  "rgb",  na.value  =  "grey50",  guide  =  "colourbar") + 
+  facet_wrap(~Algorithm) + #theme_bw() + 
+  ylab("Latitude") + xlab("Longitude") + coord_equal() #+ 
+  #ggtitle("Endemic Site")
+
+library(grid)
+library(gridExtra)
+
+combTWI <- plot_grid(lowCompare, highCompare, ncol = 1, labels = c("A", "B"), scale = c(1, 1))
+
+ggsave(filename = "CompareTWI.eps", plot = combTWI, dpi = 400)
+ggsave(filename = "CompareTWI.png", plot = combTWI, height = 6, width = 6)
+ggsave(filename = "CompareTWI.tiff", plot = combTWI, height = 6, width = 6)
+
 rm(aspvar3, aspvar7, aspvar11, highaspvar, lowaspvar, highdips, lowdips, highaspc, lowaspc, meandiff3, meandiff7, meandiff11, meanel3, meanel7, meanel11)
 @
 
